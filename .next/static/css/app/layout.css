@@ -1814,6 +1814,14 @@ video {
   padding-top: 0.625rem;
   padding-bottom: 0.625rem;
 }
+.px-10 {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+.py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
 .pt-24 {
   padding-top: 6rem;
 }
@@ -1843,6 +1851,9 @@ video {
 }
 .pb-2 {
   padding-bottom: 0.5rem;
+}
+.pt-12 {
+  padding-top: 3rem;
 }
 .text-left {
   text-align: left;
@@ -2368,6 +2379,9 @@ video {
 .hover\:border-white\/50:hover {
   border-color: rgb(255 255 255 / 0.5);
 }
+.hover\:border-primary\/50:hover {
+  border-color: hsl(var(--primary) / 0.5);
+}
 .hover\:bg-accent\/10:hover {
   background-color: hsl(var(--accent) / 0.1);
 }
@@ -2500,6 +2514,9 @@ video {
 .group:hover .group-hover\:bg-white\/70 {
   background-color: rgb(255 255 255 / 0.7);
 }
+.group:hover .group-hover\:bg-primary {
+  background-color: hsl(var(--primary));
+}
 .group:hover .group-hover\:text-primary {
   color: hsl(var(--primary));
 }
@@ -2527,6 +2544,10 @@ video {
 }
 .group:hover .group-hover\:text-white\/70 {
   color: rgb(255 255 255 / 0.7);
+}
+.group:hover .group-hover\:text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
 }
 .group:hover .group-hover\:opacity-10 {
   opacity: 0.1;

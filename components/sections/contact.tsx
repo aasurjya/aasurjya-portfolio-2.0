@@ -34,14 +34,13 @@ export default function Contact() {
 
   const contactInfo = [
     { icon: Mail, label: 'Email', value: 'hello@aasurjya.com', link: 'mailto:hello@aasurjya.com' },
-    { icon: MapPin, label: 'Location', value: 'Bengaluru, India', link: null },
-    { icon: Phone, label: 'Phone', value: '+91 98765 43210', link: 'tel:+919876543210' }
+    { icon: MapPin, label: 'Location', value: 'IIT Jodhpur, India', link: null },
+    { icon: Phone, label: 'Phone', value: '+91 82548 76592', link: 'tel:+918254876592' }
   ]
 
   const socialLinks = [
-    { icon: Github, label: 'GitHub', link: 'https://github.com' },
-    { icon: Linkedin, label: 'LinkedIn', link: 'https://linkedin.com' },
-    { icon: Twitter, label: 'Twitter', link: 'https://twitter.com' }
+    { icon: Github, label: 'GitHub', link: 'https://github.com/aasurjya' },
+    { icon: Linkedin, label: 'LinkedIn', link: 'https://linkedin.com/in/aasurjya' }
   ]
 
   return (
@@ -54,125 +53,75 @@ export default function Contact() {
         >
           <h2 className="text-4xl font-bold mb-12 text-center">Get In Touch</h2>
           
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left Side: Call to Action */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
               transition={{ delay: 0.2 }}
-            >
-              <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
-              
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      className="w-full px-4 py-2 bg-background border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                      className="w-full px-4 py-2 bg-background border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    required
-                    className="w-full px-4 py-2 bg-background border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                    placeholder="Project Collaboration"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    required
-                    rows={6}
-                    className="w-full px-4 py-2 bg-background border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none"
-                    placeholder="Tell me about your project..."
-                  />
-                </div>
-                
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <span>Sending...</span>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      Send Message
-                    </>
-                  )}
-                </button>
-              </form>
-            </motion.div>
-
-            {/* Contact Info */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
-              transition={{ delay: 0.3 }}
               className="space-y-8"
             >
-              <div>
-                <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
-                
-                <div className="space-y-4">
+              <div className="space-y-4">
+                <h3 className="text-5xl font-black tracking-tighter uppercase leading-none">
+                  Let's create something <span className="text-primary italic">extraordinary</span> together.
+                </h3>
+                <p className="text-xl text-muted-foreground font-light max-w-md">
+                  I'm always open to discussing innovative projects, research opportunities, or technical challenges.
+                </p>
+              </div>
+              
+              <div className="pt-4">
+                <a 
+                  href="mailto:hello@aasurjya.com"
+                  className="group relative inline-flex items-center gap-4 px-10 py-5 bg-white text-black rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl"
+                >
+                  <div className="relative z-10 flex items-center gap-3">
+                    <Mail className="w-6 h-6" />
+                    MAIL ME
+                  </div>
+                  <div className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-primary/20" />
+                </a>
+              </div>
+
+              <div className="pt-12 border-t border-white/10">
+                <p className="text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase mb-6">Current Availability</p>
+                <div className="flex items-center gap-4 p-6 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10">
+                  <div className="relative">
+                    <div className="w-3 h-3 bg-green-500 rounded-full animate-ping absolute" />
+                    <div className="w-3 h-3 bg-green-500 rounded-full relative" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold">Open for Opportunities</h4>
+                    <p className="text-xs text-white/40">Research • Fullstack • XR Development</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Side: Contact Details */}
+            <div className="space-y-12">
+              <div className="space-y-6">
+                <p className="text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase">Direct Contact</p>
+                <div className="grid gap-4">
                   {contactInfo.map((info, index) => (
                     <motion.div
                       key={info.label}
                       initial={{ opacity: 0, y: 20 }}
                       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                       transition={{ delay: 0.4 + index * 0.1 }}
-                      className="flex items-center gap-4 p-4 bg-card rounded-lg border"
+                      className="group flex items-center gap-6 p-6 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 hover:border-primary/50 transition-all duration-500"
                     >
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <info.icon className="w-5 h-5 text-primary" />
+                      <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary group-hover:text-black transition-all duration-500">
+                        <info.icon className="w-6 h-6" />
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">{info.label}</p>
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-bold tracking-widest text-white/40 uppercase">{info.label}</p>
                         {info.link ? (
-                          <a href={info.link} className="font-medium hover:text-primary transition-colors">
+                          <a href={info.link} className="text-lg font-bold hover:text-primary transition-colors">
                             {info.value}
                           </a>
                         ) : (
-                          <p className="font-medium">{info.value}</p>
+                          <p className="text-lg font-bold">{info.value}</p>
                         )}
                       </div>
                     </motion.div>
@@ -180,42 +129,27 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Connect on Social</h3>
-                
-                <div className="flex gap-4">
+              <div className="space-y-6">
+                <p className="text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase">Social Presence</p>
+                <div className="grid grid-cols-2 gap-4">
                   {socialLinks.map((social, index) => (
                     <motion.a
                       key={social.label}
                       href={social.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                       transition={{ delay: 0.6 + index * 0.1 }}
-                      className="p-3 bg-card border rounded-lg hover:bg-primary/10 hover:border-primary transition-all"
-                      aria-label={social.label}
+                      className="flex items-center justify-center gap-3 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl hover:bg-white hover:text-black transition-all duration-500 group"
                     >
-                      <social.icon className="w-5 h-5" />
+                      <social.icon className="w-6 h-6" />
+                      <span className="font-bold tracking-tight">{social.label}</span>
                     </motion.a>
                   ))}
                 </div>
               </div>
-
-              {/* Availability Card */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ delay: 0.8 }}
-                className="p-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg border"
-              >
-                <h4 className="text-lg font-semibold mb-2">Available for Opportunities</h4>
-                <p className="text-sm text-muted-foreground">
-                  I'm currently open to new projects and collaborations. 
-                  Feel free to reach out if you have an interesting opportunity!
-                </p>
-              </motion.div>
-            </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>

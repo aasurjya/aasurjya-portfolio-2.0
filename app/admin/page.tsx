@@ -336,13 +336,13 @@ export default function AdminDashboard() {
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b">
         <div className="container mx-auto max-w-7xl px-4 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-xl">
-                <BarChart3 className="w-6 h-6 text-primary" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg sm:rounded-xl">
+                <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">Analytics</h1>
-                <p className="text-xs text-muted-foreground">
+                <h1 className="text-lg sm:text-xl font-bold">Analytics</h1>
+                <p className="text-xs text-muted-foreground hidden sm:block">
                   {lastUpdated ? `Updated ${formatDate(lastUpdated.toISOString())}` : 'Portfolio Dashboard'}
                 </p>
               </div>
@@ -366,20 +366,20 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-1 mt-4 bg-muted/50 p-1 rounded-xl w-fit">
+          {/* Tabs - Scrollable on mobile */}
+          <div className="flex gap-1 mt-4 bg-muted/50 p-1 rounded-xl overflow-x-auto scrollbar-hide">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-background shadow-sm text-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {tab.icon}
-                {tab.label}
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </div>
@@ -431,7 +431,7 @@ export default function AdminDashboard() {
                     <Calendar className="w-5 h-5 text-muted-foreground" />
                     Visits Over Time
                   </h3>
-                  <div className="h-64">
+                  <div className="h-48 sm:h-56 lg:h-64">
                     <Line
                       data={{
                         labels: analyticsData.visitsOverTime.map(d => d.date),
@@ -456,7 +456,7 @@ export default function AdminDashboard() {
                     <PieChart className="w-5 h-5 text-muted-foreground" />
                     Portfolio Modes
                   </h3>
-                  <div className="h-48">
+                  <div className="h-36 sm:h-40 lg:h-48">
                     <Doughnut
                       data={{
                         labels: ['PhD Research', 'XR Developer', 'Full Stack'],
@@ -579,7 +579,7 @@ export default function AdminDashboard() {
               {/* Hourly Distribution */}
               <div className="bg-card p-6 rounded-xl border">
                 <h3 className="font-semibold mb-4">Today's Hourly Activity</h3>
-                <div className="h-64">
+                <div className="h-48 sm:h-56 lg:h-64">
                   <Bar
                     data={{
                       labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
@@ -692,59 +692,59 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="relative">
-                  {/* Map Stats Overlay */}
-                  <div className="absolute top-4 left-4 z-10 space-y-2">
-                    <div className="bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
+                  {/* Map Stats Overlay - Hidden on mobile */}
+                  <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 space-y-2 hidden sm:block">
+                    <div className="bg-background/90 backdrop-blur-sm rounded-lg p-2 sm:p-3 border shadow-lg">
                       <p className="text-xs text-muted-foreground">Total Locations</p>
-                      <p className="text-2xl font-bold">{analyticsData.locations.length}</p>
+                      <p className="text-xl sm:text-2xl font-bold">{analyticsData.locations.length}</p>
                     </div>
-                    <div className="bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
+                    <div className="bg-background/90 backdrop-blur-sm rounded-lg p-2 sm:p-3 border shadow-lg">
                       <p className="text-xs text-muted-foreground">Top Country</p>
-                      <p className="text-lg font-semibold">{analyticsData.topCountries[0]?.country || 'N/A'}</p>
+                      <p className="text-base sm:text-lg font-semibold">{analyticsData.topCountries[0]?.country || 'N/A'}</p>
                       <p className="text-xs text-primary">{analyticsData.topCountries[0]?.count || 0} visitors</p>
                     </div>
                   </div>
 
-                  {/* Legend */}
-                  <div className="absolute bottom-4 right-4 z-10 bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
-                    <p className="text-xs font-medium mb-2">Visitor Density</p>
+                  {/* Legend - Smaller on mobile */}
+                  <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 z-10 bg-background/90 backdrop-blur-sm rounded-lg p-2 sm:p-3 border shadow-lg">
+                    <p className="text-xs font-medium mb-1 sm:mb-2 hidden sm:block">Visitor Density</p>
                     <div className="flex items-center gap-1">
-                      <span className="w-4 h-4 rounded-full bg-primary/30" />
-                      <span className="w-5 h-5 rounded-full bg-primary/50" />
-                      <span className="w-6 h-6 rounded-full bg-primary/70" />
-                      <span className="w-7 h-7 rounded-full bg-primary" />
-                      <span className="text-xs text-muted-foreground ml-2">Low → High</span>
+                      <span className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-primary/30" />
+                      <span className="w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full bg-primary/50" />
+                      <span className="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-primary/70" />
+                      <span className="w-4.5 h-4.5 sm:w-7 sm:h-7 rounded-full bg-primary" />
+                      <span className="text-xs text-muted-foreground ml-1 sm:ml-2 hidden sm:inline">Low → High</span>
                     </div>
                   </div>
 
-                  <div className="h-[500px] bg-gradient-to-b from-slate-900 to-slate-800 relative">
+                  <div className="h-[300px] sm:h-[400px] lg:h-[500px] bg-gradient-to-b from-slate-900 to-slate-800 relative">
                     {/* Zoom Controls */}
-                    <div className="absolute top-4 right-4 z-20 flex flex-col gap-1">
+                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 flex flex-col gap-1">
                       <button
                         onClick={() => setMapZoom(z => Math.min(z * 1.5, 8))}
-                        className="p-2 bg-background/90 backdrop-blur-sm rounded-lg border shadow-lg hover:bg-background transition-colors"
+                        className="p-1.5 sm:p-2 bg-background/90 backdrop-blur-sm rounded-lg border shadow-lg hover:bg-background transition-colors"
                         title="Zoom in"
                       >
-                        <ZoomIn className="w-4 h-4" />
+                        <ZoomIn className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                       <button
                         onClick={() => setMapZoom(z => Math.max(z / 1.5, 1))}
-                        className="p-2 bg-background/90 backdrop-blur-sm rounded-lg border shadow-lg hover:bg-background transition-colors"
+                        className="p-1.5 sm:p-2 bg-background/90 backdrop-blur-sm rounded-lg border shadow-lg hover:bg-background transition-colors"
                         title="Zoom out"
                       >
-                        <ZoomOut className="w-4 h-4" />
+                        <ZoomOut className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                       <button
                         onClick={() => { setMapZoom(1); setMapCenter([0, 20]); }}
-                        className="p-2 bg-background/90 backdrop-blur-sm rounded-lg border shadow-lg hover:bg-background transition-colors"
+                        className="p-1.5 sm:p-2 bg-background/90 backdrop-blur-sm rounded-lg border shadow-lg hover:bg-background transition-colors"
                         title="Reset view"
                       >
-                        <RotateCcw className="w-4 h-4" />
+                        <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                     </div>
 
-                    {/* Zoom Level Indicator */}
-                    <div className="absolute top-4 right-20 z-20 bg-background/90 backdrop-blur-sm rounded-lg px-2 py-1 border shadow-lg">
+                    {/* Zoom Level Indicator - Hidden on mobile */}
+                    <div className="absolute top-2 right-14 sm:top-4 sm:right-20 z-20 bg-background/90 backdrop-blur-sm rounded-lg px-1.5 py-0.5 sm:px-2 sm:py-1 border shadow-lg hidden sm:block">
                       <span className="text-xs text-muted-foreground">{Math.round(mapZoom * 100)}%</span>
                     </div>
 
@@ -899,7 +899,7 @@ export default function AdminDashboard() {
                     Click to expand Country → State/Region → City
                   </p>
                 </div>
-                <div className="divide-y max-h-[500px] overflow-y-auto">
+                <div className="divide-y max-h-[350px] sm:max-h-[400px] lg:max-h-[500px] overflow-y-auto">
                   {analyticsData.geographyData?.map((country, countryIdx) => {
                     const isCountryExpanded = expandedCountries.has(country.country)
                     const countryPercentage = Math.round((country.count / analyticsData.totalVisitors) * 100)
@@ -1062,7 +1062,7 @@ export default function AdminDashboard() {
                     <BarChart3 className="w-5 h-5 text-muted-foreground" />
                     Visitors by Country
                   </h3>
-                  <div className="h-72">
+                  <div className="h-56 sm:h-64 lg:h-72">
                     <Bar
                       data={{
                         labels: analyticsData.topCountries.slice(0, 8).map(c => c.country),

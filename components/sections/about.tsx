@@ -391,10 +391,8 @@ export default function About() {
                               <MapPin className="w-3 h-3" /> {activeSlide?.location}
                             </span>
                           </div>
-                          <h3 className="text-2xl sm:text-4xl font-black tracking-tighter text-white uppercase leading-[0.85] drop-shadow-2xl">
-                            {activeSlide?.title.split(' ').map((word, i) => (
-                              <span key={i} className="block">{word}</span>
-                            ))}
+                          <h3 className="text-base sm:text-xl font-bold tracking-tight text-white uppercase leading-tight drop-shadow-2xl">
+                            {activeSlide?.title}
                           </h3>
                         </div>
                         <p className="text-sm font-medium text-white/70 leading-relaxed bg-black/40 backdrop-blur-md p-6 rounded-[24px] border border-white/10">

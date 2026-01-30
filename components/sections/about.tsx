@@ -323,7 +323,7 @@ export default function About() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="relative w-full aspect-[4/5] rounded-[40px] overflow-hidden group shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/5"
+                    className="relative w-full aspect-[4/4.5] rounded-[32px] overflow-hidden group shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/5"
                   >
                     <AnimatePresence mode="wait">
                       <motion.div
@@ -359,15 +359,15 @@ export default function About() {
                           <div className="flex gap-2">
                             <button
                               onClick={handlePrevSlide}
-                              className="w-12 h-12 rounded-full border border-white/10 bg-black/20 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-xl flex items-center justify-center group"
+                              className="w-10 h-10 rounded-full border border-white/10 bg-black/20 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-xl flex items-center justify-center group"
                             >
-                              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                             </button>
                             <button
                               onClick={handleNextSlide}
-                              className="w-12 h-12 rounded-full border border-white/10 bg-black/20 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-xl flex items-center justify-center group"
+                              className="w-10 h-10 rounded-full border border-white/10 bg-black/20 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-xl flex items-center justify-center group"
                             >
-                              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>
                           </div>
                         </div>
@@ -391,14 +391,14 @@ export default function About() {
                                   {activeSlide.location}
                                 </span>
                               </div>
-                              <h3 className="text-5xl sm:text-7xl font-black tracking-tighter text-white leading-[0.85] uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                              <h3 className="text-4xl sm:text-6xl font-black tracking-tighter text-white leading-[0.85] uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                                 {activeSlide.title.split(' ').map((word, i) => (
                                   <span key={i} className="block">{word}</span>
                                 ))}
                               </h3>
                             </div>
                             
-                            <p className="text-lg text-white/90 leading-relaxed font-medium max-w-sm drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] bg-black/20 backdrop-blur-sm p-4 rounded-2xl border border-white/5">
+                            <p className="text-sm sm:text-base text-white/90 leading-relaxed font-medium max-w-sm drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] bg-black/20 backdrop-blur-sm p-4 rounded-2xl border border-white/5">
                               {activeSlide.description}
                             </p>
 

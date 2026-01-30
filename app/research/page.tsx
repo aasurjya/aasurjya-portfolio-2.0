@@ -20,7 +20,7 @@ export default function ResearchPage() {
   }, [setMode])
 
   return (
-    <main className="relative min-h-screen bg-background text-foreground transition-colors duration-500">
+    <main className="relative min-h-screen bg-[#050505] text-white transition-colors duration-500">
       <Navigation />
       <motion.div
         initial={{ opacity: 0 }}

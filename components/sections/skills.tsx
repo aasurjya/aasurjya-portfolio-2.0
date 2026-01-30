@@ -10,12 +10,10 @@ export default function Skills() {
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
 
-  // Filter skills based on mode
   const filteredSkills = mode
     ? skills.filter(s => s.modes.includes(mode))
     : skills
 
-  // Group skills by category
   const groupedSkills = filteredSkills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = []
     acc[skill.category].push(skill)
@@ -23,66 +21,85 @@ export default function Skills() {
   }, {} as Record<string, typeof skills>)
 
   const categoryLabels = {
-    language: 'Programming Languages',
-    framework: 'Frameworks & Libraries',
-    tool: 'Tools & Technologies',
-    platform: 'Platforms & Services',
-    soft: 'Research & Soft Skills'
+    language: 'Languages',
+    framework: 'Frameworks',
+    tool: 'Tools',
+    platform: 'Platforms',
+    soft: 'Soft Skills'
   }
 
-  const categoryColors = {
-    language: 'from-blue-500 to-blue-600',
-    framework: 'from-green-500 to-green-600',
-    tool: 'from-purple-500 to-purple-600',
-    platform: 'from-orange-500 to-orange-600',
-    soft: 'from-pink-500 to-pink-600'
+  const getModeColor = () => {
+    switch (mode) {
+      case 'phd': return 'bg-blue-500'
+      case 'xr': return 'bg-teal-500'
+      case 'fullstack': return 'bg-purple-500'
+      default: return 'bg-purple-500'
+    }
+  }
+
+  const getModeAccent = () => {
+    switch (mode) {
+      case 'phd': return 'text-blue-400'
+      case 'xr': return 'text-teal-400'
+      case 'fullstack': return 'text-purple-400'
+      default: return 'text-purple-400'
+    }
   }
 
   return (
-    <section id="skills" ref={sectionRef} className="py-20 px-4 bg-muted/30">
-      <div className="container mx-auto max-w-6xl">
+    <section id="skills" ref={sectionRef} className="py-20 md:py-32 bg-[#0a0a0a]">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl font-bold mb-12 text-center">Skills & Expertise</h2>
+          {/* Header */}
+          <div className="text-center mb-12 md:mb-16">
+            <p className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase ${getModeAccent()} mb-4`}>
+              Expertise
+            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white">
+              Skills & Technologies
+            </h2>
+          </div>
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {Object.entries(groupedSkills).map(([category, categorySkills], categoryIndex) => (
               <motion.div
                 key={category}
-                initial={{ opacity: 0, x: categoryIndex % 2 === 0 ? -30 : 30 }}
-                animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: categoryIndex % 2 === 0 ? -30 : 30 }}
-                transition={{ delay: categoryIndex * 0.2 }}
-                className="bg-card p-6 rounded-lg border"
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ delay: categoryIndex * 0.1 }}
+                className="p-5 md:p-6 bg-white/[0.02] rounded-2xl border border-white/5"
               >
-                <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                  <span className={`w-1 h-6 bg-gradient-to-b ${categoryColors[category as keyof typeof categoryColors]} rounded`} />
+                <h3 className="text-sm font-bold text-white/80 mb-5 flex items-center gap-3">
+                  <span className={`w-1 h-4 ${getModeColor()} rounded-full`} />
                   {categoryLabels[category as keyof typeof categoryLabels]}
                 </h3>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {categorySkills.map((skill, index) => (
                     <motion.div
                       key={skill.name}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                      transition={{ delay: categoryIndex * 0.2 + index * 0.05 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                      transition={{ delay: categoryIndex * 0.1 + index * 0.05 }}
+                      className="space-y-2"
                     >
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium">{skill.name}</span>
-                        <span className="text-xs text-muted-foreground">{skill.level}%</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-white/70">{skill.name}</span>
+                        <span className="text-xs text-white/40">{skill.level}%</span>
                       </div>
-                      <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <motion.div
-                          className={`absolute left-0 top-0 h-full bg-gradient-to-r ${categoryColors[category as keyof typeof categoryColors]} rounded-full`}
+                          className={`h-full ${getModeColor()} rounded-full`}
                           initial={{ width: 0 }}
                           animate={isInView ? { width: `${skill.level}%` } : { width: 0 }}
-                          transition={{ 
-                            delay: categoryIndex * 0.2 + index * 0.05 + 0.3,
+                          transition={{
+                            delay: categoryIndex * 0.1 + index * 0.05 + 0.3,
                             duration: 0.8,
-                            ease: "easeOut"
+                            ease: 'easeOut'
                           }}
                         />
                       </div>

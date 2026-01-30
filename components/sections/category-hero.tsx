@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import gsap from 'gsap'
-import { Download } from 'lucide-react'
+import { Download, ChevronDown } from 'lucide-react'
 
 export default function CategoryHero() {
   const { mode } = useMode()
@@ -74,108 +74,85 @@ export default function CategoryHero() {
   const { title, subtitle, color, accent } = getModeContent()
 
   return (
-    <section 
+    <section
       ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden bg-[#050505]"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#050505]"
     >
-      {/* Immersive Background Particles/Glow */}
+      {/* Background */}
       <div className="absolute inset-0 -z-10">
-        <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-b ${color} to-transparent opacity-30`} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-white/[0.02] blur-[150px] rounded-full animate-pulse" />
+        <div className={`absolute inset-0 bg-gradient-to-b ${color} to-transparent opacity-30`} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-white/[0.02] blur-[100px] rounded-full animate-pulse" />
       </div>
 
-      <div className="text-center max-w-7xl mx-auto z-10">
-        <motion.div 
+      {/* Main Content */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="space-y-4 mb-6"
+          className="mb-4 md:mb-6"
         >
-          <span className={`text-[10px] font-bold tracking-[0.5em] uppercase ${accent} opacity-80`}>
+          <span className={`text-[10px] md:text-xs font-bold tracking-[0.3em] md:tracking-[0.5em] uppercase ${accent} opacity-80`}>
             {mode === 'phd' ? 'Academic Portfolio' : mode === 'xr' ? 'Creative Engineer' : 'System Architect'}
           </span>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
         >
-          <h1 
+          <h1
             ref={titleRef}
-            className="text-7xl md:text-[12rem] font-black tracking-tighter leading-[0.8] uppercase text-white"
+            className="text-[3rem] sm:text-[4rem] md:text-[6rem] lg:text-[8rem] xl:text-[10rem] font-black tracking-tighter leading-none uppercase text-white"
           >
             {title}
           </h1>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ delay: 0.5, duration: 1.5, ease: 'power4.out' }}
-          className="hero-line w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent my-12" 
+          transition={{ delay: 0.5, duration: 1.5 }}
+          className="hero-line w-full max-w-3xl mx-auto h-px bg-gradient-to-r from-transparent via-white/30 to-transparent my-6 md:my-10"
         />
 
-        <motion.div 
+        <motion.div
           ref={subtitleRef}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 1 }}
-          className="flex flex-col items-center gap-6"
+          className="space-y-4 md:space-y-6"
         >
-          <span className="text-sm md:text-xl tracking-[0.4em] font-light text-white/40 uppercase max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm md:text-lg tracking-[0.15em] md:tracking-[0.3em] font-light text-white/50 uppercase">
             {subtitle}
-          </span>
-          <p className="text-base md:text-lg text-white/70 font-light tracking-tight">
+          </p>
+          <p className="text-sm md:text-base text-white/70 font-light max-w-xl mx-auto">
             Multi-tenant SaaS • Realtime infrastructure • Immersive product systems
           </p>
-          
-          <div className="flex gap-4 pt-4">
-            <div className={`w-2 h-2 rounded-full ${accent} animate-pulse`} />
-            <div className="w-2 h-2 rounded-full bg-white/10" />
-            <div className="w-2 h-2 rounded-full bg-white/10" />
-          </div>
         </motion.div>
       </div>
 
-      {/* Floating Meta Info */}
-      <div className="absolute bottom-8 left-8 lg:bottom-12 lg:left-12 hidden md:block">
-        <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">Focus</span>
-          <span className="text-xs font-medium text-white/60">Multimodal Interaction</span>
-        </div>
-      </div>
-
-      {/* Resume Button - Bottom Right */}
+      {/* Bottom Center: Resume + Scroll - using inset-x-0 for proper centering */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        className="absolute bottom-6 md:bottom-10 inset-x-0 flex flex-col items-center"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="absolute bottom-8 right-8 lg:bottom-12 lg:right-12"
+        transition={{ delay: 1.2, duration: 0.8 }}
       >
         <a
           href="/resume.pdf"
           download
-          className="group relative inline-flex items-center gap-3 px-6 py-3 lg:px-8 lg:py-4 rounded-full text-[9px] lg:text-[10px] tracking-[0.4em] font-black uppercase text-black bg-gradient-to-r from-amber-300 via-orange-400 to-pink-500 shadow-[0_10px_40px_rgba(255,149,0,0.25)] hover:shadow-[0_20px_60px_rgba(255,149,0,0.4)] transition-all duration-500"
+          className="group relative inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 rounded-full text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] font-bold uppercase text-black bg-gradient-to-r from-amber-300 via-orange-400 to-pink-500 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
         >
-          <span className="absolute inset-0 rounded-full border border-white/40 opacity-40 group-hover:opacity-100 transition-opacity" />
-          <span className="relative z-10 flex items-center gap-2">
-            <Download className="w-3 h-3 lg:w-4 lg:h-4" /> Resume
-          </span>
+          <Download className="w-4 h-4" />
+          <span>Resume</span>
         </a>
-      </motion.div>
 
-      {/* Scroll Indicator - Bottom Center */}
-      <motion.div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-      >
-        <div className="flex flex-col items-center gap-3">
-          <span className="text-[9px] tracking-[0.3em] text-white/30 uppercase font-medium">Scroll</span>
-          <div className="w-[1px] h-12 bg-gradient-to-b from-white/30 to-transparent" />
+        <div className="mt-6 md:mt-8 flex flex-col items-center gap-2">
+          <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase">Scroll</span>
+          <ChevronDown className="w-4 h-4 text-white/40 animate-bounce" />
         </div>
       </motion.div>
     </section>

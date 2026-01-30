@@ -163,14 +163,6 @@ export default function About() {
     }
   }
 
-  const getModeRing = () => {
-    switch (mode) {
-      case 'phd': return 'ring-blue-500'
-      case 'xr': return 'ring-teal-500'
-      case 'fullstack': return 'ring-purple-500'
-      default: return 'ring-blue-500'
-    }
-  }
 
   return (
     <section ref={sectionRef} id="about" className="relative py-32 overflow-hidden bg-[#050505]">
@@ -187,29 +179,34 @@ export default function About() {
           {/* Left Side: Content & Narrative Toggle */}
           <div className="lg:w-7/12 space-y-16">
             <div className="space-y-8">
-              <div className="flex flex-wrap items-center gap-6">
-                <button 
+              {/* Professional Toggle Switcher */}
+              <div className="inline-flex p-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <button
                   onClick={() => setView('professional')}
-                  className={`px-8 py-3 rounded-full text-[10px] font-black tracking-[0.3em] transition-all duration-500 ${
-                    view === 'professional' 
-                    ? `bg-white text-black ring-4 ring-offset-4 ring-offset-[#050505] ${getModeRing()}` 
-                    : 'bg-white/5 text-white/40 hover:bg-white/10'
+                  className={`relative px-6 py-3 rounded-xl transition-all duration-500 ${
+                    view === 'professional'
+                    ? 'bg-white text-black shadow-lg'
+                    : 'text-white/40 hover:text-white/70'
                   }`}
                 >
-                  PROFESSIONAL
+                  <span className="text-[10px] font-black tracking-[0.2em] uppercase">Professional</span>
+                  <span className={`block text-[9px] tracking-wider mt-0.5 ${view === 'professional' ? 'text-black/60' : 'text-white/30'}`}>
+                    Process & credentials
+                  </span>
                 </button>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">Process & credentials</span>
-                <button 
+                <button
                   onClick={() => setView('origins')}
-                  className={`px-8 py-3 rounded-full text-[10px] font-black tracking-[0.3em] transition-all duration-500 ${
-                    view === 'origins' 
-                    ? `bg-white text-black ring-4 ring-offset-4 ring-offset-[#050505] ${getModeRing()}` 
-                    : 'bg-white/5 text-white/40 hover:bg-white/10'
+                  className={`relative px-6 py-3 rounded-xl transition-all duration-500 ${
+                    view === 'origins'
+                    ? 'bg-white text-black shadow-lg'
+                    : 'text-white/40 hover:text-white/70'
                   }`}
                 >
-                  MY ORIGINS
+                  <span className="text-[10px] font-black tracking-[0.2em] uppercase">My Origins</span>
+                  <span className={`block text-[9px] tracking-wider mt-0.5 ${view === 'origins' ? 'text-black/60' : 'text-white/30'}`}>
+                    Personal narrative
+                  </span>
                 </button>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">Personal narrative</span>
               </div>
 
               <div className="about-title-reveal">

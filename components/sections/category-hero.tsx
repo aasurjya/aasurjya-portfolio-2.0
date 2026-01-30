@@ -139,51 +139,43 @@ export default function CategoryHero() {
         </motion.div>
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="mt-12"
-      >
-        <a
-          href="/resume.pdf"
-          download
-          className="group relative inline-flex items-center gap-4 px-12 py-5 rounded-full text-[10px] tracking-[0.5em] font-black uppercase text-black bg-gradient-to-r from-amber-300 via-orange-400 to-pink-500 shadow-[0_20px_60px_rgba(255,149,0,0.25)] hover:shadow-[0_30px_80px_rgba(255,149,0,0.4)] transition-all duration-500"
-        >
-          <span className="absolute inset-0 rounded-full border border-white/40 opacity-40 group-hover:opacity-100 transition-opacity" />
-          <span className="absolute inset-0 rounded-full bg-white/20 blur-3xl opacity-0 group-hover:opacity-60 transition-opacity" />
-          <span className="absolute -inset-[6px] rounded-full border border-amber-200/40 animate-pulse" />
-          <span className="relative z-10 flex items-center gap-3">
-            <Download className="w-4 h-4" /> Resume.pdf
-          </span>
-        </a>
-      </motion.div>
-
       {/* Floating Meta Info */}
-      <div className="absolute bottom-12 left-12 hidden lg:block">
+      <div className="absolute bottom-8 left-8 lg:bottom-12 lg:left-12 hidden md:block">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">Focus</span>
           <span className="text-xs font-medium text-white/60">Multimodal Interaction</span>
         </div>
       </div>
 
-      <div className="absolute bottom-12 right-12 hidden lg:block text-right">
-        <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">Location</span>
-          <span className="text-xs font-medium text-white/60">IIT Jodhpur, IN</span>
-        </div>
-      </div>
+      {/* Resume Button - Bottom Right */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.8 }}
+        className="absolute bottom-8 right-8 lg:bottom-12 lg:right-12"
+      >
+        <a
+          href="/resume.pdf"
+          download
+          className="group relative inline-flex items-center gap-3 px-6 py-3 lg:px-8 lg:py-4 rounded-full text-[9px] lg:text-[10px] tracking-[0.4em] font-black uppercase text-black bg-gradient-to-r from-amber-300 via-orange-400 to-pink-500 shadow-[0_10px_40px_rgba(255,149,0,0.25)] hover:shadow-[0_20px_60px_rgba(255,149,0,0.4)] transition-all duration-500"
+        >
+          <span className="absolute inset-0 rounded-full border border-white/40 opacity-40 group-hover:opacity-100 transition-opacity" />
+          <span className="relative z-10 flex items-center gap-2">
+            <Download className="w-3 h-3 lg:w-4 lg:h-4" /> Resume
+          </span>
+        </a>
+      </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div 
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
+      {/* Scroll Indicator - Bottom Center */}
+      <motion.div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 1 }}
       >
-        <div className="flex flex-col items-center gap-4">
-          <span className="text-[10px] tracking-[0.3em] text-white/40 uppercase font-bold">Explore</span>
-          <div className="w-[1px] h-24 bg-gradient-to-b from-white/40 via-white/10 to-transparent" />
+        <div className="flex flex-col items-center gap-3">
+          <span className="text-[9px] tracking-[0.3em] text-white/30 uppercase font-medium">Scroll</span>
+          <div className="w-[1px] h-12 bg-gradient-to-b from-white/30 to-transparent" />
         </div>
       </motion.div>
     </section>

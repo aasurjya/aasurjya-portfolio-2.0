@@ -21,8 +21,13 @@ export async function GET(request: NextRequest) {
     const db = await getDatabase()
     const visitors = db.collection('visitors')
 
-    // Get all visitors
-    const allVisitors = await visitors.find({}).toArray()
+    // Get all visitors, excluding local development
+    const allVisitors = await visitors.find({
+      $and: [
+        { city: { $ne: 'Local Development' } },
+        { country: { $ne: 'Localhost' } }
+      ]
+    }).toArray()
 
     // Calculate analytics
     const now = new Date()

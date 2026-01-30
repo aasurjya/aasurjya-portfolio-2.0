@@ -237,10 +237,11 @@ export default function About() {
                     <p className="text-xl md:text-2xl text-white/80 leading-relaxed font-light">
                       {personalStory.bio}
                     </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
-                      {personalStory.hobbies.map((hobby, i) => (
-                        <div key={i} className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center justify-center text-center">
-                          <span className="text-[11px] font-medium text-white/70">{hobby}</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                      {personalStory.stats.map((s, i) => (
+                        <div key={i} className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                          <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">{s.label}</p>
+                          <p className="text-sm font-bold text-white">{s.value}</p>
                         </div>
                       ))}
                     </div>
@@ -287,109 +288,128 @@ export default function About() {
           </div>
 
           {/* Right Side: Visual Storytelling */}
-          <div className="lg:w-5/12 relative">
+          <div className="lg:w-5/12 relative space-y-8">
             <AnimatePresence mode="wait">
               {view === 'origins' ? (
-                <motion.div
-                  key="origins-visual"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="relative w-full aspect-[4/5] rounded-[40px] overflow-hidden group shadow-2xl"
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={`${activeSlide.title}-${currentImageIndex}`}
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 1.05 }}
-                      transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute inset-0"
-                    >
-                      <Image
-                        src={activeSlide.images[currentImageIndex]}
-                        alt={activeSlide.title}
-                        fill
-                        className="object-cover"
-                        priority
-                      />
-                      {/* Sophisticated Gradient Overlay - Darker for readability */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/90" />
-                    </motion.div>
-                  </AnimatePresence>
-
-                  {/* Narrative Elements */}
-                  <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-10 z-10">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-1">
-                        <span className="inline-block px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[9px] font-bold tracking-[0.2em] text-white uppercase">
-                          {activeSlide.badge}
-                        </span>
-                      </div>
-                      
-                      {/* Modern Nav */}
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handlePrevSlide}
-                          className="w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
-                        >
-                          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-                        </button>
-                        <button
-                          onClick={handleNextSlide}
-                          className="w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
-                        >
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-6">
-                      <motion.div
-                        key={`${activeSlide.title}-info`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.8 }}
-                        className="space-y-4"
+                <div key="origins-container" className="space-y-6">
+                  {/* Contextual Hobby Tags - Separated context above the visual */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-wrap gap-2 pb-2"
+                  >
+                    {personalStory.hobbies.map((hobby, i) => (
+                      <div 
+                        key={i} 
+                        className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2 group hover:bg-white/10 transition-all duration-300"
                       >
-                        <div className="space-y-1.5">
-                          <div className="flex items-center gap-2.5 text-white/80 text-[10px] uppercase tracking-[0.2em] font-semibold">
-                            <span className="px-2 py-0.5 bg-white/10 rounded">{activeSlide.duration}</span>
-                            <span className="w-1 h-1 rounded-full bg-white/40" />
-                            <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-white" /> {activeSlide.location}</span>
-                          </div>
-                          <h3 className="text-4xl sm:text-5xl font-black tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
-                            {activeSlide.title.split(' ').map((word, i) => (
-                              <span key={i} className="block">{word}</span>
-                            ))}
-                          </h3>
+                        <div className="w-1 h-1 rounded-full bg-white/40 group-hover:bg-white/70 transition-colors" />
+                        <span className="text-[9px] font-bold tracking-[0.15em] text-white/60 uppercase group-hover:text-white/90">{hobby}</span>
+                      </div>
+                    ))}
+                  </motion.div>
+
+                  <motion.div
+                    key="origins-visual"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="relative w-full aspect-[4/5] rounded-[40px] overflow-hidden group shadow-2xl"
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`${activeSlide.title}-${currentImageIndex}`}
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1.05 }}
+                        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={activeSlide.images[currentImageIndex]}
+                          alt={activeSlide.title}
+                          fill
+                          className="object-cover"
+                          priority
+                        />
+                        {/* Sophisticated Gradient Overlay - Darker for readability */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/90" />
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Narrative Elements */}
+                    <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-10 z-10">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                          <span className="inline-block px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[9px] font-bold tracking-[0.2em] text-white uppercase">
+                            {activeSlide.badge}
+                          </span>
                         </div>
                         
-                        <p className="text-base text-white/90 leading-relaxed font-medium max-w-sm drop-shadow-lg">
-                          {activeSlide.description}
-                        </p>
-
-                        <div className="flex items-center gap-3 pt-2">
-                          <div className="h-[1px] flex-1 bg-white/30" />
-                          <div className="flex gap-1">
-                            {slides.map((_, i) => (
-                              <button
-                                key={i}
-                                onClick={() => {
-                                  setCurrentSlide(i)
-                                  setCurrentImageIndex(0)
-                                }}
-                                className={`h-1 rounded-full transition-all duration-500 ${
-                                  i === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/30 hover:bg-white/50'
-                                }`}
-                              />
-                            ))}
-                          </div>
+                        {/* Modern Nav */}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handlePrevSlide}
+                            className="w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
+                          >
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+                          </button>
+                          <button
+                            onClick={handleNextSlide}
+                            className="w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
+                          >
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                          </button>
                         </div>
-                      </motion.div>
+                      </div>
+
+                      <div className="space-y-6">
+                        <motion.div
+                          key={`${activeSlide.title}-info`}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2, duration: 0.8 }}
+                          className="space-y-4"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2.5 text-white/80 text-[10px] uppercase tracking-[0.2em] font-semibold">
+                              <span className="px-2 py-0.5 bg-white/10 rounded">{activeSlide.duration}</span>
+                              <span className="w-1 h-1 rounded-full bg-white/40" />
+                              <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-white" /> {activeSlide.location}</span>
+                            </div>
+                            <h3 className="text-4xl sm:text-5xl font-black tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
+                              {activeSlide.title.split(' ').map((word, i) => (
+                                <span key={i} className="block">{word}</span>
+                              ))}
+                            </h3>
+                          </div>
+                          
+                          <p className="text-base text-white/90 leading-relaxed font-medium max-w-sm drop-shadow-lg">
+                            {activeSlide.description}
+                          </p>
+
+                          <div className="flex items-center gap-3 pt-2">
+                            <div className="h-[1px] flex-1 bg-white/30" />
+                            <div className="flex gap-1">
+                              {slides.map((_, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => {
+                                    setCurrentSlide(i)
+                                    setCurrentImageIndex(0)
+                                  }}
+                                  className={`h-1 rounded-full transition-all duration-500 ${
+                                    i === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/30 hover:bg-white/50'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </div>
               ) : (
                 <motion.div
                   key="professional-visual"

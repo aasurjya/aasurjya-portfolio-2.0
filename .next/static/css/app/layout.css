@@ -1826,6 +1826,9 @@ video {
 .pt-2 {
   padding-top: 0.5rem;
 }
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
 .text-left {
   text-align: left;
 }
@@ -1957,6 +1960,9 @@ video {
 }
 .tracking-\[0\.4em\] {
   letter-spacing: 0.4em;
+}
+.tracking-\[0\.15em\] {
+  letter-spacing: 0.15em;
 }
 .text-blue-500 {
   --tw-text-opacity: 1;
@@ -2456,6 +2462,9 @@ video {
 }
 .group:hover .group-hover\:bg-transparent {
   background-color: transparent;
+}
+.group:hover .group-hover\:bg-white\/70 {
+  background-color: rgb(255 255 255 / 0.7);
 }
 .group:hover .group-hover\:text-primary {
   color: hsl(var(--primary));

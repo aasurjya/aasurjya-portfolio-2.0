@@ -391,7 +391,7 @@ export default function About() {
                               <MapPin className="w-3 h-3" /> {activeSlide?.location}
                             </span>
                           </div>
-                          <h3 className="text-base sm:text-xl font-bold tracking-tight text-white uppercase leading-tight drop-shadow-2xl">
+                          <h3 className="text-xs sm:text-sm font-black tracking-[0.4em] text-white uppercase leading-tight drop-shadow-2xl opacity-90">
                             {activeSlide?.title}
                           </h3>
                         </div>

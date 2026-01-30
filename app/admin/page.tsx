@@ -19,10 +19,10 @@ import {
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps'
 import {
-  Users, TrendingUp, TrendingDown, Globe, Activity, Calendar,
+  Users, TrendingUp, Globe, Activity, Calendar,
   PieChart, Monitor, Clock, MapPin, BarChart3, Eye, MousePointer,
   Layers, RefreshCw, LogOut, Home, ArrowUpRight, ArrowDownRight,
-  ChevronRight, ChevronDown, Building, Flag, ZoomIn, ZoomOut, RotateCcw, Timer
+  ChevronRight, Building, Flag, ZoomIn, ZoomOut, RotateCcw, Timer
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -123,8 +123,18 @@ export default function AdminDashboard() {
   const [mapLoaded, setMapLoaded] = useState(false)
   const [mapZoom, setMapZoom] = useState(1)
   const [mapCenter, setMapCenter] = useState<[number, number]>([0, 20])
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   useEffect(() => { checkAuth() }, [])
+
+  // Auto-refresh every 60 seconds when authenticated
+  useEffect(() => {
+    if (!isAuthenticated) return
+    const interval = setInterval(() => {
+      fetchAnalytics()
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [isAuthenticated])
 
   const checkAuth = async () => {
     try {
@@ -171,10 +181,39 @@ export default function AdminDashboard() {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       })
       if (res.ok) {
-        setAnalyticsData(await res.json())
+        const data = await res.json()
+        // Ensure all required fields have defaults
+        setAnalyticsData({
+          totalVisitors: data.totalVisitors || 0,
+          todayVisitors: data.todayVisitors || 0,
+          yesterdayVisitors: data.yesterdayVisitors || 0,
+          weeklyVisitors: data.weeklyVisitors || 0,
+          monthlyVisitors: data.monthlyVisitors || 0,
+          uniqueVisitors: data.uniqueVisitors || 0,
+          uniqueSessions: data.uniqueSessions || 0,
+          growthRate: data.growthRate || 0,
+          modeBreakdown: data.modeBreakdown || { phd: 0, xr: 0, fullstack: 0 },
+          topCountries: data.topCountries || [],
+          topCities: data.topCities || [],
+          visitsOverTime: data.visitsOverTime || [],
+          recentVisits: data.recentVisits || [],
+          locations: data.locations || [],
+          hourlyDistribution: data.hourlyDistribution || Array(24).fill(0),
+          screenSizes: data.screenSizes || [],
+          topReferrers: data.topReferrers || [],
+          topPages: data.topPages || [],
+          geographyData: data.geographyData || [],
+          sectionEngagement: data.sectionEngagement || []
+        })
+      } else {
+        const errorData = await res.json().catch(() => ({}))
+        console.error('Analytics API error:', res.status, errorData)
+        toast.error(`Failed to fetch analytics: ${errorData.error || res.statusText}`)
       }
-    } catch {
+    } catch (err) {
+      console.error('Failed to fetch analytics:', err)
       toast.error('Failed to fetch analytics')
+      setLastUpdated(new Date())
     } finally {
       setLoading(false)
       setRefreshing(false)
@@ -230,8 +269,19 @@ export default function AdminDashboard() {
 
   if (!analyticsData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">No analytics data available</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
+        <div className="text-center p-8">
+          <BarChart3 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">No Analytics Data</h2>
+          <p className="text-muted-foreground mb-4">Unable to load analytics. Check your connection and try again.</p>
+          <button
+            onClick={fetchAnalytics}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 flex items-center gap-2 mx-auto"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Retry
+          </button>
+        </div>
       </div>
     )
   }
@@ -292,10 +342,12 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <h1 className="text-xl font-bold">Analytics</h1>
-                <p className="text-xs text-muted-foreground">Portfolio Dashboard</p>
+                <p className="text-xs text-muted-foreground">
+                  {lastUpdated ? `Updated ${formatDate(lastUpdated.toISOString())}` : 'Portfolio Dashboard'}
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <button
                 onClick={fetchAnalytics}
                 disabled={refreshing}
@@ -962,7 +1014,7 @@ export default function AdminDashboard() {
                                           transition={{ duration: 0.2 }}
                                           className="overflow-hidden"
                                         >
-                                          {state.cities.map((city, cityIdx) => {
+                                          {state.cities.map((city) => {
                                             const cityPercentage = Math.round((city.count / state.count) * 100)
                                             return (
                                               <div

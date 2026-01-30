@@ -2,15 +2,32 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDatabase } from '@/lib/mongodb'
 
 function isLocalIP(ip: string | null): boolean {
-  if (!ip) return true
-  return ip === '127.0.0.1' || ip === '::1' || ip === 'localhost' ||
-         ip.startsWith('192.168.') || ip.startsWith('10.') ||
-         ip.startsWith('172.16.') || ip.startsWith('172.17.') ||
-         ip.startsWith('172.18.') || ip.startsWith('172.19.') ||
-         ip.startsWith('172.2') || ip.startsWith('172.3')
+  if (!ip) return false // Don't assume local if no IP
+  const trimmedIP = ip.trim()
+
+  // Only match actual local/private IPs
+  if (trimmedIP === '127.0.0.1' || trimmedIP === '::1' || trimmedIP === 'localhost') {
+    return true
+  }
+
+  // Private IP ranges
+  if (trimmedIP.startsWith('192.168.')) return true
+  if (trimmedIP.startsWith('10.')) return true
+
+  // 172.16.0.0 - 172.31.255.255 (check properly)
+  if (trimmedIP.startsWith('172.')) {
+    const parts = trimmedIP.split('.')
+    if (parts.length >= 2) {
+      const secondOctet = parseInt(parts[1], 10)
+      if (secondOctet >= 16 && secondOctet <= 31) return true
+    }
+  }
+
+  return false
 }
 
 async function lookupLocation(ip: string | null) {
+  // Skip lookup for local IPs
   if (isLocalIP(ip)) {
     return {
       city: 'Local Development',
@@ -21,11 +38,25 @@ async function lookupLocation(ip: string | null) {
       isLocal: true
     }
   }
+
+  // Skip lookup if no valid IP
+  if (!ip || ip.trim() === '') {
+    return null
+  }
+
   try {
-    const res = await fetch(`https://ipapi.co/${ip}/json/`)
-    if (!res.ok) return null
+    const res = await fetch(`https://ipapi.co/${ip}/json/`, {
+      headers: { 'User-Agent': 'nodejs-ipapi-v1.02' }
+    })
+    if (!res.ok) {
+      console.error('IP lookup failed with status:', res.status)
+      return null
+    }
     const data = await res.json()
-    if (data.error) return null
+    if (data.error) {
+      console.error('IP lookup error:', data.reason || data.error)
+      return null
+    }
     return data
   } catch (error) {
     console.error('IP lookup failed:', error)
@@ -36,12 +67,20 @@ async function lookupLocation(ip: string | null) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
-    // Get IP address from headers
+
+    // Get IP address from headers (check multiple sources)
+    // Priority: Cloudflare > X-Forwarded-For > X-Real-IP > fallback
+    const cfConnectingIP = request.headers.get('cf-connecting-ip')
     const forwarded = request.headers.get('x-forwarded-for')
-    const ip = forwarded ? forwarded.split(',')[0] : 
-               request.headers.get('x-real-ip') || 
-               '127.0.0.1'
+    const realIP = request.headers.get('x-real-ip')
+
+    let ip = cfConnectingIP ||
+             (forwarded ? forwarded.split(',')[0].trim() : null) ||
+             realIP ||
+             null
+
+    // Log for debugging (remove in production)
+    console.log('IP Detection:', { cfConnectingIP, forwarded, realIP, finalIP: ip })
     
     const geo = await lookupLocation(ip)
     const latitude = geo?.latitude ?? geo?.lat ?? (Array.isArray(geo?.ll) ? geo.ll[0] : null)

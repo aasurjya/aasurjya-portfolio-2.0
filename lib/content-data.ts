@@ -61,7 +61,7 @@ export const projects: Project[] = [
     title: 'EduSaaS',
     description: 'Multi-tenant school management system with strict isolation and role-based dashboards.',
     longDescription: 'Architected a multi-tenant SaaS system with strict tenant-level isolation using Row-Level Security. Designed role-based dashboards for admins, teachers, students, and parents. Implemented offline-first synchronization with local caching and conflict resolution.',
-    image: '/projects/edusaas.jpg',
+    image: '/projects/edusaas.png',
     technologies: ['Next.js', 'PostgreSQL', 'SaaS', 'RLS', 'Multi-tenant'],
     category: ['fullstack'],
     link: 'https://aasurjya.github.io/Flutter-school-management-/',
@@ -74,7 +74,7 @@ export const projects: Project[] = [
     title: 'NexProp',
     description: 'Premium real estate platform with interactive 3D building visualization.',
     longDescription: 'Built an interactive 3D building viewer with unit-level inspection and camera controls. Optimized GLTF asset loading for smooth performance on web and mobile. Designed animation-rich interfaces without compromising performance.',
-    image: '/projects/nexprop.jpg',
+    image: '/projects/nexprop.ai.jpg',
     technologies: ['React', 'Three.js', 'WebGL', 'Next.js', 'GSAP'],
     category: ['fullstack', 'xr'],
     link: 'https://nexprop.vercel.app/',
@@ -86,7 +86,7 @@ export const projects: Project[] = [
     title: 'Ghor Bhara',
     description: 'Assamese rental marketplace supporting multiple roles and secure payments.',
     longDescription: 'Built a multi-role rental marketplace supporting tenants, landlords, and admins. Implemented secure payment flows and document uploads. Designed role-based dashboards and analytics views.',
-    image: '/projects/ghorbhara.jpg',
+    image: '/projects/Bharaghor.png',
     technologies: ['Next.js', 'Tailwind', 'Stripe', 'MongoDB'],
     category: ['fullstack'],
     link: 'https://tiloirent.vercel.app/',
@@ -98,7 +98,7 @@ export const projects: Project[] = [
     title: 'pokharas.com',
     description: 'Travel and hospitality marketplace platform for Nepal with curated listings.',
     longDescription: 'Built a content-rich travel marketplace with curated listings and discovery flows. Implemented category-based search and filtering for local services. Delivered a cohesive visual identity optimized for international audiences.',
-    image: '/projects/pokharas.jpg',
+    image: '/projects/pokharas.com.png',
     technologies: ['Next.js', 'SEO', 'Marketplace', 'Tailwind'],
     category: ['fullstack'],
     link: 'https://pokharas.com',
@@ -110,7 +110,7 @@ export const projects: Project[] = [
     title: 'NexVR - Immersive VR/AR Real Estate Platform',
     description: 'A highly animated, immersive VR/AR real estate platform built with Next.js, Three.js, TypeScript, and Framer Motion.',
     longDescription: 'Highly animated VR/AR real estate platform featuring 3D particle backgrounds with GPGPU computation, magnetic cursor effects, interactive building configurator, case studies carousel, metrics dashboard with neon glow effects, 3D testimonials carousel, and smooth scroll powered by Lenis. Includes GSAP ScrollTrigger animations, Framer Motion transitions, Three.js real-time interactivity, and glass morphism design.',
-    image: '/projects/nexvr.jpg',
+    image: '/projects/nexvr.png',
     technologies: ['Next.js', 'Three.js', 'TypeScript', 'Framer Motion', 'GSAP', 'Tailwind CSS', '@react-three/fiber', '@react-three/drei', 'Lenis', 'Zustand'],
     category: ['xr', 'fullstack'],
     link: 'https://nexvr.vercel.app/',
@@ -164,7 +164,7 @@ export const projects: Project[] = [
     modes: ['fullstack'],
     link: 'https://algo-sender.vercel.app/',
     github: 'https://github.com/aasurjya/AlgoSender_Blockchain',
-    image: '/images/algosender.jpg'
+    image: '/projects/algosender.png'
   }
 ]
 

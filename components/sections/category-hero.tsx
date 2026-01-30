@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import gsap from 'gsap'
+import { Download } from 'lucide-react'
 
 export default function CategoryHero() {
   const { mode } = useMode()
@@ -134,6 +135,26 @@ export default function CategoryHero() {
           </div>
         </motion.div>
       </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.8 }}
+        className="mt-12"
+      >
+        <a
+          href="/resume.pdf"
+          download
+          className="group relative inline-flex items-center gap-4 px-12 py-5 rounded-full text-[10px] tracking-[0.5em] font-black uppercase text-black bg-gradient-to-r from-amber-300 via-orange-400 to-pink-500 shadow-[0_20px_60px_rgba(255,149,0,0.25)] hover:shadow-[0_30px_80px_rgba(255,149,0,0.4)] transition-all duration-500"
+        >
+          <span className="absolute inset-0 rounded-full border border-white/40 opacity-40 group-hover:opacity-100 transition-opacity" />
+          <span className="absolute inset-0 rounded-full bg-white/20 blur-3xl opacity-0 group-hover:opacity-60 transition-opacity" />
+          <span className="absolute -inset-[6px] rounded-full border border-amber-200/40 animate-pulse" />
+          <span className="relative z-10 flex items-center gap-3">
+            <Download className="w-4 h-4" /> Resume.pdf
+          </span>
+        </a>
+      </motion.div>
 
       {/* Floating Meta Info */}
       <div className="absolute bottom-12 left-12 hidden lg:block">

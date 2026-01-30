@@ -281,22 +281,6 @@ export default function About() {
             </AnimatePresence>
 
             <div className="flex flex-wrap gap-8 pt-16 border-t border-white/5 pl-8">
-              <button 
-                onClick={() => {
-                  const link = document.createElement('a')
-                  link.href = '/resume.pdf'
-                  link.download = 'Aasurjya_Handique_Resume.pdf'
-                  link.click()
-                }}
-                className="magnetic-btn group relative px-12 py-6 bg-white text-black rounded-full font-black text-[10px] tracking-[0.3em] overflow-hidden transition-all hover:scale-105"
-              >
-                <div className="relative z-10 flex items-center gap-3">
-                  <Download className="w-4 h-4" />
-                  RESUME.PDF
-                </div>
-                <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-primary/20`} />
-              </button>
-
               <div className="flex items-center gap-6">
                 {[
                   { icon: Github, href: 'https://github.com/aasurjya' },

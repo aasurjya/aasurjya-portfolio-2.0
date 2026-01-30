@@ -1,12 +1,1 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/api/admin/analytics/route": "app/api/admin/analytics/route.js",
-  "/api/admin/login/route": "app/api/admin/login/route.js",
-  "/api/admin/verify/route": "app/api/admin/verify/route.js",
-  "/api/track/route": "app/api/track/route.js",
-  "/fullstack/page": "app/fullstack/page.js",
-  "/page": "app/page.js",
-  "/research/page": "app/research/page.js",
-  "/xr-dev/page": "app/xr-dev/page.js"
-}
+{}

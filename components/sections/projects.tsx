@@ -46,7 +46,7 @@ export default function Projects() {
 
         // Parallax Effect
         gsap.fromTo(image, 
-          { scale: 1.2, filter: 'grayscale(100%) brightness(0.5)' },
+          { scale: 1.05 },
           { 
             scrollTrigger: {
               trigger: card,
@@ -55,7 +55,6 @@ export default function Projects() {
               scrub: 1
             },
             scale: 1,
-            filter: 'grayscale(0%) brightness(1)',
             ease: 'none'
           }
         )
@@ -139,14 +138,14 @@ export default function Projects() {
               onMouseLeave={() => setActiveProject(null)}
             >
               {/* Project Image Area */}
-              <div className={`md:col-span-8 relative aspect-[16/9] rounded-xl overflow-hidden border border-white/10 transition-colors duration-500 ${getBorderColor()} ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
-                <div className="project-image absolute inset-0 w-full h-full">
+              <div className={`md:col-span-8 relative aspect-[4/3] md:aspect-[3/2] rounded-xl overflow-hidden border border-white/10 transition-colors duration-500 ${getBorderColor()} ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
+                <div className="project-image absolute inset-0 w-full h-full bg-black">
                   {project.image ? (
                     <Image
                       src={project.image}
                       alt={project.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="object-contain transition-transform duration-700 group-hover:scale-105"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none'
                         e.currentTarget.parentElement!.style.backgroundColor = '#1a1a1a'
@@ -157,7 +156,6 @@ export default function Projects() {
                       <span className="text-white/40 text-lg">Coming Soon</span>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
                 </div>
                 
                 {/* Floating Tags for Mobile */}

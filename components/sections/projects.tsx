@@ -22,6 +22,7 @@ export default function Projects() {
   const filteredProjects = mode 
     ? projects.filter(p => p.modes.includes(mode))
     : projects
+  const projectCount = filteredProjects.length
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -123,6 +124,10 @@ export default function Projects() {
               <span className={`inline-block italic ${getThemeColor().split(' ')[0]}`}>Works</span>
             </h2>
             <div className="w-24 h-1 bg-white/20" />
+            <div className="flex flex-col md:flex-row md:items-center gap-3 text-sm text-white/50">
+              <span className="uppercase tracking-[0.4em] text-[10px] text-white/40">{mode ? `${mode.toUpperCase()} MODE` : 'ALL MODES'}</span>
+              <span>Showing {projectCount} build{projectCount === 1 ? '' : 's'}</span>
+            </div>
           </div>
         </div>
 
@@ -138,8 +143,8 @@ export default function Projects() {
               onMouseLeave={() => setActiveProject(null)}
             >
               {/* Project Image Area */}
-              <div className={`md:col-span-8 relative aspect-[4/3] md:aspect-[3/2] rounded-xl overflow-hidden border border-white/10 transition-colors duration-500 ${getBorderColor()} ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
-                <div className="project-image absolute inset-0 w-full h-full bg-black">
+              <div className={`md:col-span-8 relative aspect-[4/3] md:aspect-[3/2] rounded-[32px] overflow-hidden border border-white/10 transition-colors duration-500 ${getBorderColor()} ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
+                <div className="project-image absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-white/5 via-black/80 to-black">
                   {project.image ? (
                     <Image
                       src={project.image}

@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
-import { Menu, X, Moon, Sun } from 'lucide-react'
-import { useTheme } from '@/components/providers/theme-provider'
+import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import gsap from 'gsap'
+import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin'
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -22,15 +23,27 @@ export default function Navigation() {
 
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { mode, clearMode } = useMode()
-  const { theme, setTheme } = useTheme()
+  const { mode } = useMode()
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollToPlugin)
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const handleNavClick = useCallback((href: string) => {
+    const target = document.querySelector(href)
+    if (!target) return
+
+    gsap.to(window, {
+      duration: 1.2,
+      ease: 'power3.inOut',
+      scrollTo: { y: target, offsetY: 80 },
+    })
   }, [])
 
   const navItemsWithConditional = mode === 'phd' 
@@ -63,31 +76,15 @@ export default function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {mode && navItemsWithConditional.map((item) => (
-              <a
+              <button
                 key={item.label}
-                href={item.href}
+                onClick={() => handleNavClick(item.href)}
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
                 {item.label}
-              </a>
+              </button>
             ))}
             
-            {mode && (
-              <button
-                onClick={clearMode}
-                className="text-sm text-muted-foreground hover:text-foreground"
-              >
-                Switch Mode
-              </button>
-            )}
-
-            {/* Theme toggle */}
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg hover:bg-accent/10"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -108,26 +105,17 @@ export default function Navigation() {
             className="md:hidden py-4 border-t"
           >
             {mode && navItemsWithConditional.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
-            {mode && (
               <button
+                key={item.label}
                 onClick={() => {
-                  clearMode()
+                  handleNavClick(item.href)
                   setIsMobileMenuOpen(false)
                 }}
-                className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground"
+                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
               >
-                Switch Mode
+                {item.label}
               </button>
-            )}
+            ))}
           </motion.div>
         )}
       </div>

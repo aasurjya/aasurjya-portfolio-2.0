@@ -118,30 +118,6 @@ export const projects: Project[] = [
     featured: true
   },
   {
-    id: 'face-recog',
-    title: 'Real-Time Face Recognition',
-    description: 'Computer vision system using Python and OpenCV for live identity matching.',
-    longDescription: 'Built a real-time face recognition system using Python and OpenCV with live webcam input. Implemented face detection and 128-dimensional face embeddings for identity recognition. Designed a matching pipeline that compares live face encodings against stored encodings using similarity counts.',
-    image: '/projects/facerecog.jpg',
-    technologies: ['Python', 'OpenCV', 'AI', 'Computer Vision'],
-    category: ['research', 'fullstack'],
-    github: 'https://github.com/aasurjya/Face-Recognization',
-    modes: ['phd', 'fullstack'],
-    featured: false
-  },
-  {
-    id: 'world-ranger',
-    title: 'World Ranger Forum',
-    description: 'Sole UI Designer for the primary digital platform of the 1st Asian Ranger Forum.',
-    longDescription: 'Designed an intuitive and visually engaging interface using dynamic color schemes and mood features to enhance user immersion, aligning the visual identity with the forum’s theme of "Asia’s Biodiversity Guardians."',
-    image: '/projects/worldranger.jpg',
-    technologies: ['UI/UX', 'Figma', 'Product Design'],
-    category: ['research', 'xr'],
-    link: 'https://www.asianrangerforum.org/',
-    modes: ['phd', 'xr'],
-    featured: true
-  },
-  {
     id: 'hci-research',
     title: 'VR Comfort Study Platform',
     description: 'Research platform for studying VR comfort and usability',

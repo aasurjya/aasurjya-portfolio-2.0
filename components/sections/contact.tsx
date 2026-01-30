@@ -33,9 +33,9 @@ export default function Contact() {
   }
 
   const contactInfo = [
-    { icon: Mail, label: 'Email', value: 'hello@aasurjya.com', link: 'mailto:hello@aasurjya.com' },
+    { icon: Mail, label: 'Email', value: 'corp.asurjya@gmail.com', link: 'mailto:corp.asurjya@gmail.com' },
     { icon: MapPin, label: 'Location', value: 'IIT Jodhpur, India', link: null },
-    { icon: Phone, label: 'Phone', value: '+91 82548 76592', link: 'tel:+918254876592' }
+    { icon: Phone, label: 'Phone', value: '+91 93653 84660', link: 'tel:+919365384660' }
   ]
 
   const socialLinks = [
@@ -72,7 +72,7 @@ export default function Contact() {
               
               <div className="pt-4">
                 <a 
-                  href="mailto:hello@aasurjya.com"
+                  href="mailto:corp.asurjya@gmail.com"
                   className="group relative inline-flex items-center gap-4 px-10 py-5 bg-white text-black rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl"
                 >
                   <div className="relative z-10 flex items-center gap-3">
@@ -81,6 +81,7 @@ export default function Contact() {
                   </div>
                   <div className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-primary/20" />
                 </a>
+                <p className="mt-4 text-sm text-white/60">Prefer a call? <a href="tel:+919365384660" className="underline decoration-dotted decoration-white/40 hover:text-white">+91 93653 84660</a></p>
               </div>
 
               <div className="pt-12 border-t border-white/10">
@@ -102,6 +103,7 @@ export default function Contact() {
             <div className="space-y-12">
               <div className="space-y-6">
                 <p className="text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase">Direct Contact</p>
+                <p className="text-sm text-white/50">Use the form or reach out directly—messages land in my inbox and I typically reply within 24 hours.</p>
                 <div className="grid gap-4">
                   {contactInfo.map((info, index) => (
                     <motion.div

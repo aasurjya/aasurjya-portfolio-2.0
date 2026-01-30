@@ -37,7 +37,10 @@ export async function getDatabase(): Promise<Db> {
 
 export interface Visitor {
   _id?: string
+  visitorId?: string | null
+  sessionId?: string | null
   ip: string
+  pathname?: string | null
   city?: string
   country?: string
   region?: string
@@ -45,6 +48,8 @@ export interface Visitor {
   longitude?: number
   mode?: string
   timestamp: Date
+  lastSeen?: Date
+  isNewSession?: boolean
   userAgent?: string
   referrer?: string
   screenResolution?: string

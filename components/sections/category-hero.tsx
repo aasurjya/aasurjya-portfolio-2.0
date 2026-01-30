@@ -127,6 +127,9 @@ export default function CategoryHero() {
           <span className="text-sm md:text-xl tracking-[0.4em] font-light text-white/40 uppercase max-w-2xl leading-relaxed">
             {subtitle}
           </span>
+          <p className="text-base md:text-lg text-white/70 font-light tracking-tight">
+            Multi-tenant SaaS • Realtime infrastructure • Immersive product systems
+          </p>
           
           <div className="flex gap-4 pt-4">
             <div className={`w-2 h-2 rounded-full ${accent} animate-pulse`} />
@@ -140,7 +143,7 @@ export default function CategoryHero() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1, duration: 0.8 }}
-        className="mt-12"
+        className="mt-12 flex flex-col items-center gap-6"
       >
         <a
           href="/resume.pdf"
@@ -153,6 +156,12 @@ export default function CategoryHero() {
           <span className="relative z-10 flex items-center gap-3">
             <Download className="w-4 h-4" /> Resume.pdf
           </span>
+        </a>
+        <a
+          href="#projects"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 text-xs tracking-[0.3em] text-white/70 hover:text-white hover:border-white/60 transition-colors"
+        >
+          EXPLORE RECENT BUILDS
         </a>
       </motion.div>
 

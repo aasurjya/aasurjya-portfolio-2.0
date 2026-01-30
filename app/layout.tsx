@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ModeProvider } from '@/components/providers/mode-provider'
+import AnalyticsTracker from '@/components/providers/analytics-tracker'
 import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -39,6 +40,7 @@ export default function RootLayout({
         <ThemeProvider>
           <ModeProvider>
             {children}
+            <AnalyticsTracker />
             <Toaster
               position="bottom-right"
               toastOptions={{

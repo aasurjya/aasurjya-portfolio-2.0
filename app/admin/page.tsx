@@ -210,10 +210,10 @@ export default function AdminDashboard() {
         console.error('Analytics API error:', res.status, errorData)
         toast.error(`Failed to fetch analytics: ${errorData.error || res.statusText}`)
       }
+      setLastUpdated(new Date())
     } catch (err) {
       console.error('Failed to fetch analytics:', err)
       toast.error('Failed to fetch analytics')
-      setLastUpdated(new Date())
     } finally {
       setLoading(false)
       setRefreshing(false)
@@ -293,8 +293,8 @@ export default function AdminDashboard() {
     { id: 'behavior', label: 'Behavior', icon: <MousePointer className="w-4 h-4" /> },
   ]
 
-  const StatCard = ({ title, value, subtitle, icon, trend, color = 'primary' }: {
-    title: string; value: string | number; subtitle?: string; icon: React.ReactNode; trend?: number; color?: string
+  const StatCard = ({ title, value, subtitle, icon, trend }: {
+    title: string; value: string | number; subtitle?: string; icon: React.ReactNode; trend?: number
   }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -313,7 +313,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
-        <div className={`p-3 rounded-xl bg-${color}/10`}>
+        <div className="p-3 rounded-xl bg-primary/10">
           {icon}
         </div>
       </div>
@@ -1150,14 +1150,14 @@ export default function AdminDashboard() {
                   <h3 className="font-semibold mb-4">Portfolio Mode Preferences</h3>
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     {[
-                      { label: 'PhD Research', value: analyticsData.modeBreakdown.phd, color: 'blue', icon: '🎓' },
-                      { label: 'XR Developer', value: analyticsData.modeBreakdown.xr, color: 'green', icon: '🥽' },
-                      { label: 'Full Stack', value: analyticsData.modeBreakdown.fullstack, color: 'purple', icon: '💻' },
+                      { label: 'PhD Research', value: analyticsData.modeBreakdown.phd, bgClass: 'bg-blue-500/5 border-blue-500/20', icon: '🎓' },
+                      { label: 'XR Developer', value: analyticsData.modeBreakdown.xr, bgClass: 'bg-green-500/5 border-green-500/20', icon: '🥽' },
+                      { label: 'Full Stack', value: analyticsData.modeBreakdown.fullstack, bgClass: 'bg-purple-500/5 border-purple-500/20', icon: '💻' },
                     ].map(mode => {
                       const total = analyticsData.modeBreakdown.phd + analyticsData.modeBreakdown.xr + analyticsData.modeBreakdown.fullstack
                       const pct = total > 0 ? Math.round((mode.value / total) * 100) : 0
                       return (
-                        <div key={mode.label} className={`p-4 rounded-xl bg-${mode.color}-500/5 border border-${mode.color}-500/20`}>
+                        <div key={mode.label} className={`p-4 rounded-xl border ${mode.bgClass}`}>
                           <div className="text-2xl mb-2">{mode.icon}</div>
                           <p className="text-sm text-muted-foreground">{mode.label}</p>
                           <p className="text-2xl font-bold">{mode.value}</p>

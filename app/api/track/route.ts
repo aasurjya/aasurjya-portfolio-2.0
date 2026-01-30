@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDatabase } from '@/lib/mongodb'
-import geoip from 'geoip-lite'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,19 +10,9 @@ export async function POST(request: NextRequest) {
                request.headers.get('x-real-ip') || 
                '127.0.0.1'
     
-    // Get geolocation from IP
-    const geo = geoip.lookup(ip)
-    
-    const db = await getDatabase()
-    const visitors = db.collection('visitors')
-    
+    // Basic visitor tracking without geoip dependency
     const visitorData = {
       ip,
-      city: geo?.city || 'Unknown',
-      country: geo?.country || 'Unknown',
-      region: geo?.region || 'Unknown',
-      latitude: geo?.ll?.[0] || null,
-      longitude: geo?.ll?.[1] || null,
       mode: body.mode || null,
       timestamp: new Date(),
       userAgent: body.userAgent || request.headers.get('user-agent'),
@@ -32,9 +20,10 @@ export async function POST(request: NextRequest) {
       screenResolution: body.screenResolution || null,
     }
     
-    await visitors.insertOne(visitorData)
+    // Log visitor data (can be extended with database integration later)
+    console.log('Visitor tracked:', visitorData)
     
-    return NextResponse.json({ success: true, location: geo?.city || 'Unknown' })
+    return NextResponse.json({ success: true, ip })
   } catch (error) {
     console.error('Failed to track visitor:', error)
     return NextResponse.json(

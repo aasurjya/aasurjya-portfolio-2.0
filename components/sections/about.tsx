@@ -17,7 +17,11 @@ const hikingSlidesData = [
     highlight: 'The ultimate test of endurance.',
     description: 'Eight relentless days of walking through glaciers and rhododendron forests to reach the heart of the Annapurnas.',
     badge: 'Signature Hike',
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=2000&auto=format&fit=crop'
+    images: [
+      'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1585018613924-7234b3961080?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?q=80&w=2000&auto=format&fit=crop'
+    ]
   },
   {
     title: 'Madhyamaheshwar',
@@ -26,7 +30,11 @@ const hikingSlidesData = [
     highlight: 'Resilience over pain.',
     description: 'Conquered the steep ridges of Kedarnath Wildlife Sanctuary on a twisted left ankle. Every step was a battle of will.',
     badge: 'Pure Grit',
-    image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=2000&auto=format&fit=crop'
+    images: [
+      'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1596395819057-e37f55a8519a?q=80&w=2000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1605649487212-47bdab064df7?q=80&w=2000&auto=format&fit=crop'
+    ]
   }
 ]
 
@@ -39,18 +47,40 @@ export default function About() {
   const [view, setView] = useState<'professional' | 'origins'>('professional')
   const sectionRef = useRef<HTMLElement>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const autoSlideRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const innerAutoSlideRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const content = mode ? aboutContent[mode] : aboutContent.fullstack
   const slides = hikingSlidesData
   const activeSlide = slides[currentSlide]
 
+  const startInnerAutoSlide = useCallback(() => {
+    if (innerAutoSlideRef.current) clearInterval(innerAutoSlideRef.current)
+    innerAutoSlideRef.current = setInterval(() => {
+      setCurrentImageIndex(prev => (prev + 1) % activeSlide.images.length)
+    }, 3000)
+  }, [activeSlide.images.length])
+
   const startAutoSlide = useCallback(() => {
     if (autoSlideRef.current) clearInterval(autoSlideRef.current)
     autoSlideRef.current = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % slides.length)
-    }, 6000)
+      setCurrentSlide(prev => {
+        const next = (prev + 1) % slides.length
+        setCurrentImageIndex(0) // Reset image index on slide change
+        return next
+      })
+    }, 12000) // Longer duration for overall slide to allow inner scrolling
   }, [slides.length])
+
+  useEffect(() => {
+    if (view === 'origins') {
+      startInnerAutoSlide()
+    }
+    return () => {
+      if (innerAutoSlideRef.current) clearInterval(innerAutoSlideRef.current)
+    }
+  }, [view, activeSlide, startInnerAutoSlide])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -107,11 +137,13 @@ export default function About() {
 
   const handleNextSlide = () => {
     setCurrentSlide(prev => (prev + 1) % slides.length)
+    setCurrentImageIndex(0)
     startAutoSlide()
   }
 
   const handlePrevSlide = () => {
     setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length)
+    setCurrentImageIndex(0)
     startAutoSlide()
   }
 
@@ -205,11 +237,10 @@ export default function About() {
                     <p className="text-xl md:text-2xl text-white/80 leading-relaxed font-light">
                       {personalStory.bio}
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                      {personalStory.stats.map((s, i) => (
-                        <div key={i} className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                          <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">{s.label}</p>
-                          <p className="text-sm font-bold text-white">{s.value}</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
+                      {personalStory.hobbies.map((hobby, i) => (
+                        <div key={i} className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center justify-center text-center">
+                          <span className="text-[11px] font-medium text-white/70">{hobby}</span>
                         </div>
                       ))}
                     </div>
@@ -268,30 +299,30 @@ export default function About() {
                 >
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={activeSlide.title}
+                      key={`${activeSlide.title}-${currentImageIndex}`}
                       initial={{ opacity: 0, scale: 1.1 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                      exit={{ opacity: 0, scale: 1.05 }}
+                      transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
                       className="absolute inset-0"
                     >
                       <Image
-                        src={activeSlide.image}
+                        src={activeSlide.images[currentImageIndex]}
                         alt={activeSlide.title}
                         fill
                         className="object-cover"
                         priority
                       />
-                      {/* Sophisticated Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90" />
+                      {/* Sophisticated Gradient Overlay - Darker for readability */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/90" />
                     </motion.div>
                   </AnimatePresence>
 
                   {/* Narrative Elements */}
-                  <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-12 z-10">
+                  <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-10 z-10">
                     <div className="flex justify-between items-start">
                       <div className="space-y-1">
-                        <span className="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-bold tracking-[0.2em] text-white uppercase">
+                        <span className="inline-block px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[9px] font-bold tracking-[0.2em] text-white uppercase">
                           {activeSlide.badge}
                         </span>
                       </div>
@@ -300,15 +331,15 @@ export default function About() {
                       <div className="flex gap-2">
                         <button
                           onClick={handlePrevSlide}
-                          className="w-12 h-12 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
+                          className="w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
                         >
-                          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                         </button>
                         <button
                           onClick={handleNextSlide}
-                          className="w-12 h-12 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
+                          className="w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white text-white hover:text-black transition-all duration-500 backdrop-blur-md flex items-center justify-center group"
                         >
-                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                         </button>
                       </div>
                     </div>
@@ -316,37 +347,40 @@ export default function About() {
                     <div className="space-y-6">
                       <motion.div
                         key={`${activeSlide.title}-info`}
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.8 }}
                         className="space-y-4"
                       >
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-3 text-white/60 text-xs uppercase tracking-[0.3em] font-medium">
-                            <span>{activeSlide.duration}</span>
-                            <span className="w-1 h-1 rounded-full bg-white/30" />
-                            <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3" /> {activeSlide.location}</span>
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2.5 text-white/80 text-[10px] uppercase tracking-[0.2em] font-semibold">
+                            <span className="px-2 py-0.5 bg-white/10 rounded">{activeSlide.duration}</span>
+                            <span className="w-1 h-1 rounded-full bg-white/40" />
+                            <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-white" /> {activeSlide.location}</span>
                           </div>
-                          <h3 className="text-4xl sm:text-6xl font-black tracking-tighter text-white leading-none">
+                          <h3 className="text-4xl sm:text-5xl font-black tracking-tighter text-white leading-[0.9] drop-shadow-2xl">
                             {activeSlide.title.split(' ').map((word, i) => (
                               <span key={i} className="block">{word}</span>
                             ))}
                           </h3>
                         </div>
                         
-                        <p className="text-lg text-white/70 leading-relaxed font-light max-w-sm italic">
-                          "{activeSlide.description}"
+                        <p className="text-base text-white/90 leading-relaxed font-medium max-w-sm drop-shadow-lg">
+                          {activeSlide.description}
                         </p>
 
-                        <div className="flex items-center gap-4 pt-4">
-                          <div className="h-[1px] flex-1 bg-white/20" />
-                          <div className="flex gap-1.5">
+                        <div className="flex items-center gap-3 pt-2">
+                          <div className="h-[1px] flex-1 bg-white/30" />
+                          <div className="flex gap-1">
                             {slides.map((_, i) => (
                               <button
                                 key={i}
-                                onClick={() => setCurrentSlide(i)}
-                                className={`h-1.5 rounded-full transition-all duration-500 ${
-                                  i === currentSlide ? 'w-8 bg-white' : 'w-2 bg-white/20 hover:bg-white/40'
+                                onClick={() => {
+                                  setCurrentSlide(i)
+                                  setCurrentImageIndex(0)
+                                }}
+                                className={`h-1 rounded-full transition-all duration-500 ${
+                                  i === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/30 hover:bg-white/50'
                                 }`}
                               />
                             ))}

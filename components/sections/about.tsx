@@ -187,7 +187,7 @@ export default function About() {
           {/* Left Side: Content & Narrative Toggle */}
           <div className="lg:w-7/12 space-y-16">
             <div className="space-y-8">
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-6">
                 <button 
                   onClick={() => setView('professional')}
                   className={`px-8 py-3 rounded-full text-[10px] font-black tracking-[0.3em] transition-all duration-500 ${
@@ -198,6 +198,7 @@ export default function About() {
                 >
                   PROFESSIONAL
                 </button>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">Process & credentials</span>
                 <button 
                   onClick={() => setView('origins')}
                   className={`px-8 py-3 rounded-full text-[10px] font-black tracking-[0.3em] transition-all duration-500 ${
@@ -208,6 +209,7 @@ export default function About() {
                 >
                   MY ORIGINS
                 </button>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">Personal narrative</span>
               </div>
 
               <div className="about-title-reveal">
@@ -285,7 +287,7 @@ export default function About() {
                 {[
                   { icon: Github, href: 'https://github.com/aasurjya' },
                   { icon: Linkedin, href: 'https://linkedin.com/in/aasurjya' },
-                  { icon: Mail, href: 'mailto:hello@aasurjya.com' }
+                  { icon: Mail, href: 'mailto:corp.asurjya@gmail.com' }
                 ].map((social, i) => (
                   <a
                     key={i}
@@ -302,7 +304,7 @@ export default function About() {
           </div>
 
           {/* Right Side: Visual Storytelling */}
-          <div className="lg:w-5/12 relative min-h-[700px] flex flex-col justify-center w-full sticky top-32">
+          <div className="lg:w-5/12 relative min-h-[700px] flex flex-col justify-center w-full lg:sticky lg:top-32">
             <AnimatePresence mode="wait">
               {view === 'origins' ? (
                 <motion.div 
@@ -401,20 +403,24 @@ export default function About() {
                       <div className={`absolute -top-32 -right-32 w-80 h-80 rounded-full blur-[120px] ${getModeBg()} opacity-50 group-hover:scale-150 transition-transform duration-[2000ms]`} />
                       
                       <div className="space-y-12 relative z-10">
-                        <div className="flex justify-between items-start">
-                          <div className="space-y-3">
-                            <p className="text-[10px] font-black tracking-[0.5em] text-primary uppercase">System Status</p>
-                            <div className="flex items-center gap-4">
-                              <div className="relative">
-                                <div className="w-3 h-3 rounded-full bg-green-500 animate-ping absolute" />
-                                <div className="w-3 h-3 rounded-full bg-green-500 relative shadow-[0_0_15px_rgba(34,197,94,0.8)]" />
-                              </div>
-                              <h4 className="text-4xl font-black tracking-tighter text-white uppercase italic leading-none">ONLINE</h4>
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="relative">
+                              <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping absolute" />
+                              <div className="w-3 h-3 rounded-full bg-emerald-400 relative shadow-[0_0_25px_rgba(16,185,129,0.9)]" />
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-black tracking-[0.5em] text-primary uppercase">Availability</p>
+                              <h4 className="text-3xl font-black tracking-tight text-white leading-tight">Accepting Select Collaborations</h4>
                             </div>
                           </div>
-                          <div className="px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black tracking-[0.4em] text-white/60 uppercase backdrop-blur-md">
-                            SYNCED
+                          <div className="flex flex-wrap items-center gap-4 text-white/70 text-sm">
+                            <span className="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-black tracking-[0.4em] uppercase">Responds within 24h</span>
+                            <span className="text-white/40 text-xs uppercase tracking-[0.3em]">Currently leading builds at iHub Drishti · IIT Jodhpur</span>
                           </div>
+                          <p className="text-white/60 text-sm leading-relaxed max-w-xl">
+                            Open to immersive product mandates that demand architectural thinking, cinematic interfaces, and measurable business impact.
+                          </p>
                         </div>
 
                         <div className="space-y-10">

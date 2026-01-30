@@ -35,13 +35,18 @@ interface TrackVisitorOptions {
   pathname?: string
 }
 
+interface SectionDurationEntry {
+  sectionId: string
+  durationMs: number
+}
+
 export async function trackVisitor(options: TrackVisitorOptions = {}) {
   if (typeof window === 'undefined') return false
 
   try {
     const identity = getVisitorIdentity()
+    console.log('[Analytics] Tracking visitor:', { visitorId: identity.visitorId, isNewSession: identity.isNewSession })
 
-    // Get IP-based geolocation (server will handle this)
     const response = await fetch('/api/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -58,30 +63,66 @@ export async function trackVisitor(options: TrackVisitorOptions = {}) {
       }),
     })
 
-    // Optionally get precise geolocation if available
     if ('geolocation' in navigator && identity.visitorId) {
+      console.log('[Analytics] Requesting geolocation permission...')
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          await fetch('/api/track/precise', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              visitorId: identity.visitorId,
-              sessionId: identity.sessionId,
-            }),
-          })
+          console.log('[Analytics] Geolocation granted, sending precise location...')
+          try {
+            await fetch('/api/track/precise', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                visitorId: identity.visitorId,
+                sessionId: identity.sessionId,
+              }),
+            })
+          } catch (err) {
+            console.error('Failed to send precise location:', err)
+          }
         },
-        () => {
-          // Silent fail - user denied permission
-        }
+        (error) => {
+          console.warn('Geolocation permission denied or unavailable:', error.message)
+        },
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
       )
     }
 
     return response.ok
   } catch (error) {
     console.error('Failed to track visitor:', error)
+    return false
+  }
+}
+
+export async function trackSectionDurations(
+  durations: SectionDurationEntry[],
+  options: TrackVisitorOptions = {}
+) {
+  if (typeof window === 'undefined') return false
+  if (!durations.length) return false
+
+  try {
+    const identity = getVisitorIdentity()
+    if (!identity.visitorId || !identity.sessionId) return false
+
+    await fetch('/api/track/sections', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        durations,
+        mode: options.mode ?? null,
+        pathname: options.pathname ?? window.location.pathname,
+        visitorId: identity.visitorId,
+        sessionId: identity.sessionId,
+      })
+    })
+
+    return true
+  } catch (error) {
+    console.error('Failed to record section durations:', error)
     return false
   }
 }

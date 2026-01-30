@@ -33,6 +33,7 @@ declare module 'react-simple-maps' {
     onClick?: (geography: Geography) => void
     fill?: string
     stroke?: string
+    strokeWidth?: number
     children?: ReactNode
   }
 
@@ -43,8 +44,20 @@ declare module 'react-simple-maps' {
     children?: ReactNode
   }
 
+  export interface ZoomableGroupProps {
+    center?: [number, number]
+    zoom?: number
+    minZoom?: number
+    maxZoom?: number
+    translateExtent?: [[number, number], [number, number]]
+    onMoveStart?: (position: { coordinates: [number, number]; zoom: number }) => void
+    onMoveEnd?: (position: { coordinates: [number, number]; zoom: number }) => void
+    children?: ReactNode
+  }
+
   export const ComposableMap: FC<ComposableMapProps>
   export const Geographies: FC<GeographiesProps>
   export const Geography: FC<GeographyProps>
   export const Marker: FC<MarkerProps>
+  export const ZoomableGroup: FC<ZoomableGroupProps>
 }

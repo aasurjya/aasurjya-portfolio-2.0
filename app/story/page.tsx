@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, MapPin, Camera, Mountain, GraduationCap, Briefcase, Rocket, Heart, Quote, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, MapPin, Camera, Mountain, GraduationCap, Briefcase, Rocket, Heart, Quote, ChevronRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useMode } from '@/components/providers/mode-provider'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
@@ -12,7 +14,22 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
 
-// Journey Timeline Data
+const modeToPath: Record<string, string> = {
+  fullstack: '/fullstack',
+  xr: '/xr-dev',
+  phd: '/research',
+}
+
+// Tier system for visual hierarchy
+type ChapterTier = 'milestone' | 'current' | 'standard'
+
+const getTier = (id: string): ChapterTier => {
+  if (['origins', 'masters'].includes(id)) return 'milestone'
+  if (id === 'current') return 'current'
+  return 'standard'
+}
+
+// Journey Timeline Data with enhanced structure
 const journeyChapters = [
   {
     id: 'origins',
@@ -21,7 +38,8 @@ const journeyChapters = [
     subtitle: 'Tiloi Nagar, Assam',
     description: 'Born in a small village in Northeast India where the first WiFi cable only arrived in 2022. Growing up with weak mobile signals and limited connectivity, the digital world felt like a distant dream.',
     icon: Heart,
-    color: 'from-rose-500 to-pink-600',
+    color: 'from-amber-500 to-orange-600',
+    glowColor: 'rgba(245, 158, 11, 0.4)',
   },
   {
     id: 'education',
@@ -31,6 +49,7 @@ const journeyChapters = [
     description: 'Began B.Tech in Computer Science. First exposure to programming, algorithms, and the vast possibilities of software engineering. Graduated with First Division.',
     icon: GraduationCap,
     color: 'from-blue-500 to-indigo-600',
+    glowColor: 'rgba(59, 130, 246, 0.4)',
   },
   {
     id: 'industry',
@@ -40,6 +59,7 @@ const journeyChapters = [
     description: 'Started as a Programmer Analyst Trainee, quickly moved to building production systems. Wrote 1000+ unit tests, managed AWS infrastructure, and shipped real products used by thousands.',
     icon: Briefcase,
     color: 'from-emerald-500 to-teal-600',
+    glowColor: 'rgba(16, 185, 129, 0.4)',
   },
   {
     id: 'masters',
@@ -49,15 +69,17 @@ const journeyChapters = [
     description: 'Joined one of India\'s premier institutions to specialize in Augmented and Virtual Reality. Researching neuro-adaptive XR interfaces and building immersive 3D systems.',
     icon: Rocket,
     color: 'from-purple-500 to-violet-600',
+    glowColor: 'rgba(139, 92, 246, 0.4)',
   },
   {
     id: 'current',
-    year: '2023',
+    year: 'NOW',
     title: 'Building the Future',
     subtitle: 'iHub Drishti, IIT Jodhpur',
     description: 'Leading development of scalable Flutter apps, AR/VR systems, and multi-tenant SaaS platforms. Converting point clouds to Gaussian splats. Architecting systems that matter.',
-    icon: Rocket,
+    icon: Sparkles,
     color: 'from-amber-500 to-orange-600',
+    glowColor: 'rgba(245, 158, 11, 0.4)',
   },
 ]
 
@@ -115,19 +137,54 @@ const statsData = [
 export default function StoryPage() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { mode } = useMode()
+  const router = useRouter()
 
+  const mainRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
   const heroTextRef = useRef<HTMLHeadingElement>(null)
   const timelineRef = useRef<HTMLDivElement>(null)
+  const timelinePathRef = useRef<SVGPathElement>(null)
   const philosophyRef = useRef<HTMLDivElement>(null)
   const adventureRef = useRef<HTMLDivElement>(null)
+  const timelineContainerRef = useRef<HTMLDivElement>(null)
 
   const activeSlide = hikingSlidesData[currentSlide]
+  const portfolioPath = mode ? modeToPath[mode] || '/fullstack' : '/fullstack'
+
+  // Magnetic effect handler for timeline nodes
+  const handleNodeMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>, nodeElement: HTMLDivElement | null) => {
+    if (!nodeElement) return
+
+    const rect = nodeElement.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const deltaX = (e.clientX - centerX) * 0.3
+    const deltaY = (e.clientY - centerY) * 0.3
+
+    gsap.to(nodeElement, {
+      x: deltaX,
+      y: deltaY,
+      duration: 0.3,
+      ease: 'power2.out',
+    })
+  }, [])
+
+  const handleNodeMouseLeave = useCallback((nodeElement: HTMLDivElement | null) => {
+    if (!nodeElement) return
+
+    gsap.to(nodeElement, {
+      x: 0,
+      y: 0,
+      duration: 0.6,
+      ease: 'elastic.out(1, 0.5)',
+    })
+  }, [])
 
   // GSAP Animations
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero text reveal animation
+      // Hero text reveal animation with character split
       if (heroTextRef.current) {
         const words = heroTextRef.current.innerText.split(' ')
         heroTextRef.current.innerHTML = words
@@ -144,7 +201,7 @@ export default function StoryPage() {
         })
       }
 
-      // Timeline section animations
+      // Timeline section title animation
       gsap.from('.timeline-title', {
         scrollTrigger: {
           trigger: '.timeline-title',
@@ -156,6 +213,70 @@ export default function StoryPage() {
         ease: 'power3.out',
       })
 
+      // Scroll-driven timeline line animation
+      if (timelinePathRef.current && timelineContainerRef.current) {
+        const pathLength = timelinePathRef.current.getTotalLength()
+
+        gsap.set(timelinePathRef.current, {
+          strokeDasharray: pathLength,
+          strokeDashoffset: pathLength,
+        })
+
+        gsap.to(timelinePathRef.current, {
+          strokeDashoffset: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: timelineContainerRef.current,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            scrub: 0.5,
+          },
+        })
+      }
+
+      // Timeline cards with clip-path reveal
+      const timelineCards = gsap.utils.toArray('.timeline-chapter-card') as HTMLElement[]
+      timelineCards.forEach((card, index) => {
+        const isLeft = index % 2 === 0
+
+        gsap.fromTo(card, {
+          clipPath: isLeft
+            ? 'polygon(0 0, 0 0, 0 100%, 0 100%)'
+            : 'polygon(100% 0, 100% 0, 100% 100%, 100% 100%)',
+          opacity: 0.5,
+        }, {
+          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+          opacity: 1,
+          duration: 1.2,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 75%',
+          },
+        })
+
+        // Title character animation
+        const title = card.querySelector('.chapter-title')
+        if (title) {
+          const chars = title.textContent?.split('') || []
+          title.innerHTML = chars
+            .map(char => `<span class="char inline-block">${char === ' ' ? '&nbsp;' : char}</span>`)
+            .join('')
+
+          gsap.from(title.querySelectorAll('.char'), {
+            y: '100%',
+            opacity: 0,
+            stagger: 0.02,
+            duration: 0.8,
+            ease: 'power4.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 70%',
+            },
+          })
+        }
+      })
+
       // Philosophy section animations
       gsap.from('.philosophy-title', {
         scrollTrigger: {
@@ -165,6 +286,19 @@ export default function StoryPage() {
         y: 80,
         opacity: 0,
         duration: 1,
+        ease: 'power3.out',
+      })
+
+      // Philosophy cards stagger
+      gsap.from('.philosophy-card', {
+        scrollTrigger: {
+          trigger: '.philosophy-cards-container',
+          start: 'top 80%',
+        },
+        y: 60,
+        opacity: 0,
+        stagger: 0.15,
+        duration: 0.8,
         ease: 'power3.out',
       })
 
@@ -181,27 +315,27 @@ export default function StoryPage() {
       })
 
       // Stats counter animation
-      gsap.from('.stat-value', {
+      gsap.from('.stat-item', {
         scrollTrigger: {
           trigger: '.stats-section',
           start: 'top 80%',
         },
-        textContent: 0,
-        duration: 2,
-        ease: 'power2.out',
-        snap: { textContent: 1 },
-        stagger: 0.2,
+        y: 30,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: 'power3.out',
       })
 
-    }, heroRef)
+    }, mainRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <main ref={heroRef} className="min-h-screen bg-[#050505] text-white">
+    <main ref={mainRef} className="min-h-screen bg-[#050505] text-white">
       {/* Hero - The Hook */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[150px] bg-purple-500/20" />
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full blur-[150px] bg-blue-500/20" />
@@ -215,8 +349,8 @@ export default function StoryPage() {
             transition={{ delay: 0.3 }}
             className="mb-16"
           >
-            <Link href="/fullstack" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm">
-              <ArrowLeft className="w-4 h-4" />
+            <Link href={portfolioPath} className="magnetic-btn inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm group">
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
               Back to Portfolio
             </Link>
           </motion.div>
@@ -282,7 +416,7 @@ export default function StoryPage() {
         <div className="w-full max-w-5xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {statsData.map((stat, index) => (
-              <div key={index} className="text-center">
+              <div key={index} className="stat-item text-center">
                 <p className="stat-value text-3xl md:text-4xl font-black text-white">{stat.value}</p>
                 <p className="text-xs text-white/40 uppercase tracking-wider mt-1">{stat.label}</p>
               </div>
@@ -291,57 +425,129 @@ export default function StoryPage() {
         </div>
       </section>
 
-      {/* Journey Timeline */}
+      {/* Journey Timeline - Enhanced */}
       <section ref={timelineRef} className="py-20 md:py-32">
         <div className="w-full max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="timeline-title text-center mb-16">
+          <div className="timeline-title text-center mb-20">
             <p className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-purple-400 mb-4">
               The Journey
             </p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white">
               Chapter by Chapter
             </h2>
           </div>
 
-          {/* Timeline */}
-          <div className="relative">
-            {/* Vertical Line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500/50 via-blue-500/50 to-emerald-500/50 md:-translate-x-1/2" />
+          {/* Timeline Container */}
+          <div ref={timelineContainerRef} className="relative">
+            {/* Animated SVG Timeline Line */}
+            <svg
+              className="absolute left-4 md:left-1/2 top-0 h-full w-4 md:-translate-x-1/2"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="timeline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="rgba(244, 63, 94, 0.8)" />
+                  <stop offset="25%" stopColor="rgba(59, 130, 246, 0.8)" />
+                  <stop offset="50%" stopColor="rgba(16, 185, 129, 0.8)" />
+                  <stop offset="75%" stopColor="rgba(139, 92, 246, 0.8)" />
+                  <stop offset="100%" stopColor="rgba(245, 158, 11, 0.8)" />
+                </linearGradient>
+              </defs>
+              <path
+                ref={timelinePathRef}
+                d="M 8 0 V 100%"
+                stroke="url(#timeline-gradient)"
+                strokeWidth="2"
+                fill="none"
+                className="timeline-line-animated"
+                style={{ height: '100%' }}
+              />
+            </svg>
 
-            {journeyChapters.map((chapter, index) => (
-              <motion.div
-                key={chapter.id}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`relative flex items-start gap-6 md:gap-12 mb-12 md:mb-16 ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
-              >
-                {/* Timeline Node */}
-                <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 w-3 h-3 rounded-full bg-white border-4 border-[#050505] z-10" />
+            {/* Background glow for timeline */}
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px md:-translate-x-1/2 bg-gradient-to-b from-purple-500/20 via-blue-500/20 to-emerald-500/20 blur-sm" />
 
-                {/* Content */}
-                <div className={`flex-1 ml-12 md:ml-0 ${index % 2 === 0 ? 'md:pr-16 md:text-right' : 'md:pl-16'}`}>
-                  <div className={`inline-flex items-center gap-2 mb-3 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
-                    <span className={`w-8 h-8 rounded-lg bg-gradient-to-br ${chapter.color} flex items-center justify-center`}>
-                      <chapter.icon className="w-4 h-4 text-white" />
-                    </span>
-                    <span className="text-xs font-bold text-white/40 tracking-wider">{chapter.year}</span>
+            {journeyChapters.map((chapter, index) => {
+              const tier = getTier(chapter.id)
+              const isLeft = index % 2 === 0
+
+              return (
+                <div
+                  key={chapter.id}
+                  className={`relative flex items-start gap-6 md:gap-12 mb-16 md:mb-24 ${
+                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
+                  }`}
+                >
+                  {/* Timeline Node with Magnetic Effect */}
+                  <div
+                    className={`
+                      timeline-node absolute left-4 md:left-1/2 md:-translate-x-1/2 z-20
+                      rounded-full bg-white flex items-center justify-center
+                      ${tier === 'milestone' ? 'timeline-node-milestone w-6 h-6' : ''}
+                      ${tier === 'current' ? 'timeline-node-current w-7 h-7 bg-emerald-400' : ''}
+                      ${tier === 'standard' ? 'w-4 h-4' : ''}
+                    `}
+                    style={{
+                      boxShadow: tier !== 'standard' ? `0 0 20px ${chapter.glowColor}` : 'none',
+                    }}
+                    onMouseMove={(e) => handleNodeMouseMove(e, e.currentTarget)}
+                    onMouseLeave={(e) => handleNodeMouseLeave(e.currentTarget)}
+                  >
+                    {tier === 'current' && (
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-emerald-500 text-white rounded-full whitespace-nowrap">
+                        NOW
+                      </span>
+                    )}
                   </div>
 
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-1">{chapter.title}</h3>
-                  <p className="text-sm text-purple-400 mb-3">{chapter.subtitle}</p>
-                  <p className="text-sm md:text-base text-white/50 leading-relaxed max-w-md">
-                    {chapter.description}
-                  </p>
-                </div>
+                  {/* Content Card with Clip-Path Reveal */}
+                  <div
+                    className={`
+                      timeline-chapter-card flex-1 ml-12 md:ml-0
+                      ${isLeft ? 'md:pr-16' : 'md:pl-16'}
+                    `}
+                  >
+                    <div
+                      className={`
+                        glass-card p-6 md:p-8 rounded-2xl md:rounded-3xl
+                        hover-lift transition-all duration-500
+                        ${tier === 'milestone' ? 'border-purple-500/30' : ''}
+                        ${tier === 'current' ? 'border-emerald-500/30 gradient-border-animated' : ''}
+                      `}
+                    >
+                      {/* Header */}
+                      <div className={`flex items-center gap-3 mb-4 ${isLeft ? 'md:flex-row-reverse md:justify-end' : ''}`}>
+                        <span className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br ${chapter.color} flex items-center justify-center shadow-lg`}>
+                          <chapter.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                        </span>
+                        <div className={isLeft ? 'md:text-right' : ''}>
+                          <span className="text-xs font-bold text-white/40 tracking-wider block">{chapter.year}</span>
+                          {tier === 'milestone' && (
+                            <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">Milestone</span>
+                          )}
+                        </div>
+                      </div>
 
-                {/* Spacer for alternating layout */}
-                <div className="hidden md:block flex-1" />
-              </motion.div>
-            ))}
+                      {/* Title with character animation */}
+                      <h3 className={`chapter-title text-2xl md:text-3xl font-bold text-white mb-2 overflow-hidden ${isLeft ? 'md:text-right' : ''}`}>
+                        {chapter.title}
+                      </h3>
+
+                      <p className={`text-sm text-purple-400 mb-4 ${isLeft ? 'md:text-right' : ''}`}>
+                        {chapter.subtitle}
+                      </p>
+
+                      <p className={`text-sm md:text-base text-white/50 leading-relaxed ${isLeft ? 'md:text-right' : ''}`}>
+                        {chapter.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Spacer for alternating layout */}
+                  <div className="hidden md:block flex-1" />
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -358,22 +564,18 @@ export default function StoryPage() {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="philosophy-cards-container grid md:grid-cols-3 gap-6">
             {philosophyItems.map((item, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-purple-500/30 transition-colors group"
+                className="philosophy-card glass-card p-6 md:p-8 rounded-2xl hover-lift group cursor-default"
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
-                  <span className="text-lg font-black text-purple-400">{index + 1}</span>
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:bg-purple-500/20 transition-colors">
+                  <span className="text-2xl font-black text-purple-400">{index + 1}</span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
                 <p className="text-sm text-white/50 leading-relaxed">{item.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -438,7 +640,7 @@ export default function StoryPage() {
                       setCurrentSlide(prev => (prev - 1 + hikingSlidesData.length) % hikingSlidesData.length)
                       setCurrentImageIndex(0)
                     }}
-                    className="w-10 h-10 rounded-full border border-white/20 bg-black/30 hover:bg-white hover:text-black text-white transition-all flex items-center justify-center"
+                    className="magnetic-btn w-10 h-10 rounded-full border border-white/20 bg-black/30 hover:bg-white hover:text-black text-white transition-all flex items-center justify-center"
                   >
                     <ArrowLeft className="w-4 h-4" />
                   </button>
@@ -447,7 +649,7 @@ export default function StoryPage() {
                       setCurrentSlide(prev => (prev + 1) % hikingSlidesData.length)
                       setCurrentImageIndex(0)
                     }}
-                    className="w-10 h-10 rounded-full border border-white/20 bg-black/30 hover:bg-white hover:text-black text-white transition-all flex items-center justify-center"
+                    className="magnetic-btn w-10 h-10 rounded-full border border-white/20 bg-black/30 hover:bg-white hover:text-black text-white transition-all flex items-center justify-center"
                   >
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -468,7 +670,7 @@ export default function StoryPage() {
                   </h3>
                 </div>
 
-                <div className="bg-black/50 backdrop-blur p-4 rounded-xl border border-white/10 max-w-xl space-y-2">
+                <div className="glass-card p-4 rounded-xl max-w-xl space-y-2">
                   <p className="text-sm md:text-base text-white/80">{activeSlide.description}</p>
                   <p className="text-xs md:text-sm text-purple-400 italic font-medium">
                     &ldquo;{activeSlide.lesson}&rdquo;
@@ -500,7 +702,7 @@ export default function StoryPage() {
                   setCurrentSlide(index)
                   setCurrentImageIndex(0)
                 }}
-                className={`px-5 py-2.5 rounded-full border text-xs font-bold transition-all ${
+                className={`magnetic-btn px-5 py-2.5 rounded-full border text-xs font-bold transition-all ${
                   index === currentSlide
                     ? 'bg-white text-black border-white'
                     : 'bg-transparent text-white/50 border-white/20 hover:border-white/40'
@@ -524,7 +726,7 @@ export default function StoryPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="px-5 py-3 rounded-full bg-white/[0.03] border border-white/10 flex items-center gap-2 hover:border-purple-500/30 transition-colors"
+                className="tech-tag px-5 py-3 rounded-full glass-card flex items-center gap-2"
               >
                 <Camera className="w-4 h-4 text-purple-400" />
                 <span className="text-sm text-white/70">{hobby}</span>
@@ -552,17 +754,17 @@ export default function StoryPage() {
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
               <Link
-                href="/fullstack#contact"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-black font-bold text-sm hover:bg-white/90 transition-colors"
+                href={`${portfolioPath}#contact`}
+                className="magnetic-btn inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-black font-bold text-sm hover:bg-white/90 transition-colors group"
               >
                 Let&apos;s Connect
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
-                href="/fullstack"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-white/20 text-white font-bold text-sm hover:bg-white/10 transition-colors"
+                href={portfolioPath}
+                className="magnetic-btn inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-white/20 text-white font-bold text-sm hover:bg-white/10 transition-colors group"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                 View Portfolio
               </Link>
             </div>

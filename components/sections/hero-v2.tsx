@@ -1,11 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMode, PortfolioMode } from '@/components/providers/mode-provider'
-import gsap from 'gsap'
 
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const modes: { id: PortfolioMode; title: string; subtitle: string; color: string; path: string }[] = [
@@ -15,21 +13,28 @@ const modes: { id: PortfolioMode; title: string; subtitle: string; color: string
 ]
 
 export default function HeroV2() {
-  const { setMode, mode } = useMode()
+  const { setMode } = useMode()
   const router = useRouter()
   const [hoveredMode, setHoveredMode] = useState<PortfolioMode | null>(null)
 
   const handleModeSelect = (m: typeof modes[0]) => {
-    // We set the mode first to trigger theme changes, then navigate
     setMode(m.id)
     router.push(m.path)
   }
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black">
-      {/* Background Text Overlay - Splitting Name */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-        <motion.div 
+    <section className="relative h-screen w-full overflow-hidden bg-black" aria-labelledby="hero-heading">
+      {/* Screen reader context */}
+      <h1 id="hero-heading" className="sr-only">
+        Aasurjya Handique - Software Engineer Portfolio
+      </h1>
+      <p className="sr-only">
+        Select a portfolio mode to explore: Full Stack Development, XR Development, or Academic Research
+      </p>
+
+      {/* Background Text Overlay - Decorative */}
+      <div aria-hidden="true" className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
+        <motion.div
           className="text-[15vw] font-black tracking-tighter text-white opacity-10 leading-none"
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 0.1 }}
@@ -37,7 +42,7 @@ export default function HeroV2() {
         >
           AASURJYA
         </motion.div>
-        <motion.div 
+        <motion.div
           className="text-[15vw] font-black tracking-tighter text-white opacity-10 leading-none"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 0.1 }}
@@ -48,14 +53,17 @@ export default function HeroV2() {
       </div>
 
       {/* Main Mode Selection Interface */}
-      <div className="relative z-10 grid h-full w-full grid-cols-1 md:grid-cols-3">
+      <div className="relative z-10 grid h-full w-full grid-cols-1 md:grid-cols-3" role="group" aria-label="Portfolio mode selection">
         {modes.map((m, idx) => (
-          <motion.div
+          <motion.button
             key={m.id}
             onMouseEnter={() => setHoveredMode(m.id)}
             onMouseLeave={() => setHoveredMode(null)}
+            onFocus={() => setHoveredMode(m.id)}
+            onBlur={() => setHoveredMode(null)}
             onClick={() => handleModeSelect(m)}
-            className="group relative flex cursor-pointer flex-col items-center justify-center border-white/5 transition-colors hover:border-white/20 md:border-r last:border-r-0"
+            aria-label={`View ${m.title} portfolio - ${m.subtitle}`}
+            className="group relative flex cursor-pointer flex-col items-center justify-center border-white/5 transition-colors hover:border-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-inset md:border-r last:border-r-0"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 + idx * 0.2, duration: 0.8 }}
@@ -75,29 +83,30 @@ export default function HeroV2() {
 
             {/* Content */}
             <div className="relative z-10 flex flex-col items-center text-center">
-              <motion.span 
-                className="mb-2 text-xs font-medium tracking-[0.3em] text-white/40 uppercase"
-                animate={{ color: hoveredMode === m.id ? m.color : 'rgba(255,255,255,0.4)' }}
+              <motion.span
+                className="mb-2 text-xs font-medium tracking-[0.3em] text-white/60 uppercase"
+                animate={{ color: hoveredMode === m.id ? m.color : 'rgba(255,255,255,0.6)' }}
               >
                 Explore
               </motion.span>
-              <h2 className="text-4xl md:text-6xl font-bold tracking-tighter transition-all group-hover:scale-110">
+              <span className="text-4xl md:text-6xl font-bold tracking-tighter transition-all group-hover:scale-110 group-focus-visible:scale-110">
                 {m.title}
-              </h2>
-              <p className="mt-4 text-sm font-light tracking-widest text-white/60 group-hover:text-white transition-colors">
+              </span>
+              <span className="mt-4 text-sm font-light tracking-widest text-white/70 group-hover:text-white group-focus-visible:text-white transition-colors">
                 {m.subtitle}
-              </p>
+              </span>
             </div>
 
             {/* Bottom Indicator */}
-            <motion.div 
+            <motion.div
+              aria-hidden="true"
               className="absolute bottom-10 h-1 w-12 bg-white/20"
-              animate={{ 
+              animate={{
                 backgroundColor: hoveredMode === m.id ? m.color : 'rgba(255,255,255,0.2)',
                 width: hoveredMode === m.id ? 48 : 24
               }}
             />
-          </motion.div>
+          </motion.button>
         ))}
       </div>
 

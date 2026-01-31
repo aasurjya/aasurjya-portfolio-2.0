@@ -89,7 +89,7 @@ export default function Skills() {
                     >
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-white/70">{skill.name}</span>
-                        <span className="text-xs text-white/40">{skill.level}%</span>
+                        <span className="text-xs text-white/60">{skill.level}%</span>
                       </div>
                       <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <motion.div

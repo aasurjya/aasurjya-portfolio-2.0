@@ -87,7 +87,7 @@ export default function About() {
               <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-white/90">
                 {content.bio.split('. ')[0]}.
               </p>
-              <p className="text-base md:text-lg text-white/50 leading-relaxed">
+              <p className="text-base md:text-lg text-white/70 leading-relaxed">
                 {content.bio.split('. ').slice(1).join('. ')}
               </p>
             </div>
@@ -97,7 +97,7 @@ export default function About() {
               {content.highlights.map((h, i) => (
                 <div key={i} className="flex items-start gap-4 group">
                   <span className={`text-xs font-bold ${getModeColor()} mt-1`}>0{i + 1}</span>
-                  <p className="text-sm md:text-base text-white/60 group-hover:text-white/90 transition-colors leading-relaxed">
+                  <p className="text-sm md:text-base text-white/70 group-hover:text-white/90 transition-colors leading-relaxed">
                     {h}
                   </p>
                 </div>
@@ -126,7 +126,7 @@ export default function About() {
 
               <Link
                 href="/story"
-                className="flex items-center gap-2 text-white/50 hover:text-white transition-colors group"
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors group"
               >
                 <span className="text-sm">Learn about my journey</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -154,7 +154,7 @@ export default function About() {
                 </div>
               </div>
 
-              <p className="text-sm text-white/50 leading-relaxed">
+              <p className="text-sm text-white/70 leading-relaxed">
                 Open to immersive product mandates that demand architectural thinking, cinematic interfaces, and measurable business impact.
               </p>
 
@@ -170,7 +170,7 @@ export default function About() {
                       <item.icon className="w-5 h-5 text-white/60" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-white/30 uppercase tracking-wider">{item.label}</p>
+                      <p className="text-[10px] font-bold text-white/60 uppercase tracking-wider">{item.label}</p>
                       <p className="text-sm font-medium text-white/90">{item.value}</p>
                     </div>
                   </div>
@@ -179,13 +179,13 @@ export default function About() {
 
               {/* Tech Tags */}
               <div className="pt-4 border-t border-white/5">
-                <p className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase mb-4">Core Stack</p>
+                <p className="text-[10px] font-bold tracking-[0.2em] text-white/60 uppercase mb-4">Core Stack</p>
                 <div className="flex flex-wrap gap-2">
                   {(mode === 'phd' ? ['Neuro-Adaptive', 'HCI Systems', 'Cognitive Analysis'] :
                     mode === 'xr' ? ['Unity', 'WebGL/Three.js', 'Shader Coding'] :
                     ['SaaS Architecture', 'Cloud Native', 'Web3'])
                     .map(t => (
-                      <span key={t} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-white/60">
+                      <span key={t} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-white/70">
                         {t}
                       </span>
                     ))}

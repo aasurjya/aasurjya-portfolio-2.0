@@ -73,7 +73,7 @@ export default function Contact() {
                   Let&apos;s create something{' '}
                   <span className="text-purple-400 italic">extraordinary</span> together.
                 </h3>
-                <p className="text-base md:text-lg text-white/50 max-w-md">
+                <p className="text-base md:text-lg text-white/70 max-w-md">
                   I&apos;m always open to discussing innovative projects, research opportunities, or technical challenges.
                 </p>
               </div>
@@ -86,16 +86,16 @@ export default function Contact() {
                 MAIL ME
               </a>
 
-              <p className="text-sm text-white/40">
+              <p className="text-sm text-white/60">
                 Prefer a call?{' '}
-                <a href="tel:+919365384660" className="text-white/60 hover:text-white underline underline-offset-4">
+                <a href="tel:+919365384660" className="text-white/70 hover:text-white underline underline-offset-4">
                   +91 93653 84660
                 </a>
               </p>
 
               {/* Availability */}
               <div className="pt-8 border-t border-white/10">
-                <p className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase mb-4">Current Availability</p>
+                <p className="text-[10px] font-bold tracking-[0.2em] text-white/60 uppercase mb-4">Current Availability</p>
                 <div className="flex items-center gap-4 p-5 bg-white/[0.03] rounded-2xl border border-white/10">
                   <div className="relative">
                     <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-ping absolute" />
@@ -103,7 +103,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-white">Open for Opportunities</p>
-                    <p className="text-xs text-white/40">Research • Fullstack • XR Development</p>
+                    <p className="text-xs text-white/60">Research • Fullstack • XR Development</p>
                   </div>
                 </div>
               </div>
@@ -112,8 +112,8 @@ export default function Contact() {
             {/* Right: Contact Info */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <p className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">Direct Contact</p>
-                <p className="text-sm text-white/40">
+                <p className="text-[10px] font-bold tracking-[0.2em] text-white/60 uppercase">Direct Contact</p>
+                <p className="text-sm text-white/60">
                   Messages land in my inbox and I typically reply within 24 hours.
                 </p>
 
@@ -130,7 +130,7 @@ export default function Contact() {
                         <info.icon className="w-5 h-5 text-white/60" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-wider">{info.label}</p>
+                        <p className="text-[10px] font-bold text-white/60 uppercase tracking-wider">{info.label}</p>
                         {info.link ? (
                           <a href={info.link} className="text-sm font-medium text-white hover:text-purple-400 transition-colors truncate block">
                             {info.value}
@@ -146,7 +146,7 @@ export default function Contact() {
 
               {/* Social */}
               <div className="space-y-4">
-                <p className="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">Social</p>
+                <p className="text-[10px] font-bold tracking-[0.2em] text-white/60 uppercase">Social</p>
                 <div className="grid grid-cols-2 gap-3">
                   {socialLinks.map((social, index) => (
                     <motion.a

@@ -2,31 +2,31 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import gsap from 'gsap'
 
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [counter, setCounter] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
-    const tl = gsap.timeline({
-      onComplete: () => {
-        setTimeout(() => {
-          setIsVisible(false)
-          onComplete()
-        }, 500)
-      }
-    })
+    // Reduced duration: 500ms total instead of ~2s
+    const duration = 500
+    const steps = 20
+    const stepDuration = duration / steps
 
     const interval = setInterval(() => {
       setCounter(prev => {
-        if (prev >= 100) {
+        const next = prev + (100 / steps)
+        if (next >= 100) {
           clearInterval(interval)
+          setTimeout(() => {
+            setIsVisible(false)
+            onComplete()
+          }, 100)
           return 100
         }
-        return prev + 1
+        return Math.round(next)
       })
-    }, 20)
+    }, stepDuration)
 
     return () => clearInterval(interval)
   }, [onComplete])

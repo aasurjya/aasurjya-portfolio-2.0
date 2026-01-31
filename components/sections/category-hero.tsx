@@ -1,10 +1,10 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useRef, useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import gsap from 'gsap'
-import { Download, ChevronDown } from 'lucide-react'
+import { Download, ChevronDown, Sparkles, FileText } from 'lucide-react'
 
 export default function CategoryHero() {
   const { mode } = useMode()
@@ -72,6 +72,7 @@ export default function CategoryHero() {
   }
 
   const { title, subtitle, color, accent } = getModeContent()
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
     <section
@@ -134,26 +135,113 @@ export default function CategoryHero() {
         </motion.div>
       </div>
 
-      {/* Bottom Center: Resume + Scroll - using inset-x-0 for proper centering */}
+      {/* Bottom Center: Resume + Scroll */}
       <motion.div
-        className="absolute bottom-6 md:bottom-10 inset-x-0 flex flex-col items-center"
+        className="absolute bottom-8 md:bottom-12 inset-x-0 flex flex-col items-center gap-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.8 }}
       >
-        <a
-          href="/resume.pdf"
-          download
-          className="group relative inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 rounded-full text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] font-bold uppercase text-black bg-gradient-to-r from-amber-300 via-orange-400 to-pink-500 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-        >
-          <Download className="w-4 h-4" />
-          <span>Resume</span>
-        </a>
+        {/* Premium Resume Button */}
+        <div className="relative">
+          {/* Animated glow ring */}
+          <motion.div
+            className="absolute -inset-1 rounded-full bg-gradient-to-r from-amber-500 via-orange-600 to-amber-500 blur-md"
+            animate={{
+              opacity: [0.3, 0.5, 0.3],
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
 
-        <div className="mt-6 md:mt-8 flex flex-col items-center gap-2">
-          <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase">Scroll</span>
-          <ChevronDown className="w-4 h-4 text-white/40 animate-bounce" />
+          {/* Outer glow pulse */}
+          <motion.div
+            className="absolute -inset-3 rounded-full bg-orange-500 blur-xl"
+            animate={{
+              opacity: [0.1, 0.2, 0.1],
+              scale: [0.9, 1.1, 0.9],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          <motion.a
+            href="/resume.pdf"
+            download
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="group relative inline-flex items-center gap-3 px-8 py-4 md:px-10 md:py-5 rounded-full text-sm md:text-base font-bold text-black bg-gradient-to-r from-amber-400 via-amber-500 to-orange-600 shadow-2xl overflow-hidden"
+            style={{
+              boxShadow: '0 10px 40px -10px rgba(251, 146, 60, 0.4), 0 0 0 1px rgba(255,255,255,0.2) inset',
+            }}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {/* Shimmer effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+              animate={{
+                x: ['-200%', '200%'],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                repeatDelay: 2,
+              }}
+            />
+
+            {/* Icon with animation */}
+            <motion.div
+              animate={isHovered ? { y: [0, -3, 0], rotate: [0, -10, 10, 0] } : {}}
+              transition={{ duration: 0.5 }}
+            >
+              <FileText className="w-5 h-5 md:w-6 md:h-6" />
+            </motion.div>
+
+            <span className="relative z-10 tracking-wide">Download Resume</span>
+
+            {/* Download icon appears on hover */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Download className="w-4 h-4 md:w-5 md:h-5" />
+            </motion.div>
+          </motion.a>
+
+          {/* Floating badge */}
+          <motion.div
+            className="absolute -top-2 -right-2 md:-top-3 md:-right-3 px-2 py-1 rounded-full bg-white text-[9px] md:text-[10px] font-bold text-black shadow-lg flex items-center gap-1"
+            initial={{ scale: 0, rotate: -20 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 1.8, type: 'spring', stiffness: 200 }}
+          >
+            <Sparkles className="w-3 h-3 text-amber-500" />
+            <span>2025</span>
+          </motion.div>
         </div>
+
+        {/* Scroll indicator - more subtle */}
+        <motion.div
+          className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+          onClick={() => {
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })
+          }}
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <span className="text-[9px] tracking-[0.3em] text-white/50 uppercase">Explore</span>
+          <ChevronDown className="w-4 h-4 text-white/50" />
+        </motion.div>
       </motion.div>
     </section>
   )

@@ -512,7 +512,7 @@ export default function AdminDashboard() {
                           </div>
                           <div>
                             <p className="text-sm font-medium">
-                              {visit.city === 'Unknown' ? 'Local' : visit.city}
+                              {visit.city === 'Unknown' || !visit.city ? '📍 Location Pending' : visit.city}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {formatDate(visit.timestamp)}
@@ -639,7 +639,7 @@ export default function AdminDashboard() {
                         {analyticsData.recentVisits.map((visit, i) => (
                           <tr key={i} className="border-b last:border-0">
                             <td className="py-2">
-                              {visit.city === 'Unknown' ? 'Local' : `${visit.city}, ${visit.country}`}
+                              {visit.city === 'Unknown' || !visit.city ? '📍 Location Pending' : `${visit.city}, ${visit.country}`}
                             </td>
                             <td className="py-2 text-muted-foreground" title={formatFullDate(visit.timestamp)}>
                               {formatDate(visit.timestamp)}

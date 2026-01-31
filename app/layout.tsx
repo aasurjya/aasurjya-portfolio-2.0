@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ModeProvider } from '@/components/providers/mode-provider'
 import AnalyticsTracker from '@/components/providers/analytics-tracker'
+import AmbientSound from '@/components/ui/ambient-sound'
 import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -50,6 +51,7 @@ export default function RootLayout({
               {children}
             </main>
             <AnalyticsTracker />
+            <AmbientSound />
             <Toaster
               position="bottom-right"
               toastOptions={{

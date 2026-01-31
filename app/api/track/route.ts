@@ -44,24 +44,67 @@ async function lookupLocation(ip: string | null) {
     return null
   }
 
+  // Try primary service: ipapi.co
   try {
     const res = await fetch(`https://ipapi.co/${ip}/json/`, {
       headers: { 'User-Agent': 'nodejs-ipapi-v1.02' }
     })
-    if (!res.ok) {
-      console.error('IP lookup failed with status:', res.status)
-      return null
+    if (res.ok) {
+      const data = await res.json()
+      if (!data.error && data.city) {
+        console.log('[IP Lookup] ipapi.co success:', data.city, data.country)
+        return data
+      }
     }
-    const data = await res.json()
-    if (data.error) {
-      console.error('IP lookup error:', data.reason || data.error)
-      return null
-    }
-    return data
   } catch (error) {
-    console.error('IP lookup failed:', error)
-    return null
+    console.error('[IP Lookup] ipapi.co failed:', error)
   }
+
+  // Fallback 1: ip-api.com (free, no key needed)
+  try {
+    const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,regionName,city,lat,lon`)
+    if (res.ok) {
+      const data = await res.json()
+      if (data.status === 'success') {
+        console.log('[IP Lookup] ip-api.com success:', data.city, data.country)
+        return {
+          city: data.city,
+          country: data.country,
+          country_name: data.country,
+          region: data.regionName,
+          latitude: data.lat,
+          longitude: data.lon
+        }
+      }
+    }
+  } catch (error) {
+    console.error('[IP Lookup] ip-api.com failed:', error)
+  }
+
+  // Fallback 2: ipinfo.io (limited free tier)
+  try {
+    const res = await fetch(`https://ipinfo.io/${ip}/json`)
+    if (res.ok) {
+      const data = await res.json()
+      if (data.city) {
+        console.log('[IP Lookup] ipinfo.io success:', data.city, data.country)
+        const [lat, lon] = (data.loc || '').split(',').map(Number)
+        return {
+          city: data.city,
+          country: data.country,
+          country_name: data.country,
+          region: data.region,
+          latitude: lat || null,
+          longitude: lon || null
+        }
+      }
+    }
+  } catch (error) {
+    console.error('[IP Lookup] ipinfo.io failed:', error)
+  }
+
+  console.error('[IP Lookup] All services failed for IP:', ip)
+  return null
 }
 
 export async function POST(request: NextRequest) {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion'
+import { motion, useMotionValue, useTransform, animate, PanInfo, AnimatePresence } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import { projects } from '@/lib/content-data'
 import { Github, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Play, X } from 'lucide-react'
@@ -40,18 +40,35 @@ export default function Projects() {
   const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
 
-  // Video modal state
-  const [videoModal, setVideoModal] = useState<{ isOpen: boolean; videoUrl: string | null }>({
+  // Video modal state with origin tracking for portal effect
+  const [videoModal, setVideoModal] = useState<{
+    isOpen: boolean
+    videoUrl: string | null
+    originRect: { x: number; y: number; width: number; height: number } | null
+  }>({
     isOpen: false,
-    videoUrl: null
+    videoUrl: null,
+    originRect: null
   })
+  const [portalStage, setPortalStage] = useState<'closed' | 'expanding' | 'open'>('closed')
 
-  const openVideoModal = (videoUrl: string) => {
-    setVideoModal({ isOpen: true, videoUrl })
+  const openVideoModal = (videoUrl: string, buttonElement: HTMLButtonElement) => {
+    const rect = buttonElement.getBoundingClientRect()
+    setVideoModal({
+      isOpen: true,
+      videoUrl,
+      originRect: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, width: rect.width, height: rect.height }
+    })
+    setPortalStage('expanding')
+    setTimeout(() => setPortalStage('open'), 50)
   }
 
   const closeVideoModal = () => {
-    setVideoModal({ isOpen: false, videoUrl: null })
+    setPortalStage('expanding')
+    setTimeout(() => {
+      setPortalStage('closed')
+      setVideoModal({ isOpen: false, videoUrl: null, originRect: null })
+    }, 400)
   }
 
   const getVideoEmbedUrl = (url: string) => {
@@ -416,9 +433,9 @@ export default function Projects() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          openVideoModal(project.video!)
+                          openVideoModal(project.video!, e.currentTarget)
                         }}
-                        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full flex items-center justify-center transition-transform hover:scale-110 z-10"
+                        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full flex items-center justify-center transition-transform hover:scale-110 z-10 video-play-btn"
                         style={{
                           background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
                           boxShadow: `0 8px 32px ${liquidColors.primary}50`
@@ -665,10 +682,31 @@ export default function Projects() {
                     </div>
 
                     {/* Video Play Button - Desktop */}
-                    {project.video && (
+                    {project.video && mode === 'xr' && (
                       <button
-                        onClick={() => openVideoModal(project.video!)}
-                        className="absolute top-1/2 right-[20%] -translate-y-1/2 w-20 h-20 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20 group"
+                        onClick={(e) => openVideoModal(project.video!, e.currentTarget)}
+                        className="absolute top-1/2 right-[20%] -translate-y-1/2 w-24 h-24 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20 group video-play-btn"
+                        style={{
+                          background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
+                          boxShadow: `0 8px 40px ${liquidColors.primary}50, 0 0 80px ${liquidColors.primary}30`
+                        }}
+                      >
+                        {/* Pulsing ring */}
+                        <span
+                          className="absolute inset-0 rounded-full animate-ping opacity-30"
+                          style={{ background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})` }}
+                        />
+                        {/* Inner ring */}
+                        <span
+                          className="absolute inset-2 rounded-full border-2 border-white/30"
+                        />
+                        <Play className="w-10 h-10 text-white ml-1 group-hover:scale-110 transition-transform drop-shadow-lg" fill="white" />
+                      </button>
+                    )}
+                    {project.video && mode !== 'xr' && (
+                      <button
+                        onClick={(e) => openVideoModal(project.video!, e.currentTarget)}
+                        className="absolute top-1/2 right-[20%] -translate-y-1/2 w-20 h-20 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20 group video-play-btn"
                         style={{
                           background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
                           boxShadow: `0 8px 40px ${liquidColors.primary}50`
@@ -818,42 +856,164 @@ export default function Projects() {
 
       <div className="h-16 lg:h-24" />
 
-      {/* Video Modal */}
+      {/* Video Portal Modal - XR Style */}
+      <AnimatePresence>
       {videoModal.isOpen && videoModal.videoUrl && (
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+          animate={{ opacity: portalStage === 'open' ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-50 flex items-center justify-center"
           onClick={closeVideoModal}
         >
+          {/* Background with radial reveal */}
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden"
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: portalStage === 'open' ? 1 : 0,
+              background: mode === 'xr'
+                ? `radial-gradient(circle at ${videoModal.originRect?.x || 50}px ${videoModal.originRect?.y || 50}px, rgba(16,185,129,0.2) 0%, rgba(0,0,0,0.95) 50%)`
+                : 'rgba(0,0,0,0.95)'
+            }}
+            transition={{ duration: 0.5 }}
+            style={{ backdropFilter: 'blur(8px)' }}
+          />
+
+          {/* Portal ring effect - XR only */}
+          {mode === 'xr' && videoModal.originRect && (
+            <>
+              <motion.div
+                className="absolute rounded-full pointer-events-none"
+                initial={{
+                  width: 80,
+                  height: 80,
+                  x: videoModal.originRect.x - 40,
+                  y: videoModal.originRect.y - 40,
+                  opacity: 1,
+                }}
+                animate={{
+                  width: portalStage === 'open' ? '200vmax' : 80,
+                  height: portalStage === 'open' ? '200vmax' : 80,
+                  x: portalStage === 'open' ? -window.innerWidth / 2 : videoModal.originRect.x - 40,
+                  y: portalStage === 'open' ? -window.innerHeight / 2 : videoModal.originRect.y - 40,
+                  opacity: portalStage === 'open' ? 0 : 1,
+                }}
+                transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+                style={{
+                  border: `3px solid ${liquidColors.primary}`,
+                  boxShadow: `0 0 60px ${liquidColors.primary}, inset 0 0 60px ${liquidColors.primary}40`,
+                }}
+              />
+              <motion.div
+                className="absolute rounded-full pointer-events-none"
+                initial={{
+                  width: 60,
+                  height: 60,
+                  x: videoModal.originRect.x - 30,
+                  y: videoModal.originRect.y - 30,
+                  opacity: 0.6,
+                }}
+                animate={{
+                  width: portalStage === 'open' ? '180vmax' : 60,
+                  height: portalStage === 'open' ? '180vmax' : 60,
+                  x: portalStage === 'open' ? -window.innerWidth / 2 : videoModal.originRect.x - 30,
+                  y: portalStage === 'open' ? -window.innerHeight / 2 : videoModal.originRect.y - 30,
+                  opacity: 0,
+                }}
+                transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1], delay: 0.1 }}
+                style={{
+                  border: `2px solid ${liquidColors.secondary}`,
+                  boxShadow: `0 0 40px ${liquidColors.secondary}`,
+                }}
+              />
+            </>
+          )}
+
+          {/* Video container with portal expand */}
+          <motion.div
+            initial={{
+              scale: 0,
+              opacity: 0,
+              borderRadius: '50%',
+            }}
+            animate={{
+              scale: portalStage === 'open' ? 1 : 0,
+              opacity: portalStage === 'open' ? 1 : 0,
+              borderRadius: portalStage === 'open' ? '16px' : '50%',
+            }}
+            transition={{
+              duration: 0.5,
+              ease: [0.76, 0, 0.24, 1],
+              delay: mode === 'xr' ? 0.15 : 0,
+            }}
+            className="relative w-[90vw] max-w-6xl aspect-video overflow-hidden"
             style={{
-              boxShadow: `0 0 0 1px rgba(255,255,255,0.1), 0 40px 100px -20px rgba(0,0,0,0.8)`
+              boxShadow: mode === 'xr'
+                ? `0 0 0 1px ${liquidColors.primary}40, 0 0 100px ${liquidColors.primary}30, 0 40px 100px -20px rgba(0,0,0,0.8)`
+                : '0 0 0 1px rgba(255,255,255,0.1), 0 40px 100px -20px rgba(0,0,0,0.8)'
             }}
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Glowing border for XR */}
+            {mode === 'xr' && (
+              <div
+                className="absolute inset-0 rounded-2xl pointer-events-none"
+                style={{
+                  background: `linear-gradient(135deg, ${liquidColors.primary}20, transparent, ${liquidColors.secondary}20)`,
+                  padding: '2px',
+                }}
+              >
+                <div className="w-full h-full rounded-2xl bg-black" />
+              </div>
+            )}
+
             <iframe
               src={getVideoEmbedUrl(videoModal.videoUrl)}
-              className="w-full h-full"
+              className="absolute inset-0 w-full h-full rounded-2xl"
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
             />
-            <button
+
+            {/* Close button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
               onClick={closeVideoModal}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-white hover:bg-black/70 transition-colors"
-              style={{ border: '1px solid rgba(255,255,255,0.2)' }}
+              className="absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+              style={{
+                background: mode === 'xr'
+                  ? `linear-gradient(135deg, ${liquidColors.primary}80, ${liquidColors.secondary}80)`
+                  : 'rgba(0,0,0,0.5)',
+                backdropFilter: 'blur(10px)',
+                border: mode === 'xr' ? `1px solid ${liquidColors.primary}50` : '1px solid rgba(255,255,255,0.2)',
+                boxShadow: mode === 'xr' ? `0 4px 20px ${liquidColors.primary}40` : 'none'
+              }}
             >
               <X className="w-5 h-5" />
-            </button>
+            </motion.button>
+
+            {/* Video title overlay for XR */}
+            {mode === 'xr' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="absolute bottom-0 left-0 right-0 p-6 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)'
+                }}
+              >
+                <p className="text-xs font-bold tracking-widest uppercase" style={{ color: liquidColors.primary }}>
+                  Now Playing
+                </p>
+              </motion.div>
+            )}
           </motion.div>
         </motion.div>
       )}
+      </AnimatePresence>
     </section>
   )
 }

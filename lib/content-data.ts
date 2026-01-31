@@ -10,6 +10,7 @@ export interface Project {
   link?: string
   github?: string
   image?: string
+  video?: string  // Vimeo embed URL
   featured: boolean
   modes: PortfolioMode[]
 }
@@ -76,9 +77,9 @@ export const projects: Project[] = [
     longDescription: 'Built an interactive 3D building viewer with unit-level inspection and camera controls. Optimized GLTF asset loading for smooth performance on web and mobile. Designed animation-rich interfaces without compromising performance.',
     image: '/projects/nexprop.ai.jpg',
     technologies: ['React', 'Three.js', 'WebGL', 'Next.js', 'GSAP'],
-    category: ['fullstack', 'xr'],
+    category: ['fullstack'],
     link: 'https://nexprop.vercel.app/',
-    modes: ['fullstack', 'xr'],
+    modes: ['fullstack'],
     featured: true
   },
   {
@@ -112,9 +113,9 @@ export const projects: Project[] = [
     longDescription: 'Highly animated VR/AR real estate platform featuring 3D particle backgrounds with GPGPU computation, magnetic cursor effects, interactive building configurator, case studies carousel, metrics dashboard with neon glow effects, 3D testimonials carousel, and smooth scroll powered by Lenis. Includes GSAP ScrollTrigger animations, Framer Motion transitions, Three.js real-time interactivity, and glass morphism design.',
     image: '/projects/nexvr.png',
     technologies: ['Next.js', 'Three.js', 'TypeScript', 'Framer Motion', 'GSAP', 'Tailwind CSS', '@react-three/fiber', '@react-three/drei', 'Lenis', 'Zustand'],
-    category: ['xr', 'fullstack'],
+    category: ['fullstack'],
     link: 'https://nexvr.vercel.app/',
-    modes: ['xr', 'fullstack'],
+    modes: ['fullstack'],
     featured: true
   },
   {
@@ -141,6 +142,107 @@ export const projects: Project[] = [
     link: 'https://algo-sender.vercel.app/',
     github: 'https://github.com/aasurjya/AlgoSender_Blockchain',
     image: '/projects/algosender.png'
+  },
+  {
+    id: 'vr-chemistry-lab',
+    title: 'VR Chemistry Lab',
+    description: 'Interactive virtual chemistry lab combining theory lessons and practical experiments.',
+    longDescription: 'Developed an interactive virtual chemistry lab combining theory lessons and practical experiments. Enabled users to mix virtual chemicals, observe dynamic fluid behaviors, and see real-time color changes based on reactions. Built UI for selecting chemicals, adjusting quantities, and exploring safe lab practices. Ensured realistic fluid simulations for pouring, mixing, and chemical interactions. Created an engaging learning tool for students to safely explore chemistry concepts.',
+    technologies: ['Unity', 'C#', 'VR', 'Physics Simulation', 'Fluid Dynamics'],
+    category: ['xr'],
+    featured: true,
+    modes: ['xr'],
+    video: 'https://player.vimeo.com/video/1160500676',
+    image: '/projects/vr-chemistry-lab.jpg'
+  },
+  {
+    id: 'charitram-ar',
+    title: 'chARitram - AR Storytelling',
+    description: 'Advanced AR storytelling app that recognizes temple pillars and delivers animated narratives in the real world.',
+    longDescription: 'An advanced AR storytelling application that recognizes temple pillars and delivers high-fidelity animated narratives directly in the real world. Features image-based pillar recognition using ARKit, streamed ~8GB of high-poly meshes and animations using Addressables + DOTS. Synchronized storytelling with VFX, audio, subtitles, and environment transitions. Optimized GPU usage, LODs, and memory for stable iOS AR performance.',
+    technologies: ['Unity', 'ARKit', 'C#', 'Addressables', 'DOTS', 'VFX', 'iOS'],
+    category: ['xr'],
+    featured: true,
+    modes: ['xr'],
+    image: '/projects/charitram-ar.jpg'
+  },
+  {
+    id: 'vr-welding-simulator',
+    title: 'VR Welding Simulator',
+    description: 'Realistic VR welding simulator focused on skill training with physics-based feedback.',
+    longDescription: 'A realistic VR welding simulator focused on industrial skill training with physics-based feedback. Features realistic sparks, fusion, and heat effects with synchronized welding audio and VFX. Implements hand tracking and haptic feedback for immersive training. Optimized rendering ensures smooth VR performance during complex simulations.',
+    technologies: ['Unity', 'VR', 'Hand Tracking', 'Haptics', 'Physics Engine', 'Particle Systems'],
+    category: ['xr'],
+    featured: true,
+    modes: ['xr'],
+    image: '/projects/vr-welding.jpg'
+  },
+  {
+    id: 'cpr-vr-training',
+    title: 'CPR VR Training',
+    description: 'Immersive VR application teaching life-saving CPR techniques through guided emergency simulations.',
+    longDescription: 'An immersive VR application teaching life-saving CPR techniques through guided emergency simulations. Features hands-on CPR training scenarios with step-by-step guidance and patient response feedback. Designed to build confidence in emergency handling through realistic medical simulations.',
+    technologies: ['Unity', 'VR', 'Medical Simulation', 'Gesture Recognition'],
+    category: ['xr'],
+    featured: false,
+    modes: ['xr'],
+    image: '/projects/cpr-vr.jpg'
+  },
+  {
+    id: 'brain-mri-3d',
+    title: 'Brain MRI to 3D AR Model',
+    description: 'Converted MRI scan data into interactive 3D brain models viewable in augmented reality.',
+    longDescription: 'Converted MRI scan data into interactive 3D brain models viewable in augmented reality on Android. Features MRI (DICOM) to 3D mesh conversion with interactive anatomical exploration in AR. Designed for medical education and visualization purposes.',
+    technologies: ['ARCore', 'Android', 'Medical Imaging', '3D Visualization', 'DICOM Processing'],
+    category: ['xr', 'research'],
+    featured: false,
+    modes: ['xr', 'phd'],
+    image: '/projects/brain-mri-ar.jpg'
+  },
+  {
+    id: 'ar-smart-appliance',
+    title: 'AR Smart Appliance Control',
+    description: 'Proof-of-concept AR system enabling smart appliance control using real-time YOLOv8 object detection.',
+    longDescription: 'A proof-of-concept AR system enabling smart appliance control using real-time object detection on TCL RayNeo X2 glasses. Features YOLOv8-based detection of appliances (TVs, ACs, etc.) with AR virtual button overlays on detected objects. Bluetooth integration enables triggering real-world actions from AR interface.',
+    technologies: ['YOLOv8', 'ARCore', 'TCL RayNeo X2', 'Bluetooth', 'Computer Vision', 'Python'],
+    category: ['xr', 'research'],
+    featured: true,
+    modes: ['xr', 'phd'],
+    image: '/projects/ar-appliance.jpg'
+  },
+  {
+    id: 'ar-reflective-sphere',
+    title: 'AR Reflective Sphere Experiment',
+    description: 'Native iOS experiment exploring realistic reflective materials in AR environments.',
+    longDescription: 'A native iOS experiment exploring realistic reflective materials in AR environments. Features environment-mapped reflective spheres with real-time reflections of real-world surroundings. Built using native Apple AR frameworks for optimal performance.',
+    technologies: ['ARKit', 'RealityKit', 'Swift', 'Xcode', 'Environment Mapping'],
+    category: ['xr', 'research'],
+    featured: false,
+    modes: ['xr'],
+    image: '/projects/ar-sphere.jpg'
+  },
+  {
+    id: 'pointcloud-usdz',
+    title: 'PointCloud to USDZ Scanner',
+    description: 'Native iOS solution for scanning real-world objects and exporting high-quality USDZ models.',
+    longDescription: 'A native iOS solution for scanning real-world objects and exporting high-quality USDZ models. Features real-time point cloud capture at 60 FPS with smart rescanning and seamless mesh stitching. Combines depth sensing with photogrammetry pipeline for accurate 3D reconstruction. Interactive preview and editing before export. Developed in collaboration with Dr. Manabendra Saharia (IIT Delhi) for Ministry of Rural Development, Government of India.',
+    technologies: ['RealityKit', 'SceneKit', 'Swift', 'Photogrammetry', 'Point Cloud Processing', 'USDZ'],
+    category: ['xr', 'research'],
+    featured: true,
+    modes: ['xr', 'phd'],
+    video: 'https://www.youtube.com/embed/tbB7z6nRskA',
+    image: '/projects/pointcloud-usdz.jpg'
+  },
+  {
+    id: 'vfx-hall',
+    title: 'VFX Hall Visualization',
+    description: 'High-quality 3D visualization of a conference/VFX hall environment.',
+    longDescription: 'A high-quality 3D visualization of a conference/VFX hall environment. Features professional lighting and material setup with realistic architectural visualization. Designed for event and presentation use cases.',
+    technologies: ['Unity', '3D Rendering', 'Lighting', 'Materials'],
+    category: ['xr'],
+    featured: false,
+    modes: ['xr'],
+    image: '/projects/vfx-hall.jpg'
   }
 ]
 

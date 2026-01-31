@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import { projects } from '@/lib/content-data'
-import { Github, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Github, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Play, X } from 'lucide-react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
@@ -39,6 +39,29 @@ export default function Projects() {
   // Swipe state for mobile
   const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
+
+  // Video modal state
+  const [videoModal, setVideoModal] = useState<{ isOpen: boolean; videoUrl: string | null }>({
+    isOpen: false,
+    videoUrl: null
+  })
+
+  const openVideoModal = (videoUrl: string) => {
+    setVideoModal({ isOpen: true, videoUrl })
+  }
+
+  const closeVideoModal = () => {
+    setVideoModal({ isOpen: false, videoUrl: null })
+  }
+
+  const getVideoEmbedUrl = (url: string) => {
+    if (url.includes('vimeo.com')) {
+      return `${url}?autoplay=1&title=0&byline=0&portrait=0`
+    } else if (url.includes('youtube.com')) {
+      return `${url}?autoplay=1&rel=0`
+    }
+    return url
+  }
 
   const filteredProjects = mode
     ? projects.filter(p => p.modes.includes(mode))
@@ -127,31 +150,32 @@ export default function Projects() {
           zIndex: totalCards - i,
           y: i * 10,
           scale: 1 - i * 0.02,
+          force3D: true,
         })
       })
 
-      // Animate cards on scroll
+      // Animate cards on scroll using timeline for smoother performance
       cards.forEach((card, i) => {
         if (i === totalCards - 1) return // Last card stays
 
-        ScrollTrigger.create({
-          trigger: containerRef.current,
-          start: () => `top+=${i * window.innerHeight} top`,
-          end: () => `top+=${(i + 1) * window.innerHeight} top`,
-          scrub: true,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const progress = self.progress
-            // Animate current card up
-            gsap.set(card, {
-              y: -progress * window.innerHeight,
-              scale: 1 - progress * 0.1,
-              zIndex: totalCards - i,
-            })
-          },
-          onEnter: () => setActiveIndex(i),
-          onEnterBack: () => setActiveIndex(i),
-          onLeave: () => setActiveIndex(Math.min(i + 1, totalCards - 1)),
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: () => `top+=${i * window.innerHeight} top`,
+            end: () => `top+=${(i + 1) * window.innerHeight} top`,
+            scrub: 0.8, // Smooth scrubbing with slight delay
+            invalidateOnRefresh: true,
+            onEnter: () => setActiveIndex(i),
+            onEnterBack: () => setActiveIndex(i),
+            onLeave: () => setActiveIndex(Math.min(i + 1, totalCards - 1)),
+          }
+        })
+
+        tl.to(card, {
+          y: -window.innerHeight,
+          scale: 0.9,
+          ease: 'none',
+          force3D: true,
         })
       })
 
@@ -387,6 +411,23 @@ export default function Projects() {
                       </>
                     )}
 
+                    {/* Video Play Button */}
+                    {project.video && isActive && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          openVideoModal(project.video!)
+                        }}
+                        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full flex items-center justify-center transition-transform hover:scale-110 z-10"
+                        style={{
+                          background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
+                          boxShadow: `0 8px 32px ${liquidColors.primary}50`
+                        }}
+                      >
+                        <Play className="w-7 h-7 text-white ml-1" fill="white" />
+                      </button>
+                    )}
+
                     {/* Content */}
                     <div className="absolute bottom-0 left-0 right-0 p-5">
                       {/* Category */}
@@ -552,7 +593,11 @@ export default function Projects() {
                 <div
                   key={project.id}
                   className="stacked-project-card absolute inset-0"
-                  style={{ willChange: 'transform' }}
+                  style={{
+                    willChange: 'transform',
+                    backfaceVisibility: 'hidden',
+                    transform: 'translateZ(0)',
+                  }}
                 >
                   {/* Card */}
                   <div
@@ -618,6 +663,20 @@ export default function Projects() {
                         {String(index + 1).padStart(2, '0')}
                       </span>
                     </div>
+
+                    {/* Video Play Button - Desktop */}
+                    {project.video && (
+                      <button
+                        onClick={() => openVideoModal(project.video!)}
+                        className="absolute top-1/2 right-[20%] -translate-y-1/2 w-20 h-20 rounded-full flex items-center justify-center transition-all hover:scale-110 z-20 group"
+                        style={{
+                          background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
+                          boxShadow: `0 8px 40px ${liquidColors.primary}50`
+                        }}
+                      >
+                        <Play className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform" fill="white" />
+                      </button>
+                    )}
 
                     {/* Content */}
                     <div className="relative h-full flex flex-col justify-center p-8 lg:p-12 max-w-[55%]">
@@ -758,6 +817,43 @@ export default function Projects() {
       )}
 
       <div className="h-16 lg:h-24" />
+
+      {/* Video Modal */}
+      {videoModal.isOpen && videoModal.videoUrl && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+          onClick={closeVideoModal}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden"
+            style={{
+              boxShadow: `0 0 0 1px rgba(255,255,255,0.1), 0 40px 100px -20px rgba(0,0,0,0.8)`
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src={getVideoEmbedUrl(videoModal.videoUrl)}
+              className="w-full h-full"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+            />
+            <button
+              onClick={closeVideoModal}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-white hover:bg-black/70 transition-colors"
+              style={{ border: '1px solid rgba(255,255,255,0.2)' }}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
     </section>
   )
 }

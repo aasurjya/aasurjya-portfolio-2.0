@@ -171,7 +171,7 @@ export default function About() {
                     src="https://media.licdn.com/dms/image/v2/D5603AQFyUA6T7hRQsw/profile-displayphoto-crop_800_800/B56ZuU4lSWGwAI-/0/1767729420647?e=1771459200&v=beta&t=7r32CF3VBeklUz34wXsnQtye-XPFYXgujszv58a10JI"
                     alt="Aasurjya Bikash Handique"
                     fill
-                    className="object-cover"
+                    className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
                     sizes="(max-width: 768px) 112px, 144px"
                   />
 

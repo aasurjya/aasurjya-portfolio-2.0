@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, memo } from 'react'
 import { motion } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import { aboutContent } from '@/lib/content-data'
@@ -9,6 +9,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import Link from 'next/link'
 import Image from 'next/image'
+import { getModeColor, getModeBgOpacity, getModeGradient } from '@/lib/theme-colors'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -61,47 +62,22 @@ export default function About() {
     return () => ctx.revert()
   }, [mode])
 
-  const getModeColor = () => {
-    switch (mode) {
-      case 'phd': return 'text-blue-400'
-      case 'xr': return 'text-teal-400'
-      case 'fullstack': return 'text-purple-400'
-      default: return 'text-purple-400'
-    }
-  }
-
-  const getModeBg = () => {
-    switch (mode) {
-      case 'phd': return 'bg-blue-500/10'
-      case 'xr': return 'bg-teal-500/10'
-      case 'fullstack': return 'bg-purple-500/10'
-      default: return 'bg-purple-500/10'
-    }
-  }
-
-  const getModeGradient = () => {
-    switch (mode) {
-      case 'phd': return { primary: '#3b82f6', secondary: '#6366f1' }
-      case 'xr': return { primary: '#14b8a6', secondary: '#06b6d4' }
-      case 'fullstack': return { primary: '#8b5cf6', secondary: '#ec4899' }
-      default: return { primary: '#8b5cf6', secondary: '#ec4899' }
-    }
-  }
-
-  const modeGradient = getModeGradient()
+  const modeColor = getModeColor(mode)
+  const modeBgOpacity = getModeBgOpacity(mode)
+  const modeGradient = getModeGradient(mode)
 
   return (
     <section ref={sectionRef} id="about" className="relative py-20 md:py-32 overflow-hidden bg-[#050505]">
       {/* Background */}
       <div className="absolute inset-0 -z-10">
-        <div className={`absolute top-0 right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full blur-[100px] ${getModeBg()} opacity-40`} />
-        <div className={`absolute bottom-0 left-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full blur-[100px] ${getModeBg()} opacity-40`} />
+        <div className={`absolute top-0 right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full blur-[100px] ${modeBgOpacity} opacity-40`} />
+        <div className={`absolute bottom-0 left-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full blur-[100px] ${modeBgOpacity} opacity-40`} />
       </div>
 
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="about-title-reveal text-center mb-12 md:mb-20">
-          <p className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase ${getModeColor()} mb-4`}>
+          <p className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase ${modeColor} mb-4`}>
             About Me
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white">
@@ -256,7 +232,7 @@ export default function About() {
             <div className="space-y-4 pt-6 border-t border-white/10">
               {content.highlights.map((h, i) => (
                 <div key={i} className="flex items-start gap-4 group">
-                  <span className={`text-xs font-bold ${getModeColor()} mt-1`}>0{i + 1}</span>
+                  <span className={`text-xs font-bold ${modeColor} mt-1`}>0{i + 1}</span>
                   <p className="text-sm md:text-base text-white/70 group-hover:text-white/90 transition-colors leading-relaxed">
                     {h}
                   </p>

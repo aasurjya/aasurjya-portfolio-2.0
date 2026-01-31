@@ -8,6 +8,7 @@ import { Github, Linkedin, Mail, MapPin, Cpu, Globe, ArrowRight, Sparkles } from
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import Link from 'next/link'
+import Image from 'next/image'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -17,8 +18,11 @@ export default function About() {
   const { mode } = useMode()
   const sectionRef = useRef<HTMLElement>(null)
   const journeyButtonRef = useRef<HTMLAnchorElement>(null)
+  const profileRef = useRef<HTMLDivElement>(null)
   const [isJourneyHovered, setIsJourneyHovered] = useState(false)
   const [journeyMousePos, setJourneyMousePos] = useState({ x: 0.5, y: 0.5 })
+  const [isProfileHovered, setIsProfileHovered] = useState(false)
+  const [profileMousePos, setProfileMousePos] = useState({ x: 0.5, y: 0.5 })
 
   const content = mode ? aboutContent[mode] : aboutContent.fullstack
 
@@ -26,6 +30,15 @@ export default function About() {
     if (!journeyButtonRef.current) return
     const rect = journeyButtonRef.current.getBoundingClientRect()
     setJourneyMousePos({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    })
+  }
+
+  const handleProfileMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!profileRef.current) return
+    const rect = profileRef.current.getBoundingClientRect()
+    setProfileMousePos({
       x: (e.clientX - rect.left) / rect.width,
       y: (e.clientY - rect.top) / rect.height,
     })
@@ -66,6 +79,17 @@ export default function About() {
     }
   }
 
+  const getModeGradient = () => {
+    switch (mode) {
+      case 'phd': return { primary: '#3b82f6', secondary: '#6366f1' }
+      case 'xr': return { primary: '#14b8a6', secondary: '#06b6d4' }
+      case 'fullstack': return { primary: '#8b5cf6', secondary: '#ec4899' }
+      default: return { primary: '#8b5cf6', secondary: '#ec4899' }
+    }
+  }
+
+  const modeGradient = getModeGradient()
+
   return (
     <section ref={sectionRef} id="about" className="relative py-20 md:py-32 overflow-hidden bg-[#050505]">
       {/* Background */}
@@ -94,6 +118,130 @@ export default function About() {
             transition={{ duration: 0.6 }}
             className="space-y-8"
           >
+            {/* Awwwards-style Profile Picture */}
+            <motion.div
+              ref={profileRef}
+              className="relative w-fit mx-auto lg:mx-0"
+              onMouseEnter={() => setIsProfileHovered(true)}
+              onMouseLeave={() => setIsProfileHovered(false)}
+              onMouseMove={handleProfileMouseMove}
+              style={{
+                perspective: '1000px',
+              }}
+            >
+              {/* Outer glow */}
+              <motion.div
+                className="absolute -inset-8 rounded-full pointer-events-none"
+                animate={{
+                  background: isProfileHovered
+                    ? `radial-gradient(ellipse 80% 80% at ${profileMousePos.x * 100}% ${profileMousePos.y * 100}%, ${modeGradient.primary}40 0%, transparent 70%)`
+                    : `radial-gradient(ellipse 60% 60% at 50% 50%, ${modeGradient.primary}25 0%, transparent 70%)`,
+                }}
+                style={{ filter: 'blur(30px)' }}
+                transition={{ duration: 0.4 }}
+              />
+
+              {/* Main container with 3D tilt */}
+              <motion.div
+                className="relative"
+                animate={{
+                  rotateX: isProfileHovered ? (profileMousePos.y - 0.5) * -20 : 0,
+                  rotateY: isProfileHovered ? (profileMousePos.x - 0.5) * 20 : 0,
+                }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              >
+                {/* Animated border ring */}
+                <div className="absolute -inset-1 rounded-full overflow-hidden">
+                  <motion.div
+                    className="absolute inset-0"
+                    style={{
+                      background: `conic-gradient(from 0deg, ${modeGradient.primary}, ${modeGradient.secondary}, ${modeGradient.primary})`,
+                    }}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                  />
+                </div>
+
+                {/* Inner border */}
+                <div className="absolute inset-0 rounded-full bg-[#050505]" style={{ margin: '3px' }} />
+
+                {/* Profile image container */}
+                <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-white/10">
+                  <Image
+                    src="https://media.licdn.com/dms/image/v2/D5603AQFyUA6T7hRQsw/profile-displayphoto-crop_800_800/B56ZuU4lSWGwAI-/0/1767729420647?e=1771459200&v=beta&t=7r32CF3VBeklUz34wXsnQtye-XPFYXgujszv58a10JI"
+                    alt="Aasurjya Bikash Handique"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 112px, 144px"
+                  />
+
+                  {/* Overlay on hover */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isProfileHovered ? 1 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+
+                {/* Floating orbs */}
+                <motion.div
+                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, ${modeGradient.primary} 0%, transparent 70%)`,
+                    filter: 'blur(2px)',
+                  }}
+                  animate={{
+                    y: isProfileHovered ? [0, -8, 0] : [0, -4, 0],
+                    scale: isProfileHovered ? [1, 1.2, 1] : [1, 1.1, 1],
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <motion.div
+                  className="absolute -bottom-1 -left-3 w-4 h-4 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, ${modeGradient.secondary} 0%, transparent 70%)`,
+                    filter: 'blur(1px)',
+                  }}
+                  animate={{
+                    y: isProfileHovered ? [0, 6, 0] : [0, 3, 0],
+                    x: isProfileHovered ? [0, -4, 0] : [0, -2, 0],
+                  }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                />
+                <motion.div
+                  className="absolute top-1/2 -right-4 w-3 h-3 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, white 0%, transparent 70%)`,
+                    filter: 'blur(1px)',
+                  }}
+                  animate={{
+                    x: isProfileHovered ? [0, 6, 0] : [0, 3, 0],
+                    opacity: [0.6, 1, 0.6],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                />
+              </motion.div>
+
+              {/* Name tag */}
+              <motion.div
+                className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full whitespace-nowrap"
+                style={{
+                  background: 'rgba(0,0,0,0.8)',
+                  backdropFilter: 'blur(10px)',
+                  border: `1px solid ${modeGradient.primary}40`,
+                  boxShadow: `0 4px 20px ${modeGradient.primary}20`,
+                }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: modeGradient.primary }}>
+                  Aasurjya B.H.
+                </span>
+              </motion.div>
+            </motion.div>
+
             {/* Bio */}
             <div className="space-y-6">
               <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-white/90">

@@ -139,7 +139,7 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden py-4 border-t"
+            className="md:hidden py-4 border-t bg-background"
           >
             {mode && navItemsWithConditional.map((item) => (
               <button

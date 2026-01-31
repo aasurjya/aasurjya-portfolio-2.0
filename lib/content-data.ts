@@ -429,7 +429,7 @@ export const resumeContent: Record<PortfolioMode, ResumeData> = {
 
 export const aboutContent = {
   phd: {
-    title: 'PhD Researcher in Human-Computer Interaction',
+    title: 'HCI Researcher',
     bio: `Exploring the boundaries of spatial computing through the lens of human cognition. My research focuses on developing neuro-adaptive XR interfaces that prioritize user comfort and minimize cognitive load in complex virtual environments.`,
     highlights: [
       'Published 5+ papers in top-tier HCI conferences (CHI, ISMAR)',

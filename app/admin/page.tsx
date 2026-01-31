@@ -459,7 +459,7 @@ export default function AdminDashboard() {
                   <div className="h-36 sm:h-40 lg:h-48">
                     <Doughnut
                       data={{
-                        labels: ['PhD Research', 'XR Developer', 'Full Stack'],
+                        labels: ['Research', 'XR Developer', 'Full Stack'],
                         datasets: [{
                           data: [
                             analyticsData.modeBreakdown.phd,
@@ -479,7 +479,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="mt-4 space-y-2">
                     {[
-                      { label: 'PhD Research', value: analyticsData.modeBreakdown.phd, color: 'bg-blue-500' },
+                      { label: 'Research', value: analyticsData.modeBreakdown.phd, color: 'bg-blue-500' },
                       { label: 'XR Developer', value: analyticsData.modeBreakdown.xr, color: 'bg-green-500' },
                       { label: 'Full Stack', value: analyticsData.modeBreakdown.fullstack, color: 'bg-purple-500' },
                     ].map(item => (
@@ -1150,7 +1150,7 @@ export default function AdminDashboard() {
                   <h3 className="font-semibold mb-4">Portfolio Mode Preferences</h3>
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     {[
-                      { label: 'PhD Research', value: analyticsData.modeBreakdown.phd, bgClass: 'bg-blue-500/5 border-blue-500/20', icon: '🎓' },
+                      { label: 'Research', value: analyticsData.modeBreakdown.phd, bgClass: 'bg-blue-500/5 border-blue-500/20', icon: '🎓' },
                       { label: 'XR Developer', value: analyticsData.modeBreakdown.xr, bgClass: 'bg-green-500/5 border-green-500/20', icon: '🥽' },
                       { label: 'Full Stack', value: analyticsData.modeBreakdown.fullstack, bgClass: 'bg-purple-500/5 border-purple-500/20', icon: '💻' },
                     ].map(mode => {

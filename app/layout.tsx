@@ -11,8 +11,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Aasurjya - Portfolio',
-  description: 'PhD Researcher | XR Developer | Full Stack Engineer',
-  keywords: 'portfolio, developer, XR, VR, AR, full-stack, PhD, HCI',
+  description: 'HCI Researcher | XR Developer | Full Stack Engineer',
+  keywords: 'portfolio, developer, XR, VR, AR, full-stack, researcher, HCI',
   authors: [{ name: 'Aasurjya' }],
   openGraph: {
     type: 'website',

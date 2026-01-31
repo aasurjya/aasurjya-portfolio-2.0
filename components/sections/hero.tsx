@@ -67,7 +67,7 @@ export default function Hero() {
               >
                 {mode === 'phd' && (
                   <p className="text-xl lg:text-2xl text-muted-foreground mb-4">
-                    PhD Researcher in Human-Computer Interaction
+                    HCI Researcher
                   </p>
                 )}
                 {mode === 'xr' && (

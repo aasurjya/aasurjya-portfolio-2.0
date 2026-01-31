@@ -13,7 +13,7 @@ const modes: {
 }[] = [
   {
     id: 'phd',
-    title: 'PhD Research',
+    title: 'Research',
     description: 'Academic work in HCI and VR comfort studies',
     icon: GraduationCap,
     gradient: 'from-blue-500 to-blue-600',

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, MapPin, Camera, Mountain, GraduationCap, Briefcase, Rocket, Heart, Quote, ChevronRight, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, MapPin, Camera, Mountain, GraduationCap, Briefcase, Rocket, Heart, Quote, ChevronRight, Sparkles, Clock } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -663,7 +663,9 @@ export default function StoryPage() {
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/30 text-[10px] font-bold text-white uppercase tracking-wider">
                       <MapPin className="w-3 h-3" /> {activeSlide.location}
                     </span>
-                    <span className="text-xs text-white/50">{activeSlide.duration}</span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-[10px] font-bold text-white uppercase tracking-wider backdrop-blur-sm">
+                      <Clock className="w-3 h-3" /> {activeSlide.duration}
+                    </span>
                   </div>
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white">
                     {activeSlide.title}

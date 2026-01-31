@@ -6,8 +6,18 @@ import { motion, AnimatePresence } from 'framer-motion'
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [counter, setCounter] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
+  const [hasSeenLoader, setHasSeenLoader] = useState(false)
 
   useEffect(() => {
+    // Check if user has already seen the preloader this session
+    const seen = sessionStorage.getItem('preloader-seen')
+    if (seen) {
+      setHasSeenLoader(true)
+      setIsVisible(false)
+      onComplete()
+      return
+    }
+
     // Reduced duration: 500ms total instead of ~2s
     const duration = 500
     const steps = 20
@@ -20,6 +30,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           clearInterval(interval)
           setTimeout(() => {
             setIsVisible(false)
+            sessionStorage.setItem('preloader-seen', 'true')
             onComplete()
           }, 100)
           return 100
@@ -30,6 +41,9 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
 
     return () => clearInterval(interval)
   }, [onComplete])
+
+  // Don't render anything if already seen
+  if (hasSeenLoader) return null
 
   return (
     <AnimatePresence>

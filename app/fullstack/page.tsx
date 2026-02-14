@@ -6,7 +6,6 @@ import About from '@/components/sections/about'
 import Resume from '@/components/sections/resume'
 import CategoryHero from '@/components/sections/category-hero'
 import Projects from '@/components/sections/projects'
-import Skills from '@/components/sections/skills'
 import Contact from '@/components/sections/contact'
 import Navigation from '@/components/navigation'
 import { motion } from 'framer-motion'
@@ -31,7 +30,6 @@ export default function FullStackPage() {
           <About />
           <Resume />
           <Projects />
-          <Skills />
           <Contact />
         </div>
       </motion.div>

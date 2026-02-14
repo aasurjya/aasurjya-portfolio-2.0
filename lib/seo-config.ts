@@ -53,11 +53,14 @@ export const siteConfig = {
       '3D web developer',
       'TypeScript developer',
     ],
-    research: [
+    xrResearch: [
       'neuro-adaptive XR interfaces',
       'human computer interaction',
       'immersive technology research',
       'interaction design',
+      'Unity developer',
+      'augmented reality developer',
+      'spatial computing',
     ],
     branded: [
       'Aasurjya Bikash Handique',
@@ -74,20 +77,15 @@ export const pagesSEO = {
     description: 'Portfolio of Aasurjya Bikash Handique - HCI Researcher, XR Developer & Full Stack Engineer at IIT Jodhpur. Building immersive AR/VR experiences and scalable web applications.',
     canonical: siteConfig.url,
   },
-  xrDev: {
-    title: 'AR/VR Developer Portfolio | XR Projects & Unity Development',
-    description: 'Discover AR/VR projects by Aasurjya - Unity, Unreal, Flutter AR development. Specializing in Gaussian splatting, neuro-adaptive interfaces & spatial computing.',
-    canonical: `${siteConfig.url}/xr-dev`,
+  xrResearch: {
+    title: 'XR Developer & HCI Researcher | AR/VR, Spatial Computing & Research',
+    description: 'XR development and HCI research portfolio by Aasurjya at IIT Jodhpur. AR/VR projects, Unity development, neuro-adaptive interfaces & published research.',
+    canonical: `${siteConfig.url}/xr-research`,
   },
   fullstack: {
     title: 'Full Stack Developer Portfolio | React, Node.js, 3D Web',
     description: 'Full stack development portfolio featuring React, Next.js, Node.js & 3D web experiences. View projects, skills & contact Aasurjya for collaboration.',
     canonical: `${siteConfig.url}/fullstack`,
-  },
-  research: {
-    title: 'HCI Researcher | Neuro-Adaptive XR Interfaces',
-    description: 'HCI research portfolio by Aasurjya at IIT Jodhpur. Publications on neuro-adaptive XR, human-computer interaction & immersive technology research.',
-    canonical: `${siteConfig.url}/research`,
   },
   story: {
     title: 'My Journey: From Assam to IIT Jodhpur',

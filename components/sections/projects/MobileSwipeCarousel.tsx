@@ -152,6 +152,9 @@ export default function MobileSwipeCarousel({
                       e.stopPropagation()
                       onVideoClick(project.video!, e.currentTarget)
                     }}
+                    data-track-event="project_video_play"
+                    data-track-target={project.title}
+                    data-track-meta-projectid={project.id}
                     className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full flex items-center justify-center transition-transform hover:scale-110 z-10 video-play-btn"
                     style={{
                       background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
@@ -231,6 +234,10 @@ export default function MobileSwipeCarousel({
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-track-event="project_link_click"
+                        data-track-target={project.title}
+                        data-track-meta-linktype="live"
+                        data-track-meta-url={project.link}
                         className="flex-1 flex items-center justify-center gap-2 h-11 rounded-xl text-white font-semibold text-sm"
                         style={{
                           background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
@@ -247,6 +254,10 @@ export default function MobileSwipeCarousel({
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-track-event="project_link_click"
+                        data-track-target={project.title}
+                        data-track-meta-linktype="github"
+                        data-track-meta-url={project.github}
                         className="h-11 w-11 flex items-center justify-center rounded-xl"
                         style={{
                           background: 'rgba(255,255,255,0.08)',

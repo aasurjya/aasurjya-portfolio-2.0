@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useMode, PortfolioMode } from '@/components/providers/mode-provider'
-import { GraduationCap, Gamepad2, Code2 } from 'lucide-react'
+import { Gamepad2, Code2 } from 'lucide-react'
 
 const modes: {
   id: PortfolioMode
@@ -12,16 +12,9 @@ const modes: {
   gradient: string
 }[] = [
   {
-    id: 'phd',
-    title: 'Research',
-    description: 'Academic work in HCI and VR comfort studies',
-    icon: GraduationCap,
-    gradient: 'from-blue-500 to-blue-600',
-  },
-  {
     id: 'xr',
-    title: 'XR Developer',
-    description: 'Extended reality and 3D graphics projects',
+    title: 'XR & Research',
+    description: 'Extended reality, 3D graphics & HCI research',
     icon: Gamepad2,
     gradient: 'from-teal-500 to-green-500',
   },
@@ -40,7 +33,7 @@ export default function ModeSelector() {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold mb-6">What brings you here?</h2>
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         {modes.map((mode, index) => (
           <motion.button
             key={mode.id}

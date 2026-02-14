@@ -26,13 +26,6 @@ export interface Publication {
   type: 'journal' | 'conference' | 'thesis' | 'workshop'
 }
 
-export interface Skill {
-  name: string
-  level: number // 0-100
-  category: 'language' | 'framework' | 'tool' | 'platform' | 'soft'
-  modes: PortfolioMode[]
-}
-
 export interface PersonalStory {
   name: string
   origin: string
@@ -126,7 +119,7 @@ export const projects: Project[] = [
     technologies: ['Unity', 'Python', 'R', 'TensorFlow'],
     category: ['research', 'xr'],
     featured: true,
-    modes: ['phd'],
+    modes: ['xr'],
     link: 'https://research.example.com',
     image: '/images/research.jpg'
   },
@@ -196,7 +189,7 @@ export const projects: Project[] = [
     technologies: ['ARCore', 'Android', 'Medical Imaging', '3D Visualization', 'DICOM Processing'],
     category: ['xr', 'research'],
     featured: false,
-    modes: ['xr', 'phd'],
+    modes: ['xr'],
     image: '/projects/brain-mri-ar.jpg'
   },
   {
@@ -207,7 +200,7 @@ export const projects: Project[] = [
     technologies: ['YOLOv8', 'ARCore', 'TCL RayNeo X2', 'Bluetooth', 'Computer Vision', 'Python'],
     category: ['xr', 'research'],
     featured: true,
-    modes: ['xr', 'phd'],
+    modes: ['xr'],
     image: '/projects/ar-appliance.jpg'
   },
   {
@@ -229,7 +222,7 @@ export const projects: Project[] = [
     technologies: ['RealityKit', 'SceneKit', 'Swift', 'Photogrammetry', 'Point Cloud Processing', 'USDZ'],
     category: ['xr', 'research'],
     featured: true,
-    modes: ['xr', 'phd'],
+    modes: ['xr'],
     video: 'https://www.youtube.com/embed/tbB7z6nRskA',
     image: '/projects/pointcloud-usdz.jpg'
   },
@@ -276,36 +269,6 @@ export const publications: Publication[] = [
   }
 ]
 
-export const skills: Skill[] = [
-  // Programming Languages
-  { name: 'JavaScript/TypeScript', level: 95, category: 'language', modes: ['fullstack', 'xr'] },
-  { name: 'Python', level: 90, category: 'language', modes: ['phd', 'fullstack'] },
-  { name: 'C#', level: 85, category: 'language', modes: ['xr'] },
-  { name: 'C++', level: 75, category: 'language', modes: ['xr'] },
-  { name: 'Solidity', level: 70, category: 'language', modes: ['fullstack'] },
-  
-  // Frameworks
-  { name: 'React/Next.js', level: 95, category: 'framework', modes: ['fullstack'] },
-  { name: 'Three.js', level: 90, category: 'framework', modes: ['xr', 'fullstack'] },
-  { name: 'Unity', level: 85, category: 'framework', modes: ['xr'] },
-  { name: 'Node.js', level: 90, category: 'framework', modes: ['fullstack'] },
-  { name: 'WebXR', level: 80, category: 'framework', modes: ['xr'] },
-  
-  // Tools & Platforms
-  { name: 'AWS/GCP', level: 85, category: 'platform', modes: ['fullstack'] },
-  { name: 'Docker/K8s', level: 80, category: 'tool', modes: ['fullstack'] },
-  { name: 'MongoDB/PostgreSQL', level: 85, category: 'tool', modes: ['fullstack'] },
-  { name: 'Blender', level: 70, category: 'tool', modes: ['xr'] },
-  { name: 'Git/CI/CD', level: 90, category: 'tool', modes: ['fullstack', 'xr'] },
-  
-  // Research & Soft Skills
-  { name: 'Research Methods', level: 90, category: 'soft', modes: ['phd'] },
-  { name: 'Data Analysis', level: 85, category: 'soft', modes: ['phd'] },
-  { name: 'Technical Writing', level: 88, category: 'soft', modes: ['phd'] },
-  { name: 'Project Management', level: 85, category: 'soft', modes: ['fullstack'] },
-  { name: 'UI/UX Design', level: 80, category: 'soft', modes: ['xr', 'fullstack'] }
-]
-
 export interface ResumeItem {
   id: string
   title: string
@@ -321,22 +284,22 @@ export interface ResumeData {
 }
 
 export const resumeContent: Record<PortfolioMode, ResumeData> = {
-  phd: {
+  xr: {
     education: [
       {
-        id: 'mtech-iitj',
+        id: 'mtech-xr',
         title: 'M.Tech in Augmented Reality and Virtual Reality',
         organization: 'Indian Institute of Technology (IIT), Jodhpur',
         location: 'Jodhpur, India',
         duration: '2022 - 2025',
         highlights: [
           'Researching neuro-adaptive XR interfaces for cognitive load reduction.',
-          'Specializing in multi-tenant architectures and immersive 3D systems.',
+          'Specialized in AR/VR technologies with Unity, ARKit, ARCore, and WebXR.',
           'Developing frameworks for spatial awareness in Mixed Reality.'
         ]
       },
       {
-        id: 'btech-tezpur',
+        id: 'btech-xr',
         title: 'B.Tech in Computer Science and Engineering',
         organization: 'Tezpur University',
         location: 'Tezpur, India',
@@ -350,21 +313,21 @@ export const resumeContent: Record<PortfolioMode, ResumeData> = {
     ],
     experience: [
       {
-        id: 'ihub-tech',
+        id: 'ihub-xr',
         title: 'Tech Engineer & Research Associate',
         organization: 'iHub Drishti (IIT Jodhpur)',
         location: 'Jodhpur, India',
         duration: 'Sep 2023 - Present',
         highlights: [
-          'Designed and developed scalable Flutter applications with modular architecture.',
+          'Developed AR/VR systems using Unity, ARKit, and ARCore.',
           'Built automation for e57 point cloud files to Gaussian splats analysis.',
           'Architected multi-tenant and role-based systems emphasizing security.',
-          'Developed AR/VR systems using Unity, ARKit, and ARCore.',
+          'Optimized 3D rendering performance for mobile and web platforms.',
           'Managed AWS-based deployments and asset delivery workflows.'
         ]
       },
       {
-        id: 'heptre-fs',
+        id: 'heptre-xr',
         title: 'Full Stack Developer',
         organization: 'Heptre',
         location: 'Remote',
@@ -377,7 +340,7 @@ export const resumeContent: Record<PortfolioMode, ResumeData> = {
         ]
       },
       {
-        id: 'iqvia-intern',
+        id: 'iqvia-xr',
         title: 'Software Engineer Intern',
         organization: 'IQVIA',
         location: 'Remote',
@@ -388,67 +351,13 @@ export const resumeContent: Record<PortfolioMode, ResumeData> = {
         ]
       },
       {
-        id: 'cognizant-trainee',
+        id: 'cognizant-xr',
         title: 'Programmer Analyst Trainee',
         organization: 'Cognizant',
         location: 'Remote',
         duration: 'Feb 2022 - Aug 2022',
         highlights: [
           'Developed SQL pipelines and analytical dashboards.'
-        ]
-      }
-    ]
-  },
-  xr: {
-    education: [
-      {
-        id: 'mtech-xr',
-        title: 'M.Tech in AR & VR',
-        organization: 'IIT Jodhpur',
-        location: 'Jodhpur, India',
-        duration: '2022 - 2025',
-        highlights: [
-          'Specialized in Augmented Reality and Virtual Reality technologies.',
-          'Hands-on experience with Unity, ARKit, ARCore, and WebXR.',
-          'Focus on performance optimization for immersive 3D systems.'
-        ]
-      },
-      {
-        id: 'btech-xr',
-        title: 'B.Tech in CSE',
-        organization: 'Tezpur University',
-        location: 'India',
-        duration: '2018 - 2022',
-        highlights: [
-          'First Division Graduate.',
-          'Strong foundation in Computer Graphics and 3D modeling principles.'
-        ]
-      }
-    ],
-    experience: [
-      {
-        id: 'ihub-xr',
-        title: 'Tech Engineer (XR Specialist)',
-        organization: 'iHub Drishti',
-        location: 'Jodhpur, India',
-        duration: 'Sep 2023 - Present',
-        highlights: [
-          'Developed AR/VR systems using Unity, ARKit, and ARCore.',
-          'Built automation pipelines for converting point clouds to Gaussian splats.',
-          'Optimized 3D rendering performance for mobile and web platforms.',
-          'Managed workshops on AR/VR technology for DST.'
-        ]
-      },
-      {
-        id: 'heptre-xr',
-        title: 'Full Stack Developer',
-        organization: 'Heptre',
-        location: 'Remote',
-        duration: 'Jul 2022 - Sep 2023',
-        highlights: [
-          'Integrated 3D visualizations into full-stack web applications.',
-          'Managed cloud infrastructure for hosting heavy 3D assets.',
-          'Containerized XR-ready web services using Docker.'
         ]
       }
     ]
@@ -530,22 +439,13 @@ export const resumeContent: Record<PortfolioMode, ResumeData> = {
 }
 
 export const aboutContent = {
-  phd: {
-    title: 'HCI Researcher',
-    bio: `Exploring the boundaries of spatial computing through the lens of human cognition. My research focuses on developing neuro-adaptive XR interfaces that prioritize user comfort and minimize cognitive load in complex virtual environments.`,
-    highlights: [
-      'Published 5+ papers in top-tier HCI conferences (CHI, ISMAR)',
-      'Developing framework for adaptive VR motion sickness mitigation',
-      'Collaborating with neuroscientists on spatial awareness in MR'
-    ]
-  },
   xr: {
-    title: 'XR Developer & Creative Technologist',
-    bio: `Merging 3D graphics with immersive storytelling to build the next generation of spatial experiences. I specialize in high-performance WebXR and Unity development, pushing the limits of what's possible in mobile and desktop AR/VR.`,
+    title: 'XR Developer & Researcher',
+    bio: `Merging 3D graphics with immersive storytelling and HCI research to build the next generation of spatial experiences. I specialize in high-performance WebXR and Unity development while exploring neuro-adaptive interfaces that prioritize user comfort in complex virtual environments.`,
     highlights: [
       'Lead Developer for chARitram - award-winning cultural AR',
       'Expert in Three.js, WebXR, and real-time shader development',
-      'Building performant 3D assets and immersive interactive systems'
+      'Researching adaptive VR interfaces for cognitive load reduction'
     ]
   },
   fullstack: {

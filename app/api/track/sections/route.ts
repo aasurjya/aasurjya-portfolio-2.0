@@ -3,7 +3,23 @@ import { getDatabase } from '@/lib/mongodb'
 
 export async function POST(request: NextRequest) {
   try {
-    const { durations, visitorId, sessionId, mode, pathname } = await request.json()
+    const contentType = request.headers.get('content-type') || ''
+    let body: Record<string, unknown>
+
+    if (contentType.includes('application/json')) {
+      body = await request.json()
+    } else {
+      const text = await request.text()
+      body = JSON.parse(text)
+    }
+
+    const { durations, visitorId, sessionId, mode, pathname } = body as {
+      durations?: Array<{ sectionId: string; durationMs: number }>
+      visitorId?: string
+      sessionId?: string
+      mode?: string
+      pathname?: string
+    }
 
     if (!Array.isArray(durations) || durations.length === 0) {
       return NextResponse.json({ success: false, error: 'No durations provided' }, { status: 400 })

@@ -80,6 +80,8 @@ export default function Contact() {
 
               <a
                 href="mailto:corp.asurjya@gmail.com"
+                data-track-event="contact_email_click"
+                data-track-target="email_cta"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold text-sm hover:bg-white/90 transition-colors"
               >
                 <Mail className="w-5 h-5" />
@@ -88,7 +90,7 @@ export default function Contact() {
 
               <p className="text-sm text-white/60">
                 Prefer a call?{' '}
-                <a href="tel:+919365384660" className="text-white/70 hover:text-white underline underline-offset-4">
+                <a href="tel:+919365384660" data-track-event="contact_phone_click" data-track-target="phone_link" className="text-white/70 hover:text-white underline underline-offset-4">
                   +91 93653 84660
                 </a>
               </p>
@@ -154,6 +156,10 @@ export default function Contact() {
                       href={social.link}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-track-event="social_link_click"
+                      data-track-target={social.label}
+                      data-track-meta-url={social.link}
+                      data-track-meta-section="contact"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                       transition={{ delay: 0.6 + index * 0.1 }}

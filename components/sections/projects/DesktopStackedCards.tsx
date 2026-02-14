@@ -222,6 +222,9 @@ function DesktopStackedCards({
                 {project.video && (
                   <button
                     onClick={(e) => onVideoClick(project.video!, e.currentTarget)}
+                    data-track-event="project_video_play"
+                    data-track-target={project.title}
+                    data-track-meta-projectid={project.id}
                     className={`absolute top-1/2 right-[20%] -translate-y-1/2 ${mode === 'xr' ? 'w-24 h-24' : 'w-20 h-20'} rounded-full flex items-center justify-center transition-transform hover:scale-110 z-20 group video-play-btn`}
                     style={{
                       background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
@@ -328,6 +331,10 @@ function DesktopStackedCards({
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-track-event="project_link_click"
+                        data-track-target={project.title}
+                        data-track-meta-linktype="live"
+                        data-track-meta-url={project.link}
                         className="inline-flex items-center gap-2 px-6 h-12 rounded-full text-white font-semibold text-sm transition-opacity hover:opacity-90"
                         style={{
                           background: `linear-gradient(135deg, ${liquidColors.primary}, ${liquidColors.secondary})`,
@@ -343,6 +350,10 @@ function DesktopStackedCards({
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-track-event="project_link_click"
+                        data-track-target={project.title}
+                        data-track-meta-linktype="github"
+                        data-track-meta-url={project.github}
                         className="inline-flex items-center gap-2 px-6 h-12 rounded-full text-white font-medium text-sm transition-colors hover:bg-white/15"
                         style={{
                           background: 'rgba(255,255,255,0.05)',

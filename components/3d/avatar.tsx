@@ -33,10 +33,6 @@ function AvatarModel() {
         meshRef.current.rotation.z += 0.01
         const floatY = Math.sin(state.clock.elapsedTime * 2) * 0.2
         meshRef.current.position.y = floatY
-      } else if (mode === 'phd') {
-        // Calm, stable movement for Research
-        const scale = 1 + Math.sin(state.clock.elapsedTime * 0.5) * 0.02
-        meshRef.current.scale.set(scale, scale, scale)
       } else {
         // Standard breathing for Fullstack
         const breathingScale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.05
@@ -57,13 +53,6 @@ function AvatarModel() {
   // Mode-based colors and materials
   const getMaterialProps = () => {
     switch(mode) {
-      case 'phd': return { 
-        color: '#3B82F6', 
-        distort: 0.1, 
-        speed: 1, 
-        roughness: 0.2, 
-        metalness: 0.5 
-      }
       case 'xr': return { 
         color: '#10B981', 
         distort: 0.5, 

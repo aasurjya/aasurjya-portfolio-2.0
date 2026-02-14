@@ -40,17 +40,11 @@ export default function CategoryHero() {
 
   const getModeContent = () => {
     switch (mode) {
-      case 'phd':
-        return {
-          title: 'RESEARCHER',
-          subtitle: 'Human-Computer Interaction • Brain-Computer Interfaces',
-          color: 'from-blue-600/20 via-indigo-500/20 to-blue-400/20',
-          accent: 'text-blue-400'
-        }
       case 'xr':
         return {
-          title: 'XR DEVELOPER',
-          subtitle: 'Immersive Tech • Spatial Computing • Creative Code',
+          title: 'XR & RESEARCH',
+          subtitle: 'Spatial Computing • HCI • Immersive Experiences',
+          description: 'Mixed reality prototypes • User studies • Immersive interaction systems',
           color: 'from-teal-500/20 via-emerald-400/20 to-cyan-500/20',
           accent: 'text-teal-400'
         }
@@ -58,6 +52,7 @@ export default function CategoryHero() {
         return {
           title: 'FULLSTACK',
           subtitle: 'Cloud Architect • SaaS Systems • Scalable Tech',
+          description: 'Multi-tenant SaaS • Realtime infrastructure • Scalable product systems',
           color: 'from-purple-600/20 via-violet-400/20 to-fuchsia-500/20',
           accent: 'text-purple-400'
         }
@@ -65,13 +60,14 @@ export default function CategoryHero() {
         return {
           title: 'PORTFOLIO',
           subtitle: 'Design • Develop • Deploy',
+          description: 'Full-spectrum engineering • Research to production',
           color: 'from-gray-600/20 via-gray-400/20 to-gray-500/20',
           accent: 'text-white'
         }
     }
   }
 
-  const { title, subtitle, color, accent } = getModeContent()
+  const { title, subtitle, description, color, accent } = getModeContent()
   const [isHovered, setIsHovered] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 })
   const buttonRef = useRef<HTMLAnchorElement>(null)
@@ -112,7 +108,7 @@ export default function CategoryHero() {
           className="mb-4 md:mb-6"
         >
           <span className={`text-[10px] md:text-xs font-bold tracking-[0.3em] md:tracking-[0.5em] uppercase ${accent} opacity-80`}>
-            {mode === 'phd' ? 'Academic Portfolio' : mode === 'xr' ? 'Creative Engineer' : 'System Architect'}
+            {mode === 'xr' ? 'Creative Engineer & Researcher' : 'System Architect'}
           </span>
         </motion.div>
 
@@ -148,7 +144,7 @@ export default function CategoryHero() {
             {subtitle}
           </p>
           <p className="text-sm md:text-base text-white/70 font-light max-w-xl mx-auto">
-            Multi-tenant SaaS • Realtime infrastructure • Immersive product systems
+            {description}
           </p>
         </motion.div>
       </div>

@@ -12,19 +12,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${baseUrl}/xr-dev`,
+      url: `${baseUrl}/xr-research`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/fullstack`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/research`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,

@@ -16,8 +16,7 @@ if (typeof window !== 'undefined') {
 
 const modeToPath: Record<string, string> = {
   fullstack: '/fullstack',
-  xr: '/xr-dev',
-  phd: '/research',
+  xr: '/xr-research',
 }
 
 // Tier system for visual hierarchy

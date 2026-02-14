@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production'
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) throw new Error('JWT_SECRET environment variable is required')
+  return secret
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      const decoded = jwt.verify(token, JWT_SECRET)
+      const decoded = jwt.verify(token, getJwtSecret())
       return NextResponse.json({ valid: true, decoded })
     } catch (error) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })

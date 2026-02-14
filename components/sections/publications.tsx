@@ -24,7 +24,7 @@ export default function Publications() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl font-bold mb-12 text-center">Research Publications</h2>
+          <h2 className="text-4xl font-bold mb-12 text-center">Published Research</h2>
 
           <div className="space-y-6">
             {publications.map((pub, index) => (

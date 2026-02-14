@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { usePathname } from 'next/navigation'
 
-export type PortfolioMode = 'phd' | 'xr' | 'fullstack'
+export type PortfolioMode = 'xr' | 'fullstack'
 
 interface ModeContextType {
   mode: PortfolioMode | null
@@ -35,9 +35,12 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
 
   const applyModeClass = (newMode: PortfolioMode | null) => {
     const root = document.documentElement
-    root.classList.remove('mode-phd', 'mode-xr', 'mode-fullstack')
+    root.classList.remove('mode-xr', 'mode-fullstack')
     if (newMode) {
       root.classList.add(`mode-${newMode}`)
+      root.setAttribute('data-mode', newMode)
+    } else {
+      root.removeAttribute('data-mode')
     }
   }
 

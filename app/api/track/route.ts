@@ -122,8 +122,10 @@ export async function POST(request: NextRequest) {
              realIP ||
              null
 
-    // Log for debugging (remove in production)
-    console.log('IP Detection:', { cfConnectingIP, forwarded, realIP, finalIP: ip })
+    // Log for debugging in development only
+    if (process.env.NODE_ENV === 'development') {
+      console.log('IP Detection:', { cfConnectingIP, forwarded, realIP, finalIP: ip })
+    }
     
     const geo = await lookupLocation(ip)
     const latitude = geo?.latitude ?? geo?.lat ?? (Array.isArray(geo?.ll) ? geo.ll[0] : null)

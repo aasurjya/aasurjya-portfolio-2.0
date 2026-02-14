@@ -40,15 +40,12 @@ export default function ProjectsHeader({
         <div className="flex flex-col gap-4 md:gap-6 relative">
           <div className="flex flex-wrap items-end gap-3 md:gap-4">
             <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-white">
-              Selected
+              Projects
             </h2>
-            <span className={`text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light italic bg-gradient-to-r ${getAccentGradient(mode)} bg-clip-text text-transparent`}>
-              Works
-            </span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <p className="text-white/50 text-sm md:text-base max-w-md">
-              A curated collection of projects showcasing problem-solving through code and design.
+              Real-world systems built for scale, immersion, and impact.
             </p>
             <div className="flex items-center gap-3">
               <span className="text-[10px] md:text-xs tracking-[0.2em] uppercase text-white/40">

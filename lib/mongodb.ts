@@ -30,9 +30,44 @@ if (process.env.NODE_ENV === 'development') {
 
 export default clientPromise
 
+let indexesEnsured = false
+
+async function ensureIndexes(db: Db): Promise<void> {
+  if (indexesEnsured) return
+  indexesEnsured = true
+
+  try {
+    const opts = { background: true }
+
+    await Promise.all([
+      // visitors collection
+      db.collection('visitors').createIndex({ timestamp: -1 }, opts),
+      db.collection('visitors').createIndex({ visitorId: 1, sessionId: 1 }, opts),
+
+      // page_sessions collection
+      db.collection('page_sessions').createIndex({ sessionId: 1 }, opts),
+      db.collection('page_sessions').createIndex({ timestamp: -1 }, opts),
+
+      // section_durations collection
+      db.collection('section_durations').createIndex({ sectionId: 1 }, opts),
+      db.collection('section_durations').createIndex({ sessionId: 1 }, opts),
+
+      // interaction_events collection
+      db.collection('interaction_events').createIndex({ eventType: 1 }, opts),
+      db.collection('interaction_events').createIndex({ timestamp: -1 }, opts),
+      db.collection('interaction_events').createIndex({ visitorId: 1 }, opts),
+    ])
+  } catch (error) {
+    console.error('Failed to ensure indexes:', error)
+    // Don't block the app if index creation fails
+  }
+}
+
 export async function getDatabase(): Promise<Db> {
   const client = await clientPromise
-  return client.db('portfolio')
+  const db = client.db('portfolio')
+  await ensureIndexes(db)
+  return db
 }
 
 export interface Visitor {

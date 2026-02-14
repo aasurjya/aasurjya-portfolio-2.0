@@ -6,12 +6,12 @@ import About from '@/components/sections/about'
 import Resume from '@/components/sections/resume'
 import CategoryHero from '@/components/sections/category-hero'
 import Projects from '@/components/sections/projects'
-import Skills from '@/components/sections/skills'
+import Publications from '@/components/sections/publications'
 import Contact from '@/components/sections/contact'
 import Navigation from '@/components/navigation'
 import { motion } from 'framer-motion'
 
-export default function XRPage() {
+export default function XRResearchPage() {
   const { setMode } = useMode()
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function XRPage() {
           <About />
           <Resume />
           <Projects />
-          <Skills />
+          <Publications />
           <Contact />
         </div>
       </motion.div>

@@ -3,15 +3,18 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2a$10$defaulthash'
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production'
+
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) throw new Error('JWT_SECRET environment variable is required')
+  return secret
+}
 
 export async function POST(request: NextRequest) {
   try {
     const { password } = await request.json()
-    
-    // For demo purposes, accept 'admin123' as password
-    const validPassword = password === 'admin123' || 
-                         await bcrypt.compare(password, ADMIN_PASSWORD_HASH)
+
+    const validPassword = await bcrypt.compare(password, ADMIN_PASSWORD_HASH)
     
     if (!validPassword) {
       return NextResponse.json(
@@ -22,7 +25,7 @@ export async function POST(request: NextRequest) {
     
     const token = jwt.sign(
       { admin: true, timestamp: Date.now() },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: '24h' }
     )
     

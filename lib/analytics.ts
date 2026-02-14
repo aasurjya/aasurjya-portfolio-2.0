@@ -97,6 +97,76 @@ export async function trackVisitor(options: TrackVisitorOptions = {}) {
   }
 }
 
+interface PageSessionData {
+  pathname: string
+  visibleTimeMs: number
+  totalTimeMs: number
+  scrollDepth: number
+  mode?: string | null
+}
+
+export async function trackPageSession(data: PageSessionData) {
+  if (typeof window === 'undefined') return false
+
+  try {
+    const identity = getVisitorIdentity()
+    if (!identity.visitorId || !identity.sessionId) return false
+
+    await fetch('/api/track/page-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...data,
+        visitorId: identity.visitorId,
+        sessionId: identity.sessionId,
+      })
+    })
+
+    return true
+  } catch (error) {
+    console.error('Failed to record page session:', error)
+    return false
+  }
+}
+
+export function trackEvent(
+  eventType: string,
+  eventTarget: string,
+  metadata?: Record<string, string>
+): void {
+  if (typeof window === 'undefined') return
+
+  try {
+    const identity = getVisitorIdentity()
+    if (!identity.visitorId || !identity.sessionId) return
+
+    const payload = JSON.stringify({
+      visitorId: identity.visitorId,
+      sessionId: identity.sessionId,
+      eventType,
+      eventTarget,
+      metadata: metadata || {},
+      pathname: window.location.pathname,
+      mode: document.documentElement.getAttribute('data-mode') || null,
+      timestamp: new Date().toISOString(),
+    })
+
+    const blob = new Blob([payload], { type: 'application/json' })
+    const sent = navigator.sendBeacon?.('/api/track/events', blob)
+
+    if (!sent) {
+      fetch('/api/track/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {})
+    }
+  } catch {
+    // Fire and forget — never block the UI
+  }
+}
+
 export async function trackSectionDurations(
   durations: SectionDurationEntry[],
   options: TrackVisitorOptions = {}

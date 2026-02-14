@@ -3,18 +3,9 @@
  * Eliminates duplicated color logic across components
  */
 
-export type Mode = 'phd' | 'xr' | 'fullstack' | null
+export type Mode = 'xr' | 'fullstack' | null
 
 export const THEME_COLORS = {
-  phd: {
-    primary: '#3b82f6',     // blue-500
-    secondary: '#6366f1',   // indigo-500
-    bg: '#030712',
-    text: 'text-blue-400',
-    bgClass: 'bg-blue-500',
-    bgOpacity: 'bg-blue-500/10',
-    border: 'border-blue-500/30',
-  },
   xr: {
     primary: '#10b981',     // emerald-500
     secondary: '#06b6d4',   // cyan-500
@@ -96,8 +87,6 @@ export function getLiquidColors(mode: Mode) {
  */
 export function getAccentGradient(mode: Mode): string {
   switch (mode) {
-    case 'phd':
-      return 'from-sky-400 via-blue-500 to-indigo-500'
     case 'xr':
       return 'from-emerald-400 via-teal-500 to-cyan-500'
     case 'fullstack':
@@ -112,8 +101,6 @@ export function getAccentGradient(mode: Mode): string {
  */
 export function getModeGradient(mode: Mode) {
   switch (mode) {
-    case 'phd':
-      return { primary: '#3b82f6', secondary: '#6366f1' }
     case 'xr':
       return { primary: '#14b8a6', secondary: '#06b6d4' }
     case 'fullstack':

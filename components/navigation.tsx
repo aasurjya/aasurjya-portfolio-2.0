@@ -12,14 +12,12 @@ import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin'
 const navItems = [
   { label: 'About', href: '#about' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
   { label: 'Contact', href: '#contact' },
 ]
 
 const modeOptions: { id: PortfolioMode; label: string; path: string; color: string }[] = [
-  { id: 'fullstack', label: 'Full', path: '/fullstack', color: 'text-purple-400' },
-  { id: 'xr', label: 'XR', path: '/xr-dev', color: 'text-teal-400' },
-  { id: 'phd', label: 'Research', path: '/research', color: 'text-blue-400' },
+  { id: 'fullstack', label: 'Full Stack', path: '/fullstack', color: 'text-purple-400' },
+  { id: 'xr', label: 'XR & Research', path: '/xr-research', color: 'text-teal-400' },
 ]
 
 export default function Navigation() {
@@ -52,7 +50,7 @@ export default function Navigation() {
     })
   }, [])
 
-  const navItemsWithConditional = mode === 'phd' 
+  const navItemsWithConditional = mode === 'xr'
     ? [...navItems.slice(0, 2), { label: 'Publications', href: '#publications' }, ...navItems.slice(2)]
     : navItems
 
@@ -74,7 +72,7 @@ export default function Navigation() {
             </span>
             {mode && (
               <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                {mode === 'phd' ? 'RESEARCH' : mode.toUpperCase()}
+                {mode === 'xr' ? 'XR & RESEARCH' : mode.toUpperCase()}
               </span>
             )}
           </Link>
@@ -99,6 +97,8 @@ export default function Navigation() {
                   key={m.id}
                   href={m.path}
                   onClick={() => setMode(m.id)}
+                  data-track-event="mode_switch"
+                  data-track-target={m.id}
                   className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
                     mode === m.id
                       ? `${m.color} bg-white/10`
@@ -114,6 +114,8 @@ export default function Navigation() {
             <motion.a
               href="/resume.pdf"
               download
+              data-track-event="resume_download"
+              data-track-target="resume_button"
               className="ml-4 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold !bg-gradient-to-r !from-amber-400 !via-amber-500 !to-orange-600 !text-black hover:shadow-lg hover:shadow-orange-500/20 transition-all"
               style={{ background: 'linear-gradient(to right, #f59e0b, #f59e0b, #ea580c)', color: '#000' }}
               whileHover={{ scale: 1.05 }}
@@ -166,6 +168,8 @@ export default function Navigation() {
                       setMode(m.id)
                       setIsMobileMenuOpen(false)
                     }}
+                    data-track-event="mode_switch"
+                    data-track-target={m.id}
                     className={`flex-1 py-3 min-h-[44px] text-center text-xs font-medium rounded-lg transition-colors ${
                       mode === m.id
                         ? `${m.color} bg-white/10`
@@ -183,6 +187,8 @@ export default function Navigation() {
               <a
                 href="/resume.pdf"
                 download
+                data-track-event="resume_download"
+                data-track-target="resume_button"
                 className="flex items-center justify-center gap-2 w-full py-4 min-h-[52px] rounded-xl text-sm font-bold text-black shadow-lg shadow-orange-500/15"
                 style={{ background: 'linear-gradient(to right, #f59e0b, #f59e0b, #ea580c)' }}
               >

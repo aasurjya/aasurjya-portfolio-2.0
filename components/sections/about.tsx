@@ -244,15 +244,19 @@ export default function About() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-6">
               <div className="flex items-center gap-3">
                 {[
-                  { icon: Github, href: 'https://github.com/aasurjya' },
-                  { icon: Linkedin, href: 'https://linkedin.com/in/aasurjya' },
-                  { icon: Mail, href: 'mailto:corp.asurjya@gmail.com' }
+                  { icon: Github, href: 'https://github.com/aasurjya', label: 'GitHub' },
+                  { icon: Linkedin, href: 'https://linkedin.com/in/aasurjya', label: 'LinkedIn' },
+                  { icon: Mail, href: 'mailto:corp.asurjya@gmail.com', label: 'Email' }
                 ].map((social, i) => (
                   <a
                     key={i}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-track-event="social_link_click"
+                    data-track-target={social.label}
+                    data-track-meta-url={social.href}
+                    data-track-meta-section="about"
                     className="w-11 h-11 md:w-12 md:h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300"
                   >
                     <social.icon className="w-4 h-4 md:w-5 md:h-5" />
@@ -277,6 +281,8 @@ export default function About() {
                 <motion.a
                   ref={journeyButtonRef}
                   href="/story"
+                  data-track-event="journey_button_click"
+                  data-track-target="my_journey"
                   className="relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-medium overflow-hidden cursor-pointer"
                   style={{
                     background: 'linear-gradient(135deg, rgba(200,200,220,0.35) 0%, rgba(255,255,255,0.15) 100%)',
@@ -422,8 +428,7 @@ export default function About() {
               <div className="pt-4 border-t border-white/5">
                 <p className="text-[10px] font-bold tracking-[0.2em] text-white/60 uppercase mb-4">Core Stack</p>
                 <div className="flex flex-wrap gap-2">
-                  {(mode === 'phd' ? ['Neuro-Adaptive', 'HCI Systems', 'Cognitive Analysis'] :
-                    mode === 'xr' ? ['Unity', 'WebGL/Three.js', 'Shader Coding'] :
+                  {(mode === 'xr' ? ['Unity', 'WebGL/Three.js', 'Shader Coding', 'HCI'] :
                     ['SaaS Architecture', 'Cloud Native', 'Web3'])
                     .map(t => (
                       <span key={t} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-white/70">

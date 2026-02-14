@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDatabase } from '@/lib/mongodb'
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production'
+export const dynamic = 'force-dynamic'
+
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) throw new Error('JWT_SECRET environment variable is required')
+  return secret
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,24 +19,39 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      jwt.verify(token, JWT_SECRET)
+      jwt.verify(token, getJwtSecret())
     } catch {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
+    // Parse date range from query params (default: last 30 days)
+    const { searchParams } = new URL(request.url)
+    const fromParam = searchParams.get('from')
+    const toParam = searchParams.get('to')
+
+    const now = new Date()
+    const defaultFrom = new Date(now)
+    defaultFrom.setDate(defaultFrom.getDate() - 30)
+    defaultFrom.setHours(0, 0, 0, 0)
+
+    const fromDate = fromParam ? new Date(fromParam) : defaultFrom
+    const toDate = toParam ? new Date(toParam) : now
+
+    const dateFilter = { timestamp: { $gte: fromDate, $lte: toDate } }
+
     const db = await getDatabase()
     const visitors = db.collection('visitors')
 
-    // Get all visitors, excluding local development
+    // Get visitors within date range, excluding local development
     const allVisitors = await visitors.find({
       $and: [
         { city: { $ne: 'Local Development' } },
-        { country: { $ne: 'Localhost' } }
+        { country: { $ne: 'Localhost' } },
+        dateFilter
       ]
     }).toArray()
 
     // Calculate analytics
-    const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const yesterday = new Date(today)
     yesterday.setDate(yesterday.getDate() - 1)
@@ -65,10 +86,9 @@ export async function GET(request: NextRequest) {
       ? Math.round(((todayVisitors - yesterdayVisitors) / yesterdayVisitors) * 100)
       : todayVisitors > 0 ? 100 : 0
 
-    // Mode breakdown
+    // Mode breakdown (merge legacy 'phd' visits into 'xr')
     const modeBreakdown = {
-      phd: allVisitors.filter(v => v.mode === 'phd').length,
-      xr: allVisitors.filter(v => v.mode === 'xr').length,
+      xr: allVisitors.filter(v => v.mode === 'xr' || v.mode === 'phd').length,
       fullstack: allVisitors.filter(v => v.mode === 'fullstack').length,
     }
 
@@ -222,21 +242,31 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5)
 
-    // Get section durations for time spent analysis
-    const sectionDurations = await db.collection('section_durations').find({}).toArray()
+    // Get page sessions for accurate page-level timing
+    const pageSessions = await db.collection('page_sessions').find(dateFilter).toArray()
 
-    // Aggregate time spent by pathname
-    const pageTimeData: Record<string, { totalMs: number; sessions: Set<string> }> = {}
-    sectionDurations.forEach(d => {
-      const path = d.pathname || '/'
-      if (!pageTimeData[path]) {
-        pageTimeData[path] = { totalMs: 0, sessions: new Set() }
+    // Aggregate page-level time and scroll depth by pathname
+    const pageSessionData: Record<string, { totalVisibleMs: number; totalScrollDepth: number; count: number }> = {}
+    pageSessions.forEach(ps => {
+      const path = ps.pathname || '/'
+      if (!pageSessionData[path]) {
+        pageSessionData[path] = { totalVisibleMs: 0, totalScrollDepth: 0, count: 0 }
       }
-      pageTimeData[path].totalMs += d.durationMs || 0
-      if (d.sessionId) pageTimeData[path].sessions.add(d.sessionId)
+      pageSessionData[path].totalVisibleMs += ps.visibleTimeMs || 0
+      pageSessionData[path].totalScrollDepth += ps.scrollDepth || 0
+      pageSessionData[path].count++
     })
 
-    // Pathname breakdown with time spent
+    // Scroll depth distribution (site-wide milestones)
+    const totalPageSessions = pageSessions.length
+    const scrollDepthDistribution = [
+      { depth: 25, count: pageSessions.filter(ps => (ps.scrollDepth || 0) >= 25).length },
+      { depth: 50, count: pageSessions.filter(ps => (ps.scrollDepth || 0) >= 50).length },
+      { depth: 75, count: pageSessions.filter(ps => (ps.scrollDepth || 0) >= 75).length },
+      { depth: 100, count: pageSessions.filter(ps => (ps.scrollDepth || 0) >= 100).length },
+    ]
+
+    // Pathname breakdown with time spent (from page_sessions)
     const pathCounts: Record<string, number> = {}
     allVisitors.forEach(v => {
       const path = v.pathname || '/'
@@ -245,24 +275,30 @@ export async function GET(request: NextRequest) {
 
     const topPages = Object.entries(pathCounts)
       .map(([path, count]) => {
-        const timeData = pageTimeData[path]
-        const avgTimeMs = timeData && timeData.sessions.size > 0
-          ? Math.round(timeData.totalMs / timeData.sessions.size)
+        const psData = pageSessionData[path]
+        const avgTimeMs = psData && psData.count > 0
+          ? Math.round(psData.totalVisibleMs / psData.count)
           : 0
-        return { path, count, avgTimeMs, totalTimeMs: timeData?.totalMs || 0 }
+        const avgScrollDepth = psData && psData.count > 0
+          ? Math.round(psData.totalScrollDepth / psData.count)
+          : 0
+        return { path, count, avgTimeMs, avgScrollDepth, totalTimeMs: psData?.totalVisibleMs || 0 }
       })
       .sort((a, b) => b.count - a.count)
       .slice(0, 10)
 
-    // Section engagement data
-    const sectionTimeData: Record<string, { totalMs: number; views: number }> = {}
+    // Section engagement data (still from section_durations)
+    const sectionDurations = await db.collection('section_durations').find(dateFilter).toArray()
+
+    const sectionTimeData: Record<string, { totalMs: number; views: number; sessions: Set<string> }> = {}
     sectionDurations.forEach(d => {
       const section = d.sectionId || 'unknown'
       if (!sectionTimeData[section]) {
-        sectionTimeData[section] = { totalMs: 0, views: 0 }
+        sectionTimeData[section] = { totalMs: 0, views: 0, sessions: new Set() }
       }
       sectionTimeData[section].totalMs += d.durationMs || 0
       sectionTimeData[section].views++
+      if (d.sessionId) sectionTimeData[section].sessions.add(d.sessionId)
     })
 
     const sectionEngagement = Object.entries(sectionTimeData)
@@ -273,6 +309,114 @@ export async function GET(request: NextRequest) {
         views: data.views
       }))
       .sort((a, b) => b.totalTimeMs - a.totalTimeMs)
+
+    // --- Interaction Events ---
+    const interactionEvents = await db.collection('interaction_events').find(dateFilter).toArray()
+
+    // Top events by type
+    const eventTypeCounts: Record<string, number> = {}
+    interactionEvents.forEach(ev => {
+      const t = ev.eventType || 'unknown'
+      eventTypeCounts[t] = (eventTypeCounts[t] || 0) + 1
+    })
+    const topEvents = Object.entries(eventTypeCounts)
+      .map(([eventType, count]) => ({ eventType, count }))
+      .sort((a, b) => b.count - a.count)
+
+    // Recent 30 events
+    const recentEvents = interactionEvents
+      .sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime())
+      .slice(0, 30)
+      .map(ev => ({
+        eventType: ev.eventType,
+        eventTarget: ev.eventTarget || '',
+        pathname: ev.pathname || '/',
+        timestamp: (ev.timestamp || ev.createdAt)?.toISOString?.() || new Date(ev.timestamp || ev.createdAt).toISOString(),
+      }))
+
+    // --- Section View-Through Funnel ---
+    const sectionOrder = ['category-hero', 'about', 'resume', 'projects', 'publications', 'contact']
+    const uniquePageSessions = new Set(pageSessions.map(ps => ps.sessionId).filter(Boolean)).size
+
+    const sectionFunnel = sectionOrder.map(sectionId => {
+      const uniqueSessions = sectionTimeData[sectionId]?.sessions.size || 0
+      const rate = uniquePageSessions > 0 ? Math.round((uniqueSessions / uniquePageSessions) * 100) : 0
+      return { section: sectionId, uniqueSessions, rate }
+    })
+
+    // --- Engagement Score (per session, averaged) ---
+    const sessionData: Record<string, {
+      maxScrollDepth: number
+      visibleTimeMs: number
+      sectionsViewed: Set<string>
+      clickCount: number
+    }> = {}
+
+    // From page_sessions
+    pageSessions.forEach(ps => {
+      const sid = ps.sessionId
+      if (!sid) return
+      if (!sessionData[sid]) {
+        sessionData[sid] = { maxScrollDepth: 0, visibleTimeMs: 0, sectionsViewed: new Set(), clickCount: 0 }
+      }
+      sessionData[sid].maxScrollDepth = Math.max(sessionData[sid].maxScrollDepth, ps.scrollDepth || 0)
+      sessionData[sid].visibleTimeMs += ps.visibleTimeMs || 0
+    })
+
+    // From section_durations
+    sectionDurations.forEach(d => {
+      const sid = d.sessionId
+      if (!sid) return
+      if (!sessionData[sid]) {
+        sessionData[sid] = { maxScrollDepth: 0, visibleTimeMs: 0, sectionsViewed: new Set(), clickCount: 0 }
+      }
+      if (d.sectionId) sessionData[sid].sectionsViewed.add(d.sectionId)
+    })
+
+    // From interaction_events
+    interactionEvents.forEach(ev => {
+      const sid = ev.sessionId
+      if (!sid) return
+      if (!sessionData[sid]) {
+        sessionData[sid] = { maxScrollDepth: 0, visibleTimeMs: 0, sectionsViewed: new Set(), clickCount: 0 }
+      }
+      sessionData[sid].clickCount++
+    })
+
+    const sessionScores = Object.values(sessionData).map(s => {
+      const scrollScore = (Math.min(s.maxScrollDepth, 100) / 100) * 25
+      const timeScore = Math.min(s.visibleTimeMs / 120000, 1) * 25
+      const sectionsScore = (Math.min(s.sectionsViewed.size, 6) / 6) * 25
+      const clickScore = Math.min(s.clickCount / 3, 1) * 25
+      return scrollScore + timeScore + sectionsScore + clickScore
+    })
+
+    const avgEngagementScore = sessionScores.length > 0
+      ? Math.round(sessionScores.reduce((a, b) => a + b, 0) / sessionScores.length)
+      : 0
+
+    // --- Conversion Funnel ---
+    const allVisitorIds = new Set(allVisitors.map(v => v.visitorId).filter(Boolean))
+    const sectionViewVisitors = new Set(sectionDurations.map(d => d.visitorId).filter(Boolean))
+    const projectInteractionVisitors = new Set(
+      interactionEvents
+        .filter(ev => ev.eventType?.startsWith('project_'))
+        .map(ev => ev.visitorId)
+        .filter(Boolean)
+    )
+    const contactSocialVisitors = new Set(
+      interactionEvents
+        .filter(ev => ['contact_email_click', 'contact_phone_click', 'social_link_click'].includes(ev.eventType))
+        .map(ev => ev.visitorId)
+        .filter(Boolean)
+    )
+
+    const conversionFunnel = [
+      { stage: 'Visitors', count: allVisitorIds.size },
+      { stage: 'Section Views', count: sectionViewVisitors.size },
+      { stage: 'Project Interactions', count: projectInteractionVisitors.size },
+      { stage: 'Contact/Social Clicks', count: contactSocialVisitors.size },
+    ]
 
     return NextResponse.json({
       totalVisitors,
@@ -294,7 +438,14 @@ export async function GET(request: NextRequest) {
       topReferrers,
       topPages,
       geographyData,
-      sectionEngagement
+      sectionEngagement,
+      scrollDepthDistribution,
+      totalPageSessions,
+      topEvents,
+      recentEvents,
+      sectionFunnel,
+      avgEngagementScore,
+      conversionFunnel
     })
   } catch (error) {
     console.error('Analytics error:', error)

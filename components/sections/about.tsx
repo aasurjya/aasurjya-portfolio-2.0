@@ -144,7 +144,7 @@ export default function About() {
                 {/* Profile image container */}
                 <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-white/10">
                   <Image
-                    src="https://media.licdn.com/dms/image/v2/D5603AQFyUA6T7hRQsw/profile-displayphoto-crop_800_800/B56ZuU4lSWGwAI-/0/1767729420647?e=1771459200&v=beta&t=7r32CF3VBeklUz34wXsnQtye-XPFYXgujszv58a10JI"
+                    src="/profile-image.jpg"
                     alt="Aasurjya Bikash Handique"
                     fill
                     className="object-cover grayscale hover:grayscale-0 transition-all duration-500"

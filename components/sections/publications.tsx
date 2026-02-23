@@ -9,6 +9,8 @@ export default function Publications() {
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
 
+  if (publications.length === 0) return null
+
   const typeColors = {
     journal: 'bg-blue-500/10 text-blue-500',
     conference: 'bg-green-500/10 text-green-500',
@@ -43,16 +45,16 @@ export default function Publications() {
                         {pub.type.charAt(0).toUpperCase() + pub.type.slice(1)}
                       </span>
                     </div>
-                    
+
                     <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">
                       {pub.title}
                     </h3>
-                    
+
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                       <Users className="w-4 h-4" />
                       <span>{pub.authors.join(', ')}</span>
                     </div>
-                    
+
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="font-medium">{pub.venue}</span>
                       <div className="flex items-center gap-1">
@@ -60,14 +62,14 @@ export default function Publications() {
                         <span>{pub.year}</span>
                       </div>
                     </div>
-                    
+
                     {pub.abstract && (
                       <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
                         {pub.abstract}
                       </p>
                     )}
                   </div>
-                  
+
                   {pub.link && (
                     <a
                       href={pub.link}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, useRef } from 'react'
+import { useState, useMemo, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps'
 import { Bar } from 'react-chartjs-2'
@@ -17,37 +17,13 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
+import { chartOptions } from './chart-config'
+import ChartErrorBoundary from './ChartErrorBoundary'
+import type { GeoCountry } from './types'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: { legend: { display: false } },
-  scales: {
-    x: { grid: { display: false } },
-    y: { grid: { color: 'rgba(0,0,0,0.05)' }, beginAtZero: true }
-  }
-}
-
-interface GeoCity {
-  city: string
-  count: number
-}
-
-interface GeoState {
-  state: string
-  count: number
-  cities: GeoCity[]
-}
-
-interface GeoCountry {
-  country: string
-  count: number
-  states: GeoState[]
-}
 
 interface LocationData {
   lat: number
@@ -62,44 +38,6 @@ interface GeographyTabProps {
   topCities: { city: string; count: number }[]
   geographyData: GeoCountry[]
   totalVisitors: number
-}
-
-// Error boundary for chart sections
-class ChartErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallbackTitle?: string },
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode; fallbackTitle?: string }) {
-    super(props)
-    this.state = { hasError: false }
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true }
-  }
-
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error('Chart error:', error, info)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="bg-card p-6 rounded-xl border flex flex-col items-center justify-center min-h-[200px] text-center">
-          <p className="text-muted-foreground mb-2">
-            {this.props.fallbackTitle || 'Failed to load this section'}
-          </p>
-          <button
-            onClick={() => this.setState({ hasError: false })}
-            className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90"
-          >
-            Retry
-          </button>
-        </div>
-      )
-    }
-    return this.props.children
-  }
 }
 
 export default function GeographyTab({

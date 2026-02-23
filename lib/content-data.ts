@@ -239,34 +239,35 @@ export const projects: Project[] = [
   }
 ]
 
+// No publications yet — entries commented out
 export const publications: Publication[] = [
-  {
-    id: 'pub1',
-    title: 'Human-Centered Design Principles for Extended Reality Interfaces',
-    authors: ['Aasurjya B.', 'Smith J.', 'Johnson K.'],
-    venue: 'CHI Conference on Human Factors in Computing Systems',
-    year: 2024,
-    type: 'conference',
-    link: 'https://doi.org/example',
-    abstract: 'This paper presents a comprehensive framework for designing XR interfaces that prioritize user comfort and engagement...'
-  },
-  {
-    id: 'pub2',
-    title: 'Reducing Motion Sickness in Virtual Reality: A Comparative Study',
-    authors: ['Aasurjya B.', 'Chen L.'],
-    venue: 'IEEE Transactions on Visualization and Computer Graphics',
-    year: 2023,
-    type: 'journal',
-    link: 'https://doi.org/example'
-  },
-  {
-    id: 'pub3',
-    title: 'Adaptive Rendering Techniques for Mobile AR Applications',
-    authors: ['Aasurjya B.'],
-    venue: 'SIGGRAPH Asia',
-    year: 2023,
-    type: 'conference'
-  }
+  // {
+  //   id: 'pub1',
+  //   title: 'Human-Centered Design Principles for Extended Reality Interfaces',
+  //   authors: ['Aasurjya B.', 'Smith J.', 'Johnson K.'],
+  //   venue: 'CHI Conference on Human Factors in Computing Systems',
+  //   year: 2024,
+  //   type: 'conference',
+  //   link: 'https://doi.org/example',
+  //   abstract: 'This paper presents a comprehensive framework for designing XR interfaces that prioritize user comfort and engagement...'
+  // },
+  // {
+  //   id: 'pub2',
+  //   title: 'Reducing Motion Sickness in Virtual Reality: A Comparative Study',
+  //   authors: ['Aasurjya B.', 'Chen L.'],
+  //   venue: 'IEEE Transactions on Visualization and Computer Graphics',
+  //   year: 2023,
+  //   type: 'journal',
+  //   link: 'https://doi.org/example'
+  // },
+  // {
+  //   id: 'pub3',
+  //   title: 'Adaptive Rendering Techniques for Mobile AR Applications',
+  //   authors: ['Aasurjya B.'],
+  //   venue: 'SIGGRAPH Asia',
+  //   year: 2023,
+  //   type: 'conference'
+  // }
 ]
 
 export interface ResumeItem {

@@ -42,14 +42,21 @@ export async function GET(request: NextRequest) {
     const db = await getDatabase()
     const visitors = db.collection('visitors')
 
-    // Get visitors within date range, excluding local development
-    const allVisitors = await visitors.find({
+    // Run all 4 independent DB queries in parallel
+    const visitorFilter = {
       $and: [
         { city: { $ne: 'Local Development' } },
         { country: { $ne: 'Localhost' } },
         dateFilter
       ]
-    }).toArray()
+    }
+
+    const [allVisitors, pageSessions, sectionDurations, interactionEvents] = await Promise.all([
+      visitors.find(visitorFilter).toArray(),
+      db.collection('page_sessions').find(dateFilter).toArray(),
+      db.collection('section_durations').find(dateFilter).toArray(),
+      db.collection('interaction_events').find(dateFilter).toArray(),
+    ])
 
     // Calculate analytics
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -193,14 +200,18 @@ export async function GET(request: NextRequest) {
         mode: v.mode
       }))
 
-    // Locations for map
-    const locations = allVisitors
-      .filter(v => v.latitude && v.longitude)
-      .map(v => ({
-        lat: v.latitude,
-        lng: v.longitude,
-        city: v.city || 'Unknown'
-      }))
+    // Locations for map — deduplicated by city to reduce marker count
+    const locationMap: Record<string, { lat: number; lng: number; city: string; count: number }> = {}
+    allVisitors.forEach(v => {
+      if (!v.latitude || !v.longitude) return
+      const city = v.city || 'Unknown'
+      const key = `${city}-${Math.round(v.latitude * 10)}-${Math.round(v.longitude * 10)}`
+      if (!locationMap[key]) {
+        locationMap[key] = { lat: v.latitude, lng: v.longitude, city, count: 0 }
+      }
+      locationMap[key].count++
+    })
+    const locations = Object.values(locationMap).sort((a, b) => b.count - a.count)
 
     // Hourly distribution (for today)
     const hourlyDistribution = Array(24).fill(0)
@@ -242,10 +253,7 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5)
 
-    // Get page sessions for accurate page-level timing
-    const pageSessions = await db.collection('page_sessions').find(dateFilter).toArray()
-
-    // Aggregate page-level time and scroll depth by pathname
+    // Aggregate page-level time and scroll depth by pathname (pageSessions already fetched above)
     const pageSessionData: Record<string, { totalVisibleMs: number; totalScrollDepth: number; count: number }> = {}
     pageSessions.forEach(ps => {
       const path = ps.pathname || '/'
@@ -287,9 +295,7 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10)
 
-    // Section engagement data (still from section_durations)
-    const sectionDurations = await db.collection('section_durations').find(dateFilter).toArray()
-
+    // Section engagement data (sectionDurations already fetched above)
     const sectionTimeData: Record<string, { totalMs: number; views: number; sessions: Set<string> }> = {}
     sectionDurations.forEach(d => {
       const section = d.sectionId || 'unknown'
@@ -310,9 +316,7 @@ export async function GET(request: NextRequest) {
       }))
       .sort((a, b) => b.totalTimeMs - a.totalTimeMs)
 
-    // --- Interaction Events ---
-    const interactionEvents = await db.collection('interaction_events').find(dateFilter).toArray()
-
+    // --- Interaction Events (already fetched above) ---
     // Top events by type
     const eventTypeCounts: Record<string, number> = {}
     interactionEvents.forEach(ev => {

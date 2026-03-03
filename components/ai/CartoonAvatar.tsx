@@ -111,7 +111,7 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
   const winkEyeAnim = { scaleY: 0.1, transition: { type: 'spring', stiffness: 300 } }
   const sadEyeAnim = { scaleY: 0.6, transition: { type: 'spring', stiffness: 300 } }
   
-  let baseEyeAnim = defaultEyeAnim
+  let baseEyeAnim: { scaleY: number | number[]; transition: object } = defaultEyeAnim
   if (isWide) baseEyeAnim = wideEyeAnim
   else if (isSleepy) baseEyeAnim = sleepyEyeAnim
   else if (isSad) baseEyeAnim = sadEyeAnim

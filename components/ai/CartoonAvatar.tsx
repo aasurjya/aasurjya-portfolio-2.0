@@ -6,61 +6,76 @@ import { useState, useEffect } from 'react'
 interface CartoonAvatarProps {
   amplitude: number
   isSpeaking: boolean
+  playful?: boolean
   mode?: string | null
 }
 
-export default function CartoonAvatar({ amplitude, isSpeaking, mode }: CartoonAvatarProps) {
+export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, mode }: CartoonAvatarProps) {
   const [expression, setExpression] = useState<'idle' | 'lookLeft' | 'lookRight' | 'lookUp' | 'lookDown' | 'playful' | 'happy' | 'wink'>('idle')
 
-  // Randomize expression when not speaking
+  // Randomize expression when not speaking (or always when playful)
   useEffect(() => {
     let isMounted = true
     let timeoutId: NodeJS.Timeout
     let resetTimeoutId: NodeJS.Timeout
 
-    if (isSpeaking) {
+    // In normal mode, lock to idle while speaking
+    if (isSpeaking && !playful) {
       setExpression('idle')
       return
     }
 
     const trigger = () => {
       if (!isMounted) return
-      
-      const rand = Math.random()
-      let delay = 2000 + Math.random() * 3000
-      let nextExpr: typeof expression = 'idle'
 
-      // Weighted probabilities for different expressions
-      if (rand < 0.15) nextExpr = 'lookLeft'
-      else if (rand < 0.30) nextExpr = 'lookRight'
-      else if (rand < 0.40) nextExpr = 'lookUp'
-      else if (rand < 0.50) nextExpr = 'lookDown'
-      else if (rand < 0.65) nextExpr = 'happy'
-      else if (rand < 0.80) nextExpr = 'playful'
-      else if (rand < 0.90) nextExpr = 'wink'
-      else nextExpr = 'idle'
+      const rand = Math.random()
+      let nextExpr: typeof expression = 'idle'
+      // Faster cycle when playful (minimized bubble)
+      let delay = playful ? (800 + Math.random() * 1500) : (2000 + Math.random() * 3000)
+
+      if (playful) {
+        // More teasing: heavier weight on looks, winks, and playful
+        if (rand < 0.20) nextExpr = 'lookLeft'
+        else if (rand < 0.40) nextExpr = 'lookRight'
+        else if (rand < 0.55) nextExpr = 'wink'
+        else if (rand < 0.70) nextExpr = 'happy'
+        else if (rand < 0.85) nextExpr = 'playful'
+        else if (rand < 0.90) nextExpr = 'lookUp'
+        else nextExpr = 'lookDown'
+      } else {
+        // Weighted probabilities for different expressions
+        if (rand < 0.15) nextExpr = 'lookLeft'
+        else if (rand < 0.30) nextExpr = 'lookRight'
+        else if (rand < 0.40) nextExpr = 'lookUp'
+        else if (rand < 0.50) nextExpr = 'lookDown'
+        else if (rand < 0.65) nextExpr = 'happy'
+        else if (rand < 0.80) nextExpr = 'playful'
+        else if (rand < 0.90) nextExpr = 'wink'
+        else nextExpr = 'idle'
+      }
 
       setExpression(nextExpr)
 
       // Reset playful/happy/wink expressions faster than simple eye movements
       if (['playful', 'wink', 'happy'].includes(nextExpr)) {
+        const resetDelay = playful ? (600 + Math.random() * 600) : (1200 + Math.random() * 1000)
         resetTimeoutId = setTimeout(() => {
-          if (isMounted && !isSpeaking) setExpression('idle')
-        }, 1200 + Math.random() * 1000)
-        delay += 1500 // Add delay before next animation to let it breathe
+          if (isMounted) setExpression('idle')
+        }, resetDelay)
+        delay += playful ? 800 : 1500
       }
 
       timeoutId = setTimeout(trigger, delay)
     }
 
-    timeoutId = setTimeout(trigger, 2000)
+    timeoutId = setTimeout(trigger, playful ? 500 : 2000)
 
     return () => {
       isMounted = false
       clearTimeout(timeoutId)
       clearTimeout(resetTimeoutId)
     }
-  }, [isSpeaking])
+  }, [isSpeaking, playful])
 
   const isPlayful = expression === 'playful'
   const isHappy = expression === 'happy'

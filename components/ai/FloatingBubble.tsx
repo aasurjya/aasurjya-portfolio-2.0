@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, type PanInfo } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import CartoonAvatar from './CartoonAvatar'
 
@@ -20,24 +20,9 @@ export default function FloatingBubble({
   onRestore,
   onClose,
 }: FloatingBubbleProps) {
-  const dragDistRef = useRef(0)
   const constraintsRef = useRef<HTMLDivElement>(null)
 
   const accentColor = mode === 'xr' ? 'rgba(20,184,166,0.6)' : 'rgba(139,92,246,0.6)'
-
-  const handleDragStart = () => {
-    dragDistRef.current = 0
-  }
-
-  const handleDrag = (_: unknown, info: PanInfo) => {
-    dragDistRef.current += Math.abs(info.delta.x) + Math.abs(info.delta.y)
-  }
-
-  const handleDragEnd = () => {
-    if (dragDistRef.current < 5) {
-      onRestore()
-    }
-  }
 
   return (
     <>
@@ -53,10 +38,8 @@ export default function FloatingBubble({
         dragConstraints={constraintsRef}
         dragElastic={0.1}
         dragMomentum={false}
-        onDragStart={handleDragStart}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
-        className="fixed bottom-6 right-6 z-50 cursor-grab active:cursor-grabbing touch-none"
+        onTap={onRestore}
+        className="fixed bottom-6 right-6 z-50 cursor-grab active:cursor-grabbing"
         style={{ touchAction: 'none' }}
       >
         {/* Speaking glow ring */}
@@ -76,6 +59,7 @@ export default function FloatingBubble({
             <CartoonAvatar
               amplitude={amplitude}
               isSpeaking={isSpeaking}
+              playful
               mode={mode}
             />
           </div>
@@ -83,6 +67,7 @@ export default function FloatingBubble({
 
         {/* Close X button */}
         <button
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation()
             onClose()

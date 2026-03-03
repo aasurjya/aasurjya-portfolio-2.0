@@ -74,7 +74,26 @@ export default function HeroV2() {
   }
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black" aria-labelledby="hero-heading">
+    <section
+      className="relative h-screen w-full overflow-hidden"
+      style={{ background: '#000' }}
+      aria-labelledby="hero-heading"
+    >
+      {/* Vector gradient background — bottommost layer, rendered before everything else */}
+      <svg aria-hidden="true" className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="heroGrad" cx="50%" cy="40%" r="70%" gradientUnits="objectBoundingBox">
+            <stop offset="0%"   stopColor="#12091f" />
+            <stop offset="20%"  stopColor="#0d0718" />
+            <stop offset="40%"  stopColor="#080510" />
+            <stop offset="60%"  stopColor="#040310" />
+            <stop offset="80%"  stopColor="#020108" />
+            <stop offset="100%" stopColor="#000000" />
+          </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#heroGrad)" />
+      </svg>
+
       <h1 id="hero-heading" className="sr-only">
         Aasurjya Handique - XR Developer & Spatial Computing Engineer Portfolio
       </h1>
@@ -85,25 +104,25 @@ export default function HeroV2() {
       {/* Background Text Overlay */}
       <div aria-hidden="true" className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center">
         <motion.div
-          className="text-[15vw] font-black tracking-tighter text-white opacity-[0.1] leading-none blur-[1px] whitespace-nowrap"
+          className="text-[15vw] font-black tracking-tighter text-white leading-none whitespace-nowrap"
           initial={{ x: '-100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 0.1 }}
+          animate={{ x: 0, opacity: 0.07 }}
           transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }}
         >
           AASURJYA
         </motion.div>
         <motion.div
-          className="text-[15vw] font-black tracking-tighter text-white opacity-[0.1] leading-none blur-[1px] whitespace-nowrap"
+          className="text-[15vw] font-black tracking-tighter text-white leading-none whitespace-nowrap"
           initial={{ x: '100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 0.1 }}
+          animate={{ x: 0, opacity: 0.07 }}
           transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1], delay: 0.2 }}
         >
           BIKASH
         </motion.div>
         <motion.div
-          className="text-[15vw] font-black tracking-tighter text-white opacity-[0.1] leading-none blur-[1px] whitespace-nowrap"
+          className="text-[15vw] font-black tracking-tighter text-white leading-none whitespace-nowrap"
           initial={{ x: '-100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 0.1 }}
+          animate={{ x: 0, opacity: 0.07 }}
           transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1], delay: 0.4 }}
         >
           HANDIQUE
@@ -236,7 +255,32 @@ export default function HeroV2() {
       </div>
 
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px]" />
+        {/* Center depth glow — SVG gradient fades naturally to transparent, no hard circular clip */}
+        <svg aria-hidden="true" className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'blur(72px)' }}>
+          <defs>
+            <radialGradient id="glowGrad" cx="50%" cy="44%" r="55%" gradientUnits="objectBoundingBox">
+              <stop offset="0%"   stopColor="#8b5cf6" stopOpacity="0.18" />
+              <stop offset="30%"  stopColor="#7c3aed" stopOpacity="0.09" />
+              <stop offset="55%"  stopColor="#10b981" stopOpacity="0.04" />
+              <stop offset="80%"  stopColor="#8b5cf6" stopOpacity="0.01" />
+              <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#glowGrad)" />
+        </svg>
+        {/* Vignette — 5 stops for smooth dark-edge fade, no harsh transition */}
+        <svg aria-hidden="true" className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="vigGrad" cx="50%" cy="50%" r="80%" gradientUnits="objectBoundingBox">
+              <stop offset="0%"   stopColor="#000000" stopOpacity="0" />
+              <stop offset="42%"  stopColor="#000000" stopOpacity="0" />
+              <stop offset="62%"  stopColor="#000000" stopOpacity="0.18" />
+              <stop offset="80%"  stopColor="#000000" stopOpacity="0.42" />
+              <stop offset="100%" stopColor="#000000" stopOpacity="0.65" />
+            </radialGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#vigGrad)" />
+        </svg>
       </div>
     </section>
   )

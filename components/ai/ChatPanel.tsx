@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { X } from 'lucide-react'
+import { X, Minus } from 'lucide-react'
 import CartoonAvatar from './CartoonAvatar'
 import type { ChatMessage } from '@/hooks/use-aasurjya-ai'
 import ChatBubble from './ChatBubble'
@@ -23,6 +23,7 @@ interface ChatPanelProps {
   mode?: string | null
   onSend: (message: string, voiceUsed?: boolean) => void
   onClose: () => void
+  onMinimize: () => void
   onVoiceToggle: () => void
   onStarterSelect: (question: string) => void
   onNavClick: (sectionId: string) => void
@@ -39,6 +40,7 @@ export default function ChatPanel({
   mode,
   onSend,
   onClose,
+  onMinimize,
   onVoiceToggle,
   onStarterSelect,
   onNavClick,
@@ -79,6 +81,13 @@ export default function ChatPanel({
       <div className="w-full flex flex-col items-center pt-6 pb-2 z-10 bg-gradient-to-b from-black/80 to-transparent relative">
         <div className="absolute top-4 right-4 flex items-center gap-2">
           <VoiceOutput isVoiceEnabled={isVoiceEnabled} onToggle={onVoiceToggle} />
+          <button
+            onClick={onMinimize}
+            className="p-2 rounded-full bg-white/5 text-white/60 hover:text-white hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md"
+            aria-label="Minimize chat"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
           <button
             onClick={onClose}
             className="p-2 rounded-full bg-white/5 text-white/60 hover:text-white hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md"

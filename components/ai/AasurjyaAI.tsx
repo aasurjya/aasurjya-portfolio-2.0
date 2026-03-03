@@ -10,6 +10,7 @@ import { useSectionObserver } from '@/hooks/use-section-observer'
 import { buildPersonalizedGreeting, getConversationStarters } from '@/lib/ai-context-builder'
 import AIChatTrigger from './AIChatTrigger'
 import ChatPanel from './ChatPanel'
+import FloatingBubble from './FloatingBubble'
 
 export default function AasurjyaAI() {
   const { mode } = useMode()
@@ -20,6 +21,8 @@ export default function AasurjyaAI() {
     messages,
     isOpen,
     setIsOpen,
+    isMinimized,
+    setIsMinimized,
     isLoading,
     error,
     sendMessage,
@@ -88,8 +91,17 @@ export default function AasurjyaAI() {
 
   const handleClose = useCallback(() => {
     setIsOpen(false)
+    setIsMinimized(false)
     stop()
-  }, [setIsOpen, stop])
+  }, [setIsOpen, setIsMinimized, stop])
+
+  const handleMinimize = useCallback(() => {
+    setIsMinimized(true)
+  }, [setIsMinimized])
+
+  const handleRestore = useCallback(() => {
+    setIsMinimized(false)
+  }, [setIsMinimized])
 
   const handleVoiceToggle = useCallback(() => {
     if (isVoiceEnabled) {
@@ -121,7 +133,7 @@ export default function AasurjyaAI() {
     <>
       <AIChatTrigger onClick={handleOpen} isOpen={isOpen} mode={mode} />
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !isMinimized && (
           <ChatPanel
             messages={messages}
             isLoading={isLoading}
@@ -133,9 +145,21 @@ export default function AasurjyaAI() {
             mode={mode}
             onSend={handleSend}
             onClose={handleClose}
+            onMinimize={handleMinimize}
             onVoiceToggle={handleVoiceToggle}
             onStarterSelect={handleStarterSelect}
             onNavClick={handleNavClick}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isOpen && isMinimized && (
+          <FloatingBubble
+            isSpeaking={isSpeaking}
+            amplitude={lipSync.amplitude}
+            mode={mode}
+            onRestore={handleRestore}
+            onClose={handleClose}
           />
         )}
       </AnimatePresence>

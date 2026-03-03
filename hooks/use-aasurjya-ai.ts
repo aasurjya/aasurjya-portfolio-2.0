@@ -19,6 +19,7 @@ interface UseAasurjyaAIOptions {
 export function useAasurjyaAI({ currentSection, mode }: UseAasurjyaAIOptions = {}) {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isOpen, setIsOpen] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
@@ -173,6 +174,8 @@ export function useAasurjyaAI({ currentSection, mode }: UseAasurjyaAIOptions = {
     messages,
     isOpen,
     setIsOpen,
+    isMinimized,
+    setIsMinimized,
     isLoading,
     error,
     sendMessage,

@@ -150,8 +150,6 @@ export default function ChatPanel({
           <ChatInput
             onSend={onSend}
             isLoading={isLoading}
-            mode={mode}
-            amplitude={amplitude}
             isSpeaking={isSpeaking}
           />
         </div>

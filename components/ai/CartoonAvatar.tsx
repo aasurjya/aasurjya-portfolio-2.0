@@ -11,7 +11,7 @@ interface CartoonAvatarProps {
 }
 
 export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, mode }: CartoonAvatarProps) {
-  const [expression, setExpression] = useState<'idle' | 'lookLeft' | 'lookRight' | 'lookUp' | 'lookDown' | 'playful' | 'happy' | 'wink'>('idle')
+  const [expression, setExpression] = useState<'idle' | 'lookLeft' | 'lookRight' | 'lookUp' | 'lookDown' | 'playful' | 'happy' | 'wink' | 'surprised' | 'sad' | 'angry' | 'thinking' | 'sleepy'>('idle')
 
   // Randomize expression when not speaking (or always when playful)
   useEffect(() => {
@@ -35,29 +35,35 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
 
       if (playful) {
         // More teasing: heavier weight on looks, winks, and playful
-        if (rand < 0.20) nextExpr = 'lookLeft'
-        else if (rand < 0.40) nextExpr = 'lookRight'
-        else if (rand < 0.55) nextExpr = 'wink'
-        else if (rand < 0.70) nextExpr = 'happy'
-        else if (rand < 0.85) nextExpr = 'playful'
-        else if (rand < 0.90) nextExpr = 'lookUp'
-        else nextExpr = 'lookDown'
-      } else {
-        // Weighted probabilities for different expressions
         if (rand < 0.15) nextExpr = 'lookLeft'
         else if (rand < 0.30) nextExpr = 'lookRight'
-        else if (rand < 0.40) nextExpr = 'lookUp'
-        else if (rand < 0.50) nextExpr = 'lookDown'
-        else if (rand < 0.65) nextExpr = 'happy'
-        else if (rand < 0.80) nextExpr = 'playful'
-        else if (rand < 0.90) nextExpr = 'wink'
+        else if (rand < 0.45) nextExpr = 'wink'
+        else if (rand < 0.60) nextExpr = 'happy'
+        else if (rand < 0.75) nextExpr = 'playful'
+        else if (rand < 0.85) nextExpr = 'thinking'
+        else if (rand < 0.95) nextExpr = 'surprised'
+        else nextExpr = 'lookUp'
+      } else {
+        // Weighted probabilities for different expressions
+        if (rand < 0.10) nextExpr = 'lookLeft'
+        else if (rand < 0.20) nextExpr = 'lookRight'
+        else if (rand < 0.25) nextExpr = 'lookUp'
+        else if (rand < 0.30) nextExpr = 'lookDown'
+        else if (rand < 0.40) nextExpr = 'happy'
+        else if (rand < 0.50) nextExpr = 'playful'
+        else if (rand < 0.55) nextExpr = 'wink'
+        else if (rand < 0.65) nextExpr = 'thinking'
+        else if (rand < 0.70) nextExpr = 'surprised'
+        else if (rand < 0.75) nextExpr = 'sad'
+        else if (rand < 0.80) nextExpr = 'angry'
+        else if (rand < 0.85) nextExpr = 'sleepy'
         else nextExpr = 'idle'
       }
 
       setExpression(nextExpr)
 
-      // Reset playful/happy/wink expressions faster than simple eye movements
-      if (['playful', 'wink', 'happy'].includes(nextExpr)) {
+      // Reset specific expressions faster than simple eye movements
+      if (['playful', 'wink', 'happy', 'surprised', 'sad', 'angry', 'thinking', 'sleepy'].includes(nextExpr)) {
         const resetDelay = playful ? (600 + Math.random() * 600) : (1200 + Math.random() * 1000)
         resetTimeoutId = setTimeout(() => {
           if (isMounted) setExpression('idle')
@@ -80,7 +86,14 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
   const isPlayful = expression === 'playful'
   const isHappy = expression === 'happy'
   const isWink = expression === 'wink'
-  const isSquint = isPlayful || isHappy
+  const isSurprised = expression === 'surprised'
+  const isSad = expression === 'sad'
+  const isAngry = expression === 'angry'
+  const isThinking = expression === 'thinking'
+  const isSleepy = expression === 'sleepy'
+  
+  const isSquint = isPlayful || isHappy || isAngry
+  const isWide = isSurprised
 
   // Eye blinks naturally
   const blinkTransition = {
@@ -92,11 +105,20 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
   }
 
   const defaultEyeAnim = { scaleY: [1, 1, 0.1, 1, 1], transition: blinkTransition }
+  const wideEyeAnim = { scaleY: 1.2, transition: { type: 'spring', stiffness: 300 } }
   const squintEyeAnim = { scaleY: 0.3, transition: { type: 'spring', stiffness: 300 } }
+  const sleepyEyeAnim = { scaleY: 0.2, transition: { type: 'spring', stiffness: 200 } }
   const winkEyeAnim = { scaleY: 0.1, transition: { type: 'spring', stiffness: 300 } }
+  const sadEyeAnim = { scaleY: 0.6, transition: { type: 'spring', stiffness: 300 } }
   
-  const leftEyeAnim = isSquint ? squintEyeAnim : isWink ? winkEyeAnim : defaultEyeAnim
-  const rightEyeAnim = isSquint ? squintEyeAnim : defaultEyeAnim
+  let baseEyeAnim = defaultEyeAnim
+  if (isWide) baseEyeAnim = wideEyeAnim
+  else if (isSleepy) baseEyeAnim = sleepyEyeAnim
+  else if (isSad) baseEyeAnim = sadEyeAnim
+  else if (isSquint) baseEyeAnim = squintEyeAnim
+
+  const leftEyeAnim = isWink ? winkEyeAnim : baseEyeAnim
+  const rightEyeAnim = baseEyeAnim
 
   // Pupil positions based on expression
   let pupilX = 0
@@ -105,7 +127,8 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
   if (expression === 'lookRight') pupilX = 2.5
   if (expression === 'lookUp') pupilY = -2.5
   if (expression === 'lookDown') pupilY = 2.5
-  if (isPlayful || isHappy) pupilY = 1
+  if (isThinking) { pupilX = 2; pupilY = -2 }
+  if (isPlayful || isHappy || isSad) pupilY = 1
 
   // Mouth reacts to speech amplitude or expression
   let mouthHeight = 4
@@ -116,6 +139,10 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
     mouthHeight = 4 + amplitude * 6
     mouthWidth = 10 + amplitude * 2
     mouthBorderRadius = '4px 4px 10px 10px' // Subtler D-shape when speaking
+  } else if (isSurprised) {
+    mouthHeight = 10
+    mouthWidth = 10
+    mouthBorderRadius = '50%'
   } else if (isPlayful) {
     mouthHeight = 12
     mouthWidth = 14
@@ -128,6 +155,22 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
     mouthHeight = 6
     mouthWidth = 12
     mouthBorderRadius = '2px 2px 8px 8px'
+  } else if (isSad) {
+    mouthHeight = 4
+    mouthWidth = 14
+    mouthBorderRadius = '12px 12px 2px 2px'
+  } else if (isAngry) {
+    mouthHeight = 2
+    mouthWidth = 14
+    mouthBorderRadius = '2px'
+  } else if (isThinking) {
+    mouthHeight = 3
+    mouthWidth = 8
+    mouthBorderRadius = '2px'
+  } else if (isSleepy) {
+    mouthHeight = 3
+    mouthWidth = 8
+    mouthBorderRadius = '4px'
   } else if (['lookUp', 'lookLeft', 'lookRight'].includes(expression)) {
     mouthHeight = 4
     mouthWidth = 8
@@ -136,16 +179,17 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
 
   // Head bobs slightly based on state
   const headBob = {
-    y: isSpeaking ? [-2, 2, -2] : (isHappy || isPlayful ? [-3, 3, -3] : [-1, 1, -1]),
-    rotateZ: expression === 'lookLeft' ? -3 : expression === 'lookRight' ? 3 : 0,
+    y: isSpeaking ? [-2, 2, -2] : (isHappy || isPlayful ? [-3, 3, -3] : isSad || isSleepy ? [1, 2, 1] : [-1, 1, -1]),
+    rotateZ: expression === 'lookLeft' ? -3 : expression === 'lookRight' ? 3 : isThinking ? 4 : 0,
     transition: {
-      y: { duration: isSpeaking ? 0.4 : 3, repeat: Infinity, ease: "easeInOut" },
+      y: { duration: isSpeaking ? 0.4 : isSleepy ? 4 : 3, repeat: Infinity, ease: "easeInOut" },
       rotateZ: { type: 'spring', stiffness: 300, damping: 20 }
     }
   }
 
-  const leftBrowRot = isPlayful ? 15 : isHappy ? -10 : expression === 'lookLeft' ? -5 : 0
-  const rightBrowRot = isPlayful ? -15 : isHappy ? 10 : expression === 'lookRight' ? 5 : 0
+  const leftBrowRot = isAngry ? 20 : isSad ? -15 : isPlayful ? 15 : isHappy ? -10 : isThinking ? -10 : expression === 'lookLeft' ? -5 : 0
+  const rightBrowRot = isAngry ? -20 : isSad ? 15 : isPlayful ? -15 : isHappy ? 10 : isThinking ? 5 : expression === 'lookRight' ? 5 : 0
+  const browY = isSurprised ? -6 : isAngry ? 2 : isSquint ? -2 : expression === 'lookUp' ? -4 : 0
 
   const baseColor = mode === 'xr' ? 'bg-teal-500' : 'bg-purple-500'
 
@@ -173,11 +217,11 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
         {/* Eyebrows */}
         <div className="absolute top-[22px] w-full flex justify-center gap-[6px] px-3 z-10 pointer-events-none">
           <motion.div 
-            animate={{ y: isSquint ? -2 : expression === 'lookUp' ? -4 : 0, rotateZ: leftBrowRot }}
+            animate={{ y: browY, rotateZ: leftBrowRot }}
             className="w-[12px] h-[2.5px] bg-white/70 rounded-full"
           />
           <motion.div 
-            animate={{ y: isSquint ? -2 : expression === 'lookUp' ? -4 : 0, rotateZ: rightBrowRot }}
+            animate={{ y: browY, rotateZ: rightBrowRot }}
             className="w-[12px] h-[2.5px] bg-white/70 rounded-full"
           />
         </div>
@@ -205,7 +249,7 @@ export default function CartoonAvatar({ amplitude, isSpeaking, playful = false, 
           {/* Mouth container */}
           <div className="relative flex flex-col items-center">
             <motion.div
-              animate={{ height: mouthHeight, width: mouthWidth, borderRadius: mouthBorderRadius }}
+              animate={{ height: mouthHeight, width: mouthWidth, borderRadius: mouthBorderRadius, x: isThinking ? 4 : 0 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               className="relative bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)] z-10"
             />

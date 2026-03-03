@@ -16,6 +16,8 @@ export default function AasurjyaAI() {
   const { mode } = useMode()
   const currentSection = useSectionObserver()
   const greetedRef = useRef(false)
+  const dragConstraintsRef = useRef<HTMLDivElement>(null)
+  const bubblePosRef = useRef({ x: 0, y: 0 })
 
   const {
     messages,
@@ -93,7 +95,12 @@ export default function AasurjyaAI() {
     setIsOpen(false)
     setIsMinimized(false)
     stop()
+    bubblePosRef.current = { x: 0, y: 0 }
   }, [setIsOpen, setIsMinimized, stop])
+
+  const handleBubbleDragChange = useCallback((pos: { x: number; y: number }) => {
+    bubblePosRef.current = pos
+  }, [])
 
   const handleMinimize = useCallback(() => {
     setIsMinimized(true)
@@ -152,12 +159,18 @@ export default function AasurjyaAI() {
           />
         )}
       </AnimatePresence>
+      {isOpen && isMinimized && (
+        <div ref={dragConstraintsRef} className="fixed inset-0 z-50 pointer-events-none" />
+      )}
       <AnimatePresence>
         {isOpen && isMinimized && (
           <FloatingBubble
             isSpeaking={isSpeaking}
             amplitude={lipSync.amplitude}
             mode={mode}
+            constraintsRef={dragConstraintsRef}
+            initialPosition={bubblePosRef.current}
+            onDragPositionChange={handleBubbleDragChange}
             onRestore={handleRestore}
             onClose={handleClose}
           />

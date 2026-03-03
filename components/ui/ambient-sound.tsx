@@ -191,40 +191,10 @@ export default function AmbientSound() {
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-50 flex items-center gap-2"
+      className="fixed top-4 right-4 z-50 flex flex-col items-end gap-2"
       onMouseEnter={() => setShowVolumeSlider(true)}
       onMouseLeave={() => setShowVolumeSlider(false)}
     >
-      {/* Volume slider */}
-      <AnimatePresence>
-        {showVolumeSlider && isPlaying && (
-          <motion.div
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: 'auto' }}
-            exit={{ opacity: 0, width: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-black/50 backdrop-blur-xl border border-white/10">
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={volume}
-                onChange={handleVolumeChange}
-                className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer
-                  [&::-webkit-slider-thumb]:appearance-none
-                  [&::-webkit-slider-thumb]:w-3
-                  [&::-webkit-slider-thumb]:h-3
-                  [&::-webkit-slider-thumb]:rounded-full
-                  [&::-webkit-slider-thumb]:bg-white
-                  [&::-webkit-slider-thumb]:cursor-pointer"
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Toggle button */}
       <motion.button
         onClick={toggleSound}
@@ -262,18 +232,32 @@ export default function AmbientSound() {
         )}
       </motion.button>
 
-      {/* Label on first visit */}
+      {/* Volume slider */}
       <AnimatePresence>
-        {!isPlaying && (
+        {showVolumeSlider && isPlaying && (
           <motion.div
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 10 }}
-            className="absolute right-full mr-3 whitespace-nowrap"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
           >
-            <span className="text-[10px] text-white/40 tracking-wide uppercase">
-              Ambient
-            </span>
+            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-black/50 backdrop-blur-xl border border-white/10">
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-3
+                  [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-white
+                  [&::-webkit-slider-thumb]:cursor-pointer"
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

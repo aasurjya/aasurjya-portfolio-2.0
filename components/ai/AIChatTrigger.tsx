@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle } from 'lucide-react'
 
@@ -13,6 +13,7 @@ interface AIChatTriggerProps {
 export default function AIChatTrigger({ onClick, isOpen, mode }: AIChatTriggerProps) {
   const [visible, setVisible] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
+  const pointerDownPos = useRef<{ x: number; y: number } | null>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 8000)
@@ -58,7 +59,18 @@ export default function AIChatTrigger({ onClick, isOpen, mode }: AIChatTriggerPr
         </AnimatePresence>
 
         <button
-          onClick={onClick}
+          onPointerDown={(e) => {
+            pointerDownPos.current = { x: e.clientX, y: e.clientY }
+          }}
+          onClick={(e) => {
+            if (pointerDownPos.current) {
+              const dx = e.clientX - pointerDownPos.current.x
+              const dy = e.clientY - pointerDownPos.current.y
+              pointerDownPos.current = null
+              if (Math.sqrt(dx * dx + dy * dy) > 6) return  // was a drag, not a tap
+            }
+            onClick()
+          }}
           className={`relative w-14 h-14 rounded-full ${bg} text-white shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center`}
         >
           {/* Pulse ring */}

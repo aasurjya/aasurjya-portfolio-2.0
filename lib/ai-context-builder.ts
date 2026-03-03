@@ -36,32 +36,32 @@ export function buildPersonalizedGreeting(country?: string | null): string {
     ? `${greetingsByCountry[country]}! `
     : ''
 
-  return `${localGreeting}${timeGreeting}! I'm Aasurjya AI — ask me about his projects, skills, or research.`
+  return `${localGreeting}${timeGreeting}! I'm Aasurjya AI — I know everything about him. What's your name, and what brings you here today?`
 }
 
 export function getConversationStarters(mode?: string | null): string[] {
   const common = [
+    "I'm a recruiter, tell me about him",
+    "I'm a developer, what can we build together?",
     'What projects has Aasurjya built?',
-    'Tell me about his background',
     'What are his key skills?',
-    'How can I contact him?',
   ]
 
   if (mode === 'xr') {
     return [
+      "I'm a recruiter, tell me about him",
       'What XR projects has he worked on?',
       'Tell me about his research at IIT Jodhpur',
       'What AR/VR technologies does he use?',
-      ...common.slice(1),
     ]
   }
 
   if (mode === 'fullstack') {
     return [
+      "I'm a recruiter, tell me about him",
       'What full-stack projects has he built?',
       'What tech stack does he specialize in?',
       'Tell me about his SaaS experience',
-      ...common.slice(1),
     ]
   }
 

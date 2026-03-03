@@ -43,4 +43,13 @@ export interface AnalyticsData {
   sectionFunnel: { section: string; uniqueSessions: number; rate: number }[]
   avgEngagementScore: number
   conversionFunnel: { stage: string; count: number }[]
+  aiAnalytics?: {
+    totalConversations: number
+    totalMessages: number
+    todayConversations: number
+    weeklyConversations: number
+    voiceUsagePercent: number
+    avgMessagesPerConversation: number
+    topQuestions: { question: string; count: number }[]
+  }
 }

@@ -19,7 +19,7 @@ import {
 } from 'chart.js'
 import {
   Users, Globe, Home, MousePointer,
-  RefreshCw, LogOut, BarChart3
+  RefreshCw, LogOut, BarChart3, Bot
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { formatDate } from '@/components/admin/format-utils'
@@ -27,6 +27,7 @@ import type { AnalyticsData } from '@/components/admin/types'
 import OverviewTab from '@/components/admin/OverviewTab'
 import VisitorsTab from '@/components/admin/VisitorsTab'
 import BehaviorTab from '@/components/admin/BehaviorTab'
+import AITab from '@/components/admin/AITab'
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement,
@@ -79,7 +80,7 @@ function getDatePreset(preset: string): { from: string; to: string } {
   }
 }
 
-type TabType = 'overview' | 'visitors' | 'geography' | 'behavior'
+type TabType = 'overview' | 'visitors' | 'geography' | 'behavior' | 'ai'
 
 const datePresets = [
   { key: 'today', label: 'Today' },
@@ -93,6 +94,7 @@ const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
   { id: 'visitors', label: 'Visitors', icon: <Users className="w-4 h-4" /> },
   { id: 'geography', label: 'Geography', icon: <Globe className="w-4 h-4" /> },
   { id: 'behavior', label: 'Behavior', icon: <MousePointer className="w-4 h-4" /> },
+  { id: 'ai', label: 'AI', icon: <Bot className="w-4 h-4" /> },
 ]
 
 export default function AdminDashboard() {
@@ -149,7 +151,8 @@ export default function AdminDashboard() {
           recentEvents: data.recentEvents || [],
           sectionFunnel: data.sectionFunnel || [],
           avgEngagementScore: data.avgEngagementScore || 0,
-          conversionFunnel: data.conversionFunnel || []
+          conversionFunnel: data.conversionFunnel || [],
+          aiAnalytics: data.aiAnalytics || undefined,
         })
       } else {
         const errorData = await res.json().catch(() => ({}))
@@ -408,6 +411,8 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'behavior' && <BehaviorTab analyticsData={analyticsData} />}
+
+        {activeTab === 'ai' && <AITab analyticsData={analyticsData} />}
       </main>
     </div>
   )

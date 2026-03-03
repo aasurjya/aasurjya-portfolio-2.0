@@ -7,6 +7,9 @@ import AnalyticsTracker from '@/components/providers/analytics-tracker'
 import AmbientSound from '@/components/ui/ambient-sound'
 import { Toaster } from 'react-hot-toast'
 import Script from 'next/script'
+import dynamic from 'next/dynamic'
+
+const AasurjyaAI = dynamic(() => import('@/components/ai/AasurjyaAI'), { ssr: false })
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -224,6 +227,7 @@ export default function RootLayout({
               {children}
             </main>
             <AnalyticsTracker />
+            <AasurjyaAI />
             <AmbientSound />
             <Toaster
               position="bottom-right"

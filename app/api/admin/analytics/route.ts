@@ -51,11 +51,12 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    const [allVisitors, pageSessions, sectionDurations, interactionEvents] = await Promise.all([
+    const [allVisitors, pageSessions, sectionDurations, interactionEvents, aiConversations] = await Promise.all([
       visitors.find(visitorFilter).toArray(),
       db.collection('page_sessions').find(dateFilter).toArray(),
       db.collection('section_durations').find(dateFilter).toArray(),
       db.collection('interaction_events').find(dateFilter).toArray(),
+      db.collection('ai_conversations').find(dateFilter).toArray(),
     ])
 
     // Calculate analytics
@@ -422,6 +423,46 @@ export async function GET(request: NextRequest) {
       { stage: 'Contact/Social Clicks', count: contactSocialVisitors.size },
     ]
 
+    // --- AI Analytics ---
+    const totalAIConversations = new Set(aiConversations.map(c => c.conversationId).filter(Boolean)).size
+    const totalAIMessages = aiConversations.length
+    const aiVoiceUsage = aiConversations.filter(c => c.voiceUsed).length
+    const aiVoicePercentage = totalAIMessages > 0
+      ? Math.round((aiVoiceUsage / totalAIMessages) * 100)
+      : 0
+
+    // Average messages per conversation
+    const convMsgCounts: Record<string, number> = {}
+    aiConversations.forEach(c => {
+      const cid = c.conversationId || 'unknown'
+      convMsgCounts[cid] = (convMsgCounts[cid] || 0) + 1
+    })
+    const convCounts = Object.values(convMsgCounts)
+    const avgMessagesPerConversation = convCounts.length > 0
+      ? Math.round(convCounts.reduce((a, b) => a + b, 0) / convCounts.length)
+      : 0
+
+    // Most asked questions (top user messages)
+    const questionCounts: Record<string, number> = {}
+    aiConversations.forEach(c => {
+      if (c.userMessage) {
+        const q = c.userMessage.toLowerCase().trim().slice(0, 100)
+        questionCounts[q] = (questionCounts[q] || 0) + 1
+      }
+    })
+    const topAIQuestions = Object.entries(questionCounts)
+      .map(([question, count]) => ({ question, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10)
+
+    // AI conversations today/week
+    const todayAIConversations = new Set(
+      aiConversations.filter(c => new Date(c.timestamp) >= today).map(c => c.conversationId)
+    ).size
+    const weeklyAIConversations = new Set(
+      aiConversations.filter(c => new Date(c.timestamp) >= thisWeek).map(c => c.conversationId)
+    ).size
+
     return NextResponse.json({
       totalVisitors,
       todayVisitors,
@@ -449,7 +490,16 @@ export async function GET(request: NextRequest) {
       recentEvents,
       sectionFunnel,
       avgEngagementScore,
-      conversionFunnel
+      conversionFunnel,
+      aiAnalytics: {
+        totalConversations: totalAIConversations,
+        totalMessages: totalAIMessages,
+        todayConversations: todayAIConversations,
+        weeklyConversations: weeklyAIConversations,
+        voiceUsagePercent: aiVoicePercentage,
+        avgMessagesPerConversation,
+        topQuestions: topAIQuestions,
+      },
     })
   } catch (error) {
     console.error('Analytics error:', error)

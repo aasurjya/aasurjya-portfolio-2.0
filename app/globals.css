@@ -172,7 +172,7 @@
 }
 
 .timeline-node:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .timeline-node:hover::before {
@@ -292,27 +292,13 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Gradient border animation */
-@keyframes gradient-border {
-  0%, 100% {
-    border-color: rgba(34, 211, 238, 0.5);
-  }
-  50% {
-    border-color: rgba(99, 102, 241, 0.5);
-  }
-}
-
-.gradient-border-animated {
-  animation: gradient-border 3s ease infinite;
-}
-
 /* Smooth hover lift */
 .hover-lift {
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
 }
 
 .hover-lift:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
 }
 

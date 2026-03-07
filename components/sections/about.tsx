@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState, memo } from 'react'
+import { useEffect, useRef, memo } from 'react'
 import { motion } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import { aboutContent } from '@/lib/content-data'
-import { Github, Linkedin, Mail, MapPin, Cpu, Globe, ArrowRight, Sparkles } from 'lucide-react'
+import { Github, Linkedin, Mail, MapPin, Cpu, Globe, ArrowRight } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import Link from 'next/link'
@@ -18,32 +18,8 @@ if (typeof window !== 'undefined') {
 export default function About() {
   const { mode } = useMode()
   const sectionRef = useRef<HTMLElement>(null)
-  const journeyButtonRef = useRef<HTMLAnchorElement>(null)
-  const profileRef = useRef<HTMLDivElement>(null)
-  const [isJourneyHovered, setIsJourneyHovered] = useState(false)
-  const [journeyMousePos, setJourneyMousePos] = useState({ x: 0.5, y: 0.5 })
-  const [isProfileHovered, setIsProfileHovered] = useState(false)
-  const [profileMousePos, setProfileMousePos] = useState({ x: 0.5, y: 0.5 })
 
   const content = mode ? aboutContent[mode] : aboutContent.fullstack
-
-  const handleJourneyMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!journeyButtonRef.current) return
-    const rect = journeyButtonRef.current.getBoundingClientRect()
-    setJourneyMousePos({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    })
-  }
-
-  const handleProfileMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!profileRef.current) return
-    const rect = profileRef.current.getBoundingClientRect()
-    setProfileMousePos({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    })
-  }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,17 +39,10 @@ export default function About() {
   }, [mode])
 
   const modeColor = getModeColor(mode)
-  const modeBgOpacity = getModeBgOpacity(mode)
   const modeGradient = getModeGradient(mode)
 
   return (
     <section ref={sectionRef} id="about" className="relative py-20 md:py-32 overflow-hidden bg-[#050505]">
-      {/* Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className={`absolute top-0 right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full blur-[100px] ${modeBgOpacity} opacity-40`} />
-        <div className={`absolute bottom-0 left-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full blur-[100px] ${modeBgOpacity} opacity-40`} />
-      </div>
-
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="about-title-reveal text-center mb-12 md:mb-20">
@@ -87,117 +56,18 @@ export default function About() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Left: Bio & Highlights */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-8"
-          >
-            {/* Awwwards-style Profile Picture */}
-            <motion.div
-              ref={profileRef}
-              className="relative w-fit mx-auto lg:mx-0"
-              onMouseEnter={() => setIsProfileHovered(true)}
-              onMouseLeave={() => setIsProfileHovered(false)}
-              onMouseMove={handleProfileMouseMove}
-              style={{
-                perspective: '1000px',
-              }}
-            >
-              {/* Outer glow */}
-              <motion.div
-                className="absolute -inset-8 rounded-full pointer-events-none"
-                animate={{
-                  background: isProfileHovered
-                    ? `radial-gradient(ellipse 80% 80% at ${profileMousePos.x * 100}% ${profileMousePos.y * 100}%, ${modeGradient.primary}40 0%, transparent 70%)`
-                    : `radial-gradient(ellipse 60% 60% at 50% 50%, ${modeGradient.primary}25 0%, transparent 70%)`,
-                }}
-                style={{ filter: 'blur(30px)' }}
-                transition={{ duration: 0.4 }}
-              />
-
-              {/* Main container with 3D tilt */}
-              <motion.div
-                className="relative"
-                animate={{
-                  rotateX: isProfileHovered ? (profileMousePos.y - 0.5) * -20 : 0,
-                  rotateY: isProfileHovered ? (profileMousePos.x - 0.5) * 20 : 0,
-                }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                {/* Animated border ring */}
-                <div className="absolute -inset-1 rounded-full overflow-hidden">
-                  <motion.div
-                    className="absolute inset-0"
-                    style={{
-                      background: `conic-gradient(from 0deg, ${modeGradient.primary}, ${modeGradient.secondary}, ${modeGradient.primary})`,
-                    }}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                  />
-                </div>
-
-                {/* Inner border */}
-                <div className="absolute inset-0 rounded-full bg-[#050505]" style={{ margin: '3px' }} />
-
-                {/* Profile image container */}
-                <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-white/10">
-                  <Image
-                    src="/profile-image.jpg"
-                    alt="Aasurjya Bikash Handique"
-                    fill
-                    className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                    sizes="(max-width: 768px) 112px, 144px"
-                  />
-
-                  {/* Overlay on hover */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: isProfileHovered ? 1 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-
-                {/* Floating orbs */}
-                <motion.div
-                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${modeGradient.primary} 0%, transparent 70%)`,
-                    filter: 'blur(2px)',
-                  }}
-                  animate={{
-                    y: isProfileHovered ? [0, -8, 0] : [0, -4, 0],
-                    scale: isProfileHovered ? [1, 1.2, 1] : [1, 1.1, 1],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          <div className="space-y-8">
+            {/* Profile Picture */}
+            <div className="relative w-fit mx-auto lg:mx-0">
+              <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-white/20">
+                <Image
+                  src="/profile-image.jpg"
+                  alt="Aasurjya Bikash Handique"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 112px, 144px"
                 />
-                <motion.div
-                  className="absolute -bottom-1 -left-3 w-4 h-4 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${modeGradient.secondary} 0%, transparent 70%)`,
-                    filter: 'blur(1px)',
-                  }}
-                  animate={{
-                    y: isProfileHovered ? [0, 6, 0] : [0, 3, 0],
-                    x: isProfileHovered ? [0, -4, 0] : [0, -2, 0],
-                  }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                />
-                <motion.div
-                  className="absolute top-1/2 -right-4 w-3 h-3 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, white 0%, transparent 70%)`,
-                    filter: 'blur(1px)',
-                  }}
-                  animate={{
-                    x: isProfileHovered ? [0, 6, 0] : [0, 3, 0],
-                    opacity: [0.6, 1, 0.6],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                />
-              </motion.div>
+              </div>
 
               {/* Name tag */}
               <motion.div
@@ -216,7 +86,7 @@ export default function About() {
                   Aasurjya B.H.
                 </span>
               </motion.div>
-            </motion.div>
+            </div>
 
             {/* Bio */}
             <div className="space-y-6">
@@ -264,130 +134,28 @@ export default function About() {
                 ))}
               </div>
 
-              {/* Journey Button - Animated Glass Style */}
-              <div className="relative">
-                {/* Glow effect */}
-                <motion.div
-                  className="absolute -inset-4 pointer-events-none rounded-full"
-                  animate={{
-                    background: isJourneyHovered
-                      ? `radial-gradient(ellipse 60% 60% at ${journeyMousePos.x * 100}% ${journeyMousePos.y * 100}%, rgba(99,102,241,0.4) 0%, transparent 60%)`
-                      : 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(99,102,241,0.2) 0%, transparent 60%)',
-                  }}
-                  style={{ filter: 'blur(15px)' }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
-                />
-
-                <motion.a
-                  ref={journeyButtonRef}
-                  href="/story"
-                  data-track-event="journey_button_click"
-                  data-track-target="my_journey"
-                  className="relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-medium overflow-hidden cursor-pointer"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(200,200,220,0.35) 0%, rgba(255,255,255,0.15) 100%)',
-                    boxShadow: '0 0 0 1px rgba(255,255,255,0.2), 0 10px 25px -10px rgba(0,0,0,0.35), inset 0 1px 2px rgba(255,255,255,0.25)',
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  onMouseEnter={() => setIsJourneyHovered(true)}
-                  onMouseLeave={() => setIsJourneyHovered(false)}
-                  onMouseMove={handleJourneyMouseMove}
-                >
-                  {/* Animated color blobs */}
-                  <div className="absolute inset-0 rounded-full overflow-hidden">
-                    <motion.div
-                      className="absolute w-20 h-20 rounded-full"
-                      style={{
-                        background: 'radial-gradient(circle, rgba(59,130,246,0.85) 0%, rgba(37,99,235,0.6) 50%, transparent 70%)',
-                        filter: 'blur(8px)',
-                      }}
-                      animate={{
-                        x: isJourneyHovered ? `${(journeyMousePos.x - 0.5) * -80}%` : ['0%', '40%', '10%', '50%', '0%'],
-                        y: isJourneyHovered ? `${(journeyMousePos.y - 0.5) * -60}%` : ['0%', '30%', '-20%', '20%', '0%'],
-                      }}
-                      transition={isJourneyHovered
-                        ? { type: 'spring', stiffness: 150, damping: 15 }
-                        : { duration: 6, repeat: Infinity, ease: 'easeInOut' }
-                      }
-                    />
-                    <motion.div
-                      className="absolute w-16 h-16 rounded-full"
-                      style={{
-                        background: 'radial-gradient(circle, rgba(139,92,246,0.8) 0%, rgba(109,40,217,0.5) 50%, transparent 70%)',
-                        filter: 'blur(6px)',
-                        right: '10%',
-                        top: '10%',
-                      }}
-                      animate={{
-                        x: isJourneyHovered ? `${(journeyMousePos.x - 0.5) * -70}%` : ['0%', '-30%', '20%', '-40%', '0%'],
-                        y: isJourneyHovered ? `${(journeyMousePos.y - 0.5) * -50}%` : ['0%', '40%', '-10%', '30%', '0%'],
-                      }}
-                      transition={isJourneyHovered
-                        ? { type: 'spring', stiffness: 120, damping: 12 }
-                        : { duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }
-                      }
-                    />
-                    <motion.div
-                      className="absolute w-14 h-14 rounded-full"
-                      style={{
-                        background: 'radial-gradient(circle, rgba(236,72,153,0.75) 0%, rgba(219,39,119,0.5) 50%, transparent 70%)',
-                        filter: 'blur(6px)',
-                        left: '30%',
-                        bottom: '0%',
-                      }}
-                      animate={{
-                        x: isJourneyHovered ? `${(journeyMousePos.x - 0.5) * -60}%` : ['0%', '30%', '-20%', '40%', '0%'],
-                        y: isJourneyHovered ? `${(journeyMousePos.y - 0.5) * -70}%` : ['0%', '-30%', '20%', '-20%', '0%'],
-                      }}
-                      transition={isJourneyHovered
-                        ? { type: 'spring', stiffness: 100, damping: 10 }
-                        : { duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }
-                      }
-                    />
-                  </div>
-
-                  {/* Glass surface */}
-                  <div
-                    className="absolute inset-0 rounded-full pointer-events-none"
-                    style={{
-                      background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.08) 100%)',
-                      boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.3)',
-                    }}
-                  />
-
-                  {/* Content */}
-                  <div className="relative z-10 flex items-center gap-2">
-                    <motion.div
-                      animate={isJourneyHovered ? { rotate: [0, -5, 5, 0] } : {}}
-                      transition={{ duration: 0.4 }}
-                    >
-                      <Sparkles className="w-4 h-4 text-white drop-shadow-lg" />
-                    </motion.div>
-                    <span className="tracking-wide text-white font-semibold drop-shadow-lg">
-                      My Journey
-                    </span>
-                    <motion.div
-                      initial={{ opacity: 0, x: -5 }}
-                      animate={isJourneyHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: -5 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ArrowRight className="w-4 h-4 text-white drop-shadow-lg" />
-                    </motion.div>
-                  </div>
-                </motion.a>
-              </div>
+              {/* Journey Button - Glass Pill */}
+              <motion.a
+                href="/story"
+                data-track-event="journey_button_click"
+                data-track-target="my_journey"
+                className="relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-medium overflow-hidden cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(200,200,220,0.25) 0%, rgba(255,255,255,0.10) 100%)',
+                  boxShadow: '0 0 0 1px rgba(255,255,255,0.15), 0 10px 25px -10px rgba(0,0,0,0.35)',
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              >
+                <span className="tracking-wide text-white font-semibold">My Journey</span>
+                <ArrowRight className="w-4 h-4 text-white/80" />
+              </motion.a>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right: Availability Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div>
             <div className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10 space-y-8">
               {/* Status */}
               <div className="flex items-start gap-4">
@@ -438,7 +206,7 @@ export default function About() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMode } from '@/components/providers/mode-provider'
 import gsap from 'gsap'
-import { Download, ChevronDown, Sparkles, FileText } from 'lucide-react'
+import { Download, ChevronDown, FileText } from 'lucide-react'
 
 export default function CategoryHero() {
   const { mode } = useMode()
@@ -328,7 +328,7 @@ export default function CategoryHero() {
 
           {/* Floating badge */}
           <motion.div
-            className="absolute -top-2 -right-2 md:-top-3 md:-right-3 px-2.5 py-1 rounded-full text-[9px] md:text-[10px] font-bold flex items-center gap-1 z-20"
+            className="absolute -top-2 -right-2 md:-top-3 md:-right-3 px-2.5 py-1 rounded-full text-[9px] md:text-[10px] font-bold flex items-center z-20"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8))',
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
@@ -337,7 +337,6 @@ export default function CategoryHero() {
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 1.8, type: 'spring', stiffness: 200 }}
           >
-            <Sparkles className="w-3 h-3 text-indigo-500" />
             <span className="text-gray-800">2025</span>
           </motion.div>
         </div>

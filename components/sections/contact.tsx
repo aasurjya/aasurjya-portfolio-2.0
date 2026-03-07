@@ -4,8 +4,11 @@ import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Mail, MapPin, Phone, Linkedin, Github } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { useMode } from '@/components/providers/mode-provider'
+import { getModeColor } from '@/lib/theme-colors'
 
 export default function Contact() {
+  const { mode } = useMode()
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
   const [formData, setFormData] = useState({
@@ -15,6 +18,8 @@ export default function Contact() {
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const modeColor = getModeColor(mode)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,7 +57,7 @@ export default function Contact() {
         >
           {/* Header */}
           <div className="text-center mb-12 md:mb-16">
-            <p className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-purple-400 mb-4">
+            <p className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase ${modeColor} mb-4`}>
               Contact
             </p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white">
@@ -62,16 +67,11 @@ export default function Contact() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Left: CTA */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
-              transition={{ delay: 0.2 }}
-              className="space-y-8"
-            >
+            <div className="space-y-8">
               <div className="space-y-4">
                 <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
                   Let&apos;s create something{' '}
-                  <span className="text-purple-400 italic">extraordinary</span> together.
+                  <span className={`${modeColor} italic`}>extraordinary</span> together.
                 </h3>
                 <p className="text-base md:text-lg text-white/70 max-w-md">
                   I&apos;m always open to discussing innovative projects, research opportunities, or technical challenges.
@@ -109,7 +109,7 @@ export default function Contact() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Right: Contact Info */}
             <div className="space-y-8">
@@ -134,7 +134,7 @@ export default function Contact() {
                       <div className="min-w-0 flex-1">
                         <p className="text-[10px] font-bold text-white/60 uppercase tracking-wider">{info.label}</p>
                         {info.link ? (
-                          <a href={info.link} className="text-sm font-medium text-white hover:text-purple-400 transition-colors truncate block">
+                          <a href={info.link} className="text-sm font-medium text-white hover:text-white/80 transition-colors truncate block">
                             {info.value}
                           </a>
                         ) : (

@@ -50,7 +50,7 @@ export default function AIChatTrigger({ onClick, isOpen, mode }: AIChatTriggerPr
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 10 }}
-              className="absolute bottom-full right-0 mb-3 px-3 py-2 rounded-lg bg-card border border-white/10 text-xs text-foreground whitespace-nowrap shadow-lg"
+              className="absolute bottom-full right-0 mb-3 px-3 py-2 rounded-lg bg-card border border-white/10 text-xs text-foreground whitespace-nowrap shadow-lg hidden xl:block"
             >
               Hi! I&apos;m Aasurjya AI. Ask me anything.
               <div className="absolute top-full right-5 w-2 h-2 bg-card border-r border-b border-white/10 transform rotate-45 -translate-y-1" />

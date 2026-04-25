@@ -91,7 +91,7 @@ export default function CategoryHero() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#050505]"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#050505] pb-12 xl:pb-0"
     >
       {/* Background */}
       <div className="absolute inset-0 -z-10">
@@ -150,8 +150,12 @@ export default function CategoryHero() {
       </div>
 
       {/* Bottom Center: Resume + Scroll */}
+      {/* On <lg viewports the block is in-flow under the hero copy so it never
+          collides with the subtitle/description (e.g. at 853–1024px which maps
+          to 125–150% browser zoom). On lg+ it returns to its bottom-anchored
+          floating position. */}
       <motion.div
-        className="absolute bottom-8 md:bottom-12 inset-x-0 flex flex-col items-center gap-8"
+        className="mt-10 flex flex-col items-center gap-6 xl:absolute xl:bottom-12 xl:inset-x-0 xl:mt-0 xl:gap-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.8 }}
@@ -326,9 +330,10 @@ export default function CategoryHero() {
             </div>
           </motion.a>
 
-          {/* Floating badge */}
+          {/* Floating badge — decorative, hidden on small screens to keep the
+              hero subtitle area visually clean at 853–1024px viewports. */}
           <motion.div
-            className="absolute -top-2 -right-2 md:-top-3 md:-right-3 px-2.5 py-1 rounded-full text-[9px] md:text-[10px] font-bold flex items-center z-20"
+            className="absolute -top-2 -right-2 md:-top-3 md:-right-3 px-2.5 py-1 rounded-full text-[9px] md:text-[10px] font-bold hidden xl:flex items-center z-20"
             style={{
               background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8))',
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',

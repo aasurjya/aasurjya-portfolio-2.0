@@ -78,20 +78,20 @@ export default function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {mode && navItemsWithConditional.map((item) => (
               <button
                 key={item.label}
                 onClick={() => handleNavClick(item.href)}
-                className="text-sm font-medium hover:text-primary transition-colors"
+                className="text-sm font-medium hover:text-primary transition-colors whitespace-nowrap"
               >
                 {item.label}
               </button>
             ))}
 
             {/* Mode Switcher */}
-            <div className="flex items-center gap-1 ml-4 pl-4 border-l border-white/10">
-              <span className="text-[10px] text-white/60 uppercase tracking-wider mr-2">Mode:</span>
+            <div className="flex items-center gap-1 ml-2 pl-3 border-l border-white/10">
+              <span className="hidden xl:inline text-[10px] text-white/60 uppercase tracking-wider mr-2">Mode:</span>
               {modeOptions.map((m) => (
                 <Link
                   key={m.id}
@@ -99,7 +99,7 @@ export default function Navigation() {
                   onClick={() => setMode(m.id)}
                   data-track-event="mode_switch"
                   data-track-target={m.id}
-                  className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
+                  className={`px-2 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap ${
                     mode === m.id
                       ? `${m.color} bg-white/10`
                       : 'text-white/60 hover:text-white/80'
@@ -116,7 +116,7 @@ export default function Navigation() {
               download
               data-track-event="resume_download"
               data-track-target="resume_button"
-              className="ml-4 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold !bg-gradient-to-r !from-amber-400 !via-amber-500 !to-orange-600 !text-black hover:shadow-lg hover:shadow-orange-500/20 transition-all"
+              className="ml-3 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap !bg-gradient-to-r !from-amber-400 !via-amber-500 !to-orange-600 !text-black hover:shadow-lg hover:shadow-orange-500/20 transition-all"
               style={{ background: 'linear-gradient(to right, #f59e0b, #f59e0b, #ea580c)', color: '#000' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -129,7 +129,7 @@ export default function Navigation() {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2"
+            className="lg:hidden p-2"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -141,7 +141,7 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden py-4 border-t bg-background"
+            className="lg:hidden py-4 border-t bg-background"
           >
             {mode && navItemsWithConditional.map((item) => (
               <button
